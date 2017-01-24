@@ -3,7 +3,7 @@ var updateDeviceStates = function() {
 		var device_id = $( this ).attr( 'id' );
 		var stateUrl = "/devices/details/" + device_id;
 		$.get( stateUrl, function( response ) {
-			$( "#" + device_id ).data( 'powered', response.powered );
+			$( "#" + device_id ).data( 'powered', response.state.powered );
 			$( "#" + device_id ).data( 'last_seen', response.last_seen );
 		});
 	});
