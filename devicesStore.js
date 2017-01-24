@@ -156,7 +156,8 @@ var getDeviceDetails = function( device_id ) {
 	result.success = true;
 	result.id = deviceResult.id;
 	result.last_seen = deviceResult.last_seen;
-	result.powered = deviceResult.powered;
+	result.state = {};
+	result.state.powered = deviceResult.powered;
 	
 	return result;
 };
