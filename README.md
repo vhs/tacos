@@ -1,4 +1,4 @@
-# A Tools Operations & Management System
+# Automated Tool Operation Management System
 
 Used to manage and control access to device as used in a hack-/makerspace.
 
