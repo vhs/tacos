@@ -1,0 +1,29 @@
+{
+	"authentication" : {
+		"slack": {
+			"clientID": "<clientId>",
+			"clientSecret": "<secret>",
+			"team": "<teamId>"
+		},
+		"google": {
+			"clientID": "<clientId>",
+			"clientSecret": "<secret>"
+		},
+		"github": {
+			"clientID": "<clientId>",
+			"clientSecret": "<secret>"
+		}
+	},
+	"backend": "nomos",
+	"nomos": {
+		"rolesUrl": "https://membership.vanhack.ca/services/web/PrivilegeService1.svc/GetAllPrivileges",
+		"authUrl": "https://membership.vanhack.ca/services/web/AuthService1.svc/CheckService",
+		"credentials": {
+			"key": "<nomos api key>"
+		}
+	},
+	"callbackHost": "http://<callback host>",
+	"activation_timeout": 60000,
+	"administrator_role": "toolmanager",
+	"default_role": "toolmanager"
+}

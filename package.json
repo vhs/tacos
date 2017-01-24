@@ -1,0 +1,66 @@
+{
+  "name": "vhs-atoms",
+  "version": "0.0.1",
+  "description": "A Tool Operations & Management System",
+  "scripts": {
+    "start": "node_modules/.bin/supervisor -w app.js bin/www",
+    "watch": "node_modules/.bin/supervisor bin/www",
+    "test": "node_modules/.bin/gulp test"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "debug": "^2.6.0",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "express-session-level": "^1.0.0",
+    "fs": "0.0.1-security",
+    "jsmart": "^2.14.0",
+    "jsonfile": "^2.4.0",
+    "level": "^1.5.0",
+    "morgan": "^1.7.0",
+    "passport": "^0.3.2",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth": "^1.0.0",
+    "passport-slack": "git+https://github.com/garthomite/passport-slack.git",
+    "promise": "^7.1.1",
+    "pug": "^0.1.0",
+    "request": "^2.79.0",
+    "request-promise": "^4.1.1",
+    "sinon": "^1.17.7",
+    "socket.io": "^1.7.2",
+    "sqlite3": "^3.1.8",
+    "superagent-promise": "^1.1.0",
+    "supervisor": "^0.12.0",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "sinon": "*",
+    "mocha": "*",
+    "gulp": "*",
+    "jshint": "*",
+    "jshint-stylish": "*",
+    "gulp-mocha": "*",
+    "gulp-jshint": "*",
+    "chai": "*",
+    "gulp-istanbul": "*",
+    "chai-as-promised": "*",
+    "supertest": "*",
+    "supertest-as-promised": "*"
+  },
+  "jshintConfig": {
+    "node": true,
+    "globalstrict": true,
+    "globals": {
+      "describe": false,
+      "it": false,
+      "before": false,
+      "beforeEach": false,
+      "after": false,
+      "afterEach": false
+    }
+  },
+  "author": "Ty Eggen",
+  "license": "ISC"
+}

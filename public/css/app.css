@@ -1,0 +1,41 @@
+.btn.auth {
+    margin-top: 10px;
+}
+
+.row.auths {
+    margin-bottom: 20px;
+}
+
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none !important;
+}
+
+.tool-title {
+	background: lightblue;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 18px;
+}
+
+.online {
+	background-color: lightgreen;
+}
+
+.device-card {
+	border: solid 1px grey;
+	border-radius: 3px;
+}
+
+.findme {
+	border: solid 1px gold;
+}
+
+.text-armed {
+    font-weight: bold;
+    color: red;
+}
+
+.spacious {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
