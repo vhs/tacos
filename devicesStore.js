@@ -133,6 +133,7 @@ var getDeviceState = function( device_id ) {
 	var result = {};
 	result.success = true;
 	result.id = devices[device_id].id;
+	result.state = {};
 	result.state.powered = devices[device_id].powered;
 	
 	if( ( devices[device_id].activation_expiry < Date.now() ) ) {
