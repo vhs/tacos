@@ -1,25 +1,33 @@
 "use strict";
 
 var Promise = require('bluebird'),
-	debug = require('debug')('app:device'),
+	debug = require('debug')('app:deviceStore'),
 	config = require('./config'),
 	EventEmitter = require('events').EventEmitter,
-    emitter = new EventEmitter();
-	// devicesDB = require('level')('./devicedb');
+    emitter = new EventEmitter(),
+	loki = require( 'lokijs' ),
+	lokiDB = new loki( 'shared/devicesStore.json' );
 
 var devices = {};
+	
+lokiDB.loadDatabase( {}, function() {
+	debug( "Loading database..." );
+	debug( "Loading devices collection..." );
+	devices = lokiDB.getCollection( 'devices' );
+	if( devices == null ) {
+		debug( "Collection not found!" );
+		debug( "Adding collection!" );
+		devices = lokiDB.addCollection( 'devices', { indices: ['id'], autoupdate: true } );
+	}
+});
 
-try {
-	devices = require('./devices_store');
-} catch( e ) {
-	console.log( "No devices registry file available" );
-	// console.log(e)
-}
-
-module.exports.devices = devices;
+setInterval( function() {
+	debug( "Autosaving" );
+	lokiDB.saveDatabase();
+}, 10000 );
 
 var getAllDevices = function() {
-	return devices;
+	return devices.find({'id': { '$ne' : '' }});
 }
 
 module.exports.getAllDevices = getAllDevices;
@@ -28,7 +36,7 @@ var getAvailableDevices = function( user_roles ) {
 	
 	var devices_list = {};
 	
-	devices.forEach( function( device, device_key ) {
+	getAllDevices().forEach( function( device ) {
 		if( user_roles[device.role] !== undefined )
 			devices_list[device_key] = device;
 	});
@@ -38,38 +46,35 @@ var getAvailableDevices = function( user_roles ) {
 
 module.exports.getAvailableDevices = getAvailableDevices;
 
-var saveDevices = function() {
-	var fs = require('fs');
-	fs.writeFile( 'devices_store.json', JSON.stringify( devices, null, 4 ) );
-}
-
-var autoSave = true;
-
-if( autoSave ) {
-	setInterval( saveDevices, 60000 );
-}
-
 var registerDevice = function( device_id ) {
-		
-	if( ! (device_id in devices) ) {
-		devices[device_id] = {
+	var deviceResult = devices.findOne( { 'id': device_id } );
+	
+	if( deviceResult === null ) {
+		deviceResult = {
 			"id" : device_id,
 			"description" : device_id,
 			"role" : config.default_role,
 			"powered" : 0
 		};
+		
+		var deviceResult = devices.insert( deviceResult );
+		
+		deviceResult = devices.findOne( { 'id': device_id } );
 	}
 	
-	devices[device_id].last_seen = Date.now();
-
+	deviceResult.last_seen = Date.now();
+	
+	devices.update( deviceResult );
+	
+	return deviceResult;
 }
 
 module.exports.registerDevice = registerDevice;
 
 var updateDeviceDescription = function( device_id, description ) {
-	devices[device_id].description = description;
+	var deviceResult = devices.findOne( { 'id': device_id } );
 	
-	if( ! autoSave ) saveDevices();
+	deviceResult.description = description;
 	
 	return getDeviceDetails( device_id );
 }
@@ -77,9 +82,9 @@ var updateDeviceDescription = function( device_id, description ) {
 module.exports.updateDeviceDescription = updateDeviceDescription;
 
 var updateDeviceRole = function( device_id, role ) {
-	devices[device_id].role = role;
+	var deviceResult = devices.findOne( { 'id': device_id } );
 	
-	if( ! autoSave ) saveDevices();
+	deviceResult.role = role;
 	
 	return getDeviceDetails( device_id );
 }
@@ -87,58 +92,53 @@ var updateDeviceRole = function( device_id, role ) {
 module.exports.updateDeviceRole = updateDeviceRole;
 
 var armDevice = function( device_id ) {
-	if( devices[device_id] == undefined )
+	var deviceResult = devices.findOne( { 'id': device_id } );
+
+	if( deviceResult === null )
 		return result = { "error" : "No such device" };
 	
-	devices[device_id].powered = 1;
-	devices[device_id].activation_expiry = ( Date.now() + parseInt( config.activation_timeout ) );
+	deviceResult.powered = 1;
+	deviceResult.activation_expiry = ( Date.now() + parseInt( config.activation_timeout ) );
 	
 	var result = {};
-	result.id = devices[device_id].id;
-	result.powered = devices[device_id].powered;
+	result.id = deviceResult.id;
+	result.powered = deviceResult.powered;
 	
-	if( ! autoSave ) saveDevices();
-	
-	return result;
+	return getDeviceDetails( device_id );
 };
 
 module.exports.armDevice = armDevice;
 
 var unarmDevice = function( device_id ) {
-	if( devices[device_id] == undefined )
+	var deviceResult = devices.findOne( { 'id': device_id } );
+
+	if( deviceResult === null )
 		return result = { "error" : "No such device" };
 	
-	devices[device_id].powered = 0;
+	deviceResult.powered = 0;
 	
-	var result = {};
-	result.id = devices[device_id].id;
-	result.powered = devices[device_id].powered;
-	
-	if( ! autoSave ) saveDevices();
-	
-	return result;
+	return getDeviceDetails( device_id );
 };
 
 module.exports.unarmDevice = unarmDevice;
 
 var getDeviceList = function() {
-	return devices;
+	return getAllDevices();
 };
 
 module.exports.getDeviceList = getDeviceList;
 
 var getDeviceState = function( device_id ) {
-	registerDevice( device_id );
+	var deviceResult = registerDevice( device_id );
 
 	var result = {};
 	result.success = true;
-	result.id = devices[device_id].id;
+	result.id = deviceResult.id;
 	result.state = {};
-	result.state.powered = devices[device_id].powered;
+	result.state.powered = deviceResult.powered;
 	
-	if( ( devices[device_id].activation_expiry < Date.now() ) ) {
-		result.state.powered = devices[device_id].powered = 0;
-		if( ! autoSave ) saveDevices();
+	if( ( deviceResult.activation_expiry < Date.now() ) ) {
+		result.state.powered = deviceResult.powered = 0;
 	}
 	
 	return result;
@@ -147,12 +147,16 @@ var getDeviceState = function( device_id ) {
 module.exports.getDeviceState = getDeviceState;
 
 var getDeviceDetails = function( device_id ) {
+	var deviceResult = devices.findOne( { 'id': device_id } );
 
+	if( deviceResult === null )
+		return result = { "error" : "No such device" };
+	
 	var result = {};
 	result.success = true;
-	result.id = devices[device_id].id;
-	result.last_seen = devices[device_id].last_seen;
-	result.powered = devices[device_id].powered;
+	result.id = deviceResult.id;
+	result.last_seen = deviceResult.last_seen;
+	result.powered = deviceResult.powered;
 	
 	return result;
 };
@@ -160,7 +164,9 @@ var getDeviceDetails = function( device_id ) {
 module.exports.getDeviceDetails = getDeviceDetails;
 
 var checkDeviceExists = function( device_id ) {
-	if( devices[device_id] !== undefined )
+	var deviceResult = devices.findOne( { 'id': device_id } );
+
+	if( deviceResult !== null )
 		return true;
 	
 	return false;
@@ -169,7 +175,9 @@ var checkDeviceExists = function( device_id ) {
 module.exports.checkDeviceExists = checkDeviceExists;
 
 var checkDeviceAccess = function( device_id, user_roles ) {
-	if( user_roles[devices[device_id].role] !== undefined )
+	var deviceResult = devices.findOne( { 'id': device_id } );
+	
+	if( user_roles[deviceResult.role] !== undefined )
 		return true;
 	
 	return false;
