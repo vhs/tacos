@@ -24,6 +24,6 @@
 	},
 	"callbackHost": "http://<callback host>",
 	"activation_timeout": 60000,
-	"administrator_role": "toolmanager",
-	"default_role": "toolmanager"
+	"administrator_role": "<admin role>",
+	"default_role": "<default role>"
 }
