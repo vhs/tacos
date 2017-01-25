@@ -24,7 +24,10 @@ var requireToolAccess = function(req, res, next) {
 		next('route');
 	}
 
-    if (req.user && devicesStore.checkDeviceAccess( device_id, req.user.privileges ) ) {
+    if( req.user && req.user.administrator ) {
+        return next();
+    }
+    if( req.user && devicesStore.checkDeviceAccess( device_id, req.user.privileges ) ) {
         return next();
     }
 
