@@ -52,6 +52,8 @@ block content
 									span(class='timeago', data-id=device.id, time=device.last_seen) Unknown
 							div(class="row spacious")
 								div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
+									if user.administrator
+									button(class="btn btn-danger", data-id=device.id, ng-click="delete('" + device.id + "')") DELETE
 									button(class="btn pull-right powerbutton", data-id=device.id, ng-click="toggle('" + device.id + "')") Checking...
 			else
 				div(class="row spacious")

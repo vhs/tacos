@@ -164,6 +164,17 @@ var getDeviceDetails = function( device_id ) {
 
 module.exports.getDeviceDetails = getDeviceDetails;
 
+var deleteDevice = function( device_id ) {
+	var deviceResult = devices.chain().find( { 'id': { '$eq' : device_id } } ).remove().data();
+
+	if( deviceResult.length == 0 )
+		return true;
+	
+	return false;
+};
+
+module.exports.deleteDevice = deleteDevice;
+
 var checkDeviceExists = function( device_id ) {
 	var deviceResult = devices.findOne( { 'id': device_id } );
 

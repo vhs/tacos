@@ -6,6 +6,28 @@
     app.controller("AppCtrl", function($scope, $http) {
 		devices = {};
 		
+		$scope.delete = function( device_id ) {
+			var confirm_result = confirm( "Are you sure you want to delete this device?" );
+			
+			if( ! confirm_result )
+				return;
+			
+			var elementId = "#" + device_id;
+
+			var url = "/devices/delete/" + device_id;
+			var params = {};
+			
+			$http.post( url, params ).then(
+				function (response) {
+					$( "#" + device_id ).remove();
+				},
+				function error(err) {
+					alert( "Failed to delete device" );
+				}
+			);
+
+		}
+		
 		$scope.toggle = function( device_id ) {
 			var elementId = "#" + device_id;
 			var power_state = $( elementId ).data( 'powered' );

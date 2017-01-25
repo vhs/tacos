@@ -72,6 +72,23 @@ router.get("/details/:id", function(req, res, next){
     next();
 });
 
+// Delete device
+router.post("/delete/:id", requireAuthenticated, requireAdmin, function(req, res, next){
+	if( ! req.params.id ) {
+		res.result.message = "error: missing device id";
+		next();
+	}
+	
+	var device_id = req.params.id;
+	
+	res.result = {};
+
+	if( devicesStore.deleteDevice( device_id ) )
+		res.result = { result: "ok" };
+
+    next();
+});
+
 // Update device role
 router.post("/update/role/:id", requireAuthenticated, requireAdmin, function(req, res, next){
 	if( ! req.params.id ) {
