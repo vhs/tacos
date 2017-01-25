@@ -40,7 +40,7 @@ block content
 											if user.administrator
 												select(class="form-control role-control", data-id=device.id, name="role")
 													option= device.role
-													for role in user.privileges
+													for role in roles
 														option= role.code
 							div(class="row spacious")
 								div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")

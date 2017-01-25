@@ -8,6 +8,7 @@ var express = require('express'),
     app = require('../app'),
     api = require('./api'),
     sio = require('../socket'),
+	nomos = require('../nomos'),
     router = express.Router();
 
 function devicesStatuses(req, res, next) {
@@ -18,12 +19,13 @@ function devicesStatuses(req, res, next) {
 			res.locals.devices = devicesStore.getAvailableDevices( req.user.roles );
 		}
 	}
-	req.session.touch();
     next();
 }
 
 router.use('/', function(req, res, next){
     res.locals.user = req.user;
+	res.locals.roles = nomos.getRoles();
+	req.session.touch();
     next();
 });
 
