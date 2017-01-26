@@ -1,11 +1,11 @@
 #!/bin/bash
 
-BASEDIR=`dirname "$0/.."`
+BASEDIR=`basename $0 | awk '{ print $0 "/.." }'`
 
 TEMPLATE=vanhack/atoms
 NAME=atoms
 
-docker build -t $TEMPLATE $DIR
+docker build -t $TEMPLATE $BASEDIR
 
 echo "Killing old instance (if any)"
 docker kill $NAME
