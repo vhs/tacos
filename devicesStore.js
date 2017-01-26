@@ -38,7 +38,7 @@ var getAvailableDevices = function( user_roles ) {
 	
 	getAllDevices().forEach( function( device ) {
 		if( user_roles[device.role] !== undefined )
-			devices_list[device_key] = device;
+			devices_list[device.id] = device;
 	});
 	
 	return devices_list;
