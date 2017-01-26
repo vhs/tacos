@@ -7,11 +7,24 @@ var config = require('./config'),
 	agent = require('superagent-promise')(require('superagent'), Promise);
 
 var roles = [];
+var roles_last_loaded = Date.now();
 
 var loadRoles = function() {
 	console.log( "nomos.js[12]: loading roles" );
-	return agent( 'GET', config[config.backend].rolesUrl )
+	var params = {
+		"page": 0,
+		"size": 25,
+		"columns": "id,name,code,description,enabled",
+		"order": "name",
+		"filters":{
+			"column": "code",
+			"operator": "like",
+			"value": "tool:%"
+		}
+	}
+	return agent( 'POST', config[config.backend].rolesUrl )
 	.set( 'X-Api-Key', config[config.backend].credentials.key )
+	.send( params )
 	.end()
 	.then(function(res){
 		return JSON.parse(res.text);
@@ -34,7 +47,7 @@ var loadRoles = function() {
 loadRoles();
 
 var getRoles = function() {
-	if( roles.length == 0 )
+	if( roles.length == 0 || ( roles_last_loaded < ( Date.now() - 60000 ) ) )
 		loadRoles();
 	
 	return roles;
