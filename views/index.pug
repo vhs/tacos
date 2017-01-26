@@ -42,6 +42,12 @@ block content
 													option= device.role
 													for role in roles
 														option= role.code
+							else
+								div(class="row spacious")
+									div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
+										b Description: 
+										span= device.description
+
 							div(class="row spacious")
 								div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
 									b State: 
