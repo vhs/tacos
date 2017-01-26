@@ -37,7 +37,7 @@ if( environment == 'development' )
 
 /* Placeholder homepage */
 router.get('/', devicesStatuses, function(req, res, next) {
-    res.render('index', { title: 'VHS Automated Tool Operation Management System' });
+    res.render('index', { title: 'VHS:ATOMS' });
 });
 
 router.use('/api', api.router);
