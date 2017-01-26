@@ -159,6 +159,10 @@ var getDeviceDetails = function( device_id ) {
 	result.state = {};
 	result.state.powered = deviceResult.powered;
 	
+	if( ( deviceResult.activation_expiry < Date.now() ) ) {
+		result.state.powered = deviceResult.powered = 0;
+	}
+	
 	return result;
 };
 
