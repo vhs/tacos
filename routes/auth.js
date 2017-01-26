@@ -118,7 +118,7 @@ router.get('/logout', function(req, res){
 
 // Modules
 module.exports.requireAdmin = function(req, res, next) {
-    if (req.user && req.user.privileges[config.administrator_role] ) {
+    if (req.user && req.user.administrator ) {
         return next();
     }
     next({

@@ -1,6 +1,7 @@
 "use strict";
 
 var Promise = require('bluebird'),
+    _ = require('underscore'),
 	debug = require('debug')('app:deviceStore'),
 	config = require('./config'),
 	EventEmitter = require('events').EventEmitter,
@@ -32,12 +33,11 @@ var getAllDevices = function() {
 
 module.exports.getAllDevices = getAllDevices;
 
-var getAvailableDevices = function( user_roles ) {
-	
+var getAvailableDevices = function( user ) {
 	var devices_list = {};
 	
 	getAllDevices().forEach( function( device ) {
-		if( user_roles[device.role] !== undefined )
+		if( checkDeviceAccess( device.id, user ) )
 			devices_list[device.id] = device;
 	});
 	
@@ -186,12 +186,15 @@ var checkDeviceExists = function( device_id ) {
 
 module.exports.checkDeviceExists = checkDeviceExists;
 
-var checkDeviceAccess = function( device_id, user_roles ) {
-	var deviceResult = devices.findOne( { 'id': device_id } );
-	
-	if( user_roles[deviceResult.role] !== undefined )
+var checkDeviceAccess = function( device_id, user ) {
+	if( user.administrator )
 		return true;
-	
+
+	var deviceResult = devices.findOne( { 'id': device_id } );
+
+	if( user.privileges.indexOf( deviceResult.role ) >= 0 )
+		return true;
+
 	return false;
 };
 

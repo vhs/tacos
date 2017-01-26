@@ -10,7 +10,7 @@ var roles = [];
 var roles_last_loaded = Date.now();
 
 var loadRoles = function() {
-	console.log( "nomos.js[12]: loading roles" );
+	debug( "nomos.js[12]: loading roles" );
 	var params = {
 		"page": 0,
 		"size": 25,
@@ -81,19 +81,21 @@ module.exports.checkUser = function( user ){
 				user.username = user_result.username;
 				
 				user.administrator = false;
-				user.privileges = {};
+				user.privileges = [];
 				
-				// Loop over user_result privileges, save the privileges to the user, and set administrator if the user has the administrator_role
-                _.each(user_result.privileges, function(priv){
-					user.privileges[priv.code] = priv;
-					if( priv.code == config.administrator_role ){
-                        user.administrator = true;
-                    }
-                });
+				_.each( user_result.privileges, function( priv ) {
+					user.privileges.push( priv.code );
+				});
+				
+				// Set administrator if the user has the administrator_role
+				if( user.privileges.indexOf( config.administrator_role ) >= 0 ) {
+					user.administrator = true;
+				}
 				
 				// Else if user is Nomos administrator override administrator
-				if( user_result.privileges.administrator !== undefined )
+				if( user.privileges.indexOf( "administrator" ) >= 0 ) {
 					user.administrator = true;
+				}
 
 				authenticated = true;
             }

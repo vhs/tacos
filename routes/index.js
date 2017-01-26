@@ -16,7 +16,7 @@ function devicesStatuses(req, res, next) {
 		if( req.user.administrator ) {
 			res.locals.devices = devicesStore.getAllDevices();
 		} else {
-			res.locals.devices = devicesStore.getAvailableDevices( req.user.privileges );
+			res.locals.devices = devicesStore.getAvailableDevices( req.user );
 		}
 	}
     next();
