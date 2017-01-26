@@ -1,8 +1,8 @@
 # Automated Tool Operation Management System
 
-Used to manage and control access to device as used in a hack-/makerspace.
+A support system for device interlocking in a hack-/makerspace.
 
-This software uses a SQLite database for its tool configuration, but fully function based on a configurable authentication back-end.
+This software uses a LokiJS database for its tool configuration and supports configurable authentication back-ends.
 
 ## Installation [Ubuntu Installation below]
 
