@@ -11,6 +11,11 @@ NAME=atoms
 
 docker build -t $TEMPLATE $PKGDIR
 
+if [ ! -f config.json ] ; then
+	echo "Missing config.json"
+	exit
+fi
+
 echo "Killing old instance (if any)"
 docker kill $NAME
 echo "Removing old instance (if any)"
