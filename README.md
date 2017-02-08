@@ -4,7 +4,7 @@ A support system for device interlocking in a hack-/makerspace.
 
 This software uses a LokiJS database for its tool configuration and supports configurable authentication back-ends.
 
-## Installation [Ubuntu Installation below]
+## Installation
 
 - Install node.js
 - Install modules
@@ -36,11 +36,17 @@ If dev dependencies are installed you can run all test cases with
 
 ## Running
 
-To set the port set the environment variable PORT to whatever port you want to listen to, by default it's 3000
+To set the port set the environment variable PORT to whatever port you want to listen to, by default it's 3004
 
     npm start
 
-To enable debug logging then set the environment variable DEBUG to atoms:* to log all laser related events.
+To enable debug logging then set the environment variable DEBUG to atoms:* to log all atoms related events.
+
+## Docker container
+
+Run bin/docker-run.sh to bootstrap and run the container, which will be made available under the name "atoms".
+
+Alternatively, checkout the vanhack/atoms package from Docker Hub.
 
 ## Acknowledgements
 
