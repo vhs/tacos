@@ -3,6 +3,7 @@
 var express = require('express'),
     auth = require('./auth'),
     devices = require('./devices'),
+    terminals = require('./terminals'),
 	devicesStore = require('../devicesStore'),
     debug = require('debug')('app:web'),
     app = require('../app'),
@@ -43,6 +44,7 @@ router.get('/', devicesStatuses, function(req, res, next) {
 router.use('/api', api.router);
 router.use('/auth', auth.router);
 router.use('/devices', devices.router);
+router.use('/terminals', terminals.router);
 
 module.exports.router = router;
 
@@ -56,21 +58,5 @@ module.exports.addMiddleware = function(app){
 module.exports.addErrorHandlers = function(app){
     api.addErrorHandlers(app, '/api');
     devices.addErrorHandlers(app, '/devices');
+    terminals.addErrorHandlers(app, '/terminals');
 };
-
-/*
-laser.on("laser", function(event){
-    debug("New event from laser " + event.id);
-    sio.io.emit("laser", event);
-});
-
-laser.on("access", function(event){
-    debug("New event from access " + event.id);
-    sio.io.emit("access", event);
-});
-
-laser.on("status", function(event){
-    debug("New event from status " + event.id);
-    sio.io.emit("status", event);
-});
-*/

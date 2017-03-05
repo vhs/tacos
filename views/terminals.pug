@@ -1,0 +1,24 @@
+include page_header.jade
+
+include section_menubar.jade
+
+div(class='container')
+
+	div(class="row")
+		div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
+			h2
+				b Terminals
+
+	div(class="row")
+		div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
+			a(href="/",class="btn btn-primary") Devices
+			|  
+			a(href="/terminals",class="btn btn-primary disabled") Terminals
+
+	if user
+		include section_terminals.jade
+
+	else
+		include section_login.jade
+	
+include page_footer.jade

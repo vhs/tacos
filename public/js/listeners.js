@@ -77,4 +77,24 @@ jQuery(document).ready(function() {
 				alert( "Something went wrong while updating the device description:\n" + response.message );
 		});
 	});
+	
+	$( ".authentication-control" ).on( 'click', function() {
+		var device_id = $( this ).data( 'id' );
+		var postUrl = "/devices/update/hassecret/" + device_id;
+		var params = { "hasSecret" : $( this ).is(':checked') };
+		$.post( postUrl, params, function( response ) {
+			if( ! response.result == "OK" )
+				alert( "Something went wrong while updating the device description:\n" + response.message );
+		});
+	});
+	
+	$( ".secret-control" ).on( 'blur', function() {
+		var device_id = $( this ).data( 'id' );
+		var postUrl = "/devices/update/secret/" + device_id;
+		var params = { "secret" : $( this ).val() };
+		$.post( postUrl, params, function( response ) {
+			if( ! response.result == "OK" )
+				alert( "Something went wrong while updating the device secret:\n" + response.message );
+		});
+	});
 });

@@ -54,7 +54,9 @@ var registerDevice = function( device_id ) {
 			"id" : device_id,
 			"description" : device_id,
 			"role" : config.default_role,
-			"powered" : 0
+			"powered" : 0,
+			"hassecret" : 0,
+			"secret" : ""
 		};
 		
 		var deviceResult = devices.insert( deviceResult );
@@ -90,6 +92,36 @@ var updateDeviceRole = function( device_id, role ) {
 }
 
 module.exports.updateDeviceRole = updateDeviceRole;
+
+var deleteDeviceSecret = function( device_id, secret ) {
+	var deviceResult = devices.findOne( { 'id': device_id } );
+
+	deviceResult.secret = null;
+	
+	return getDeviceDetails( device_id );
+}
+
+module.exports.deleteDeviceSecret = deleteDeviceSecret;
+
+var updateDeviceHasSecret = function( device_id, hasSecret ) {
+	var deviceResult = devices.findOne( { 'id': device_id } );
+
+	deviceResult.hasSecret = hasSecret;
+	
+	return getDeviceDetails( device_id );
+}
+
+module.exports.updateDeviceHasSecret = updateDeviceHasSecret;
+
+var updateDeviceSecret = function( device_id, secret ) {
+	var deviceResult = devices.findOne( { 'id': device_id } );
+
+	deviceResult.secret = secret;
+	
+	return getDeviceDetails( device_id );
+}
+
+module.exports.updateDeviceSecret = updateDeviceSecret;
 
 var armDevice = function( device_id ) {
 	var deviceResult = devices.findOne( { 'id': device_id } );

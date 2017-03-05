@@ -116,6 +116,36 @@ router.post("/update/description/:id", requireAuthenticated, requireAdmin, funct
     next();
 });
 
+// Update device role
+router.post("/update/hassecret/:id", requireAuthenticated, requireAdmin, function(req, res, next){
+	if( ! req.params.id || req.params.id === 0 ) {
+		res.result.message = "error: missing device id";
+		next('route');
+	}
+	
+	var device_id = req.params.id;
+	var hasSecret = req.body.hasSecret;
+
+	res.result = devicesStore.updateDeviceHasSecret( device_id, hasSecret );
+
+    next();
+});
+
+// Update device role
+router.post("/update/secret/:id", requireAuthenticated, requireAdmin, function(req, res, next){
+	if( ! req.params.id || req.params.id === 0 ) {
+		res.result.message = "error: missing device id";
+		next('route');
+	}
+	
+	var device_id = req.params.id;
+	var secret = req.body.secret;
+
+	res.result = devicesStore.updateDeviceSecret( device_id, secret );
+
+    next();
+});
+
 // Activate device
 router.post("/arm/:id", requireAuthenticated, requireToolAccess, function(req, res, next){
 	if( ! req.params.id ) {

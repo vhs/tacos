@@ -121,20 +121,14 @@ module.exports.requireAdmin = function(req, res, next) {
     if (req.user && req.user.administrator ) {
         return next();
     }
-    next({
-        statusCode: 401,
-        message: "Access Denied"
-    });
+	res.status(403).send('Forbidden (Admin required)- Please <a href="/">login</a>');
 };
 
 module.exports.requireAuthenticated = function(req, res, next) {
     if (req.user && req.user.authenticated) {
         return next();
     }
-    next({
-        statusCode: 401,
-        message: "Access Denied"
-    });
+	res.status(403).send('Forbidden - Please <a href="/">login</a>');
 };
 
 module.exports.router = router;

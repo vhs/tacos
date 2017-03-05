@@ -1,0 +1,30 @@
+if terminals
+	for terminal in terminals
+		div(class="row spacious")
+			div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 terminal-card", id=terminal.id, data-last_seen=terminal.last_seen)
+				div(class="row tool-title")
+					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
+						b #{terminal.id}
+				div(class="row spacious")
+					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
+						b Description: 
+							input(class="form-control description-control", data-id=terminal.id, value=terminal.description)
+				div(class="row spacious")
+					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
+						b Role:
+							if user.administrator
+								select(class="form-control role-control", data-id=terminal.id, name="role")
+									option= terminal.role
+									for role in roles
+										option= role.code
+				div(class="row spacious")
+					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
+						b Secret: 
+							input(class="form-control secret-control", type="password", data-id=terminal.id, value=terminal.secret)
+				div(class="row spacious")
+					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
+						b Last Seen: 
+						span(class='timeago', data-id=terminal.id, time=terminal.last_seen) Unknown
+else
+	div(class="row spacious")
+		div(class="col-md-12") There are no terminals

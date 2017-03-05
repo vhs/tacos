@@ -1,92 +1,26 @@
-extends layout
+include page_header.jade
 
-block content
+include section_menubar.jade
 
-	nav(class="navbar navbar-default")
-		div(class="container-fluid")
-			div(class="navbar-header")
-				a(class="navbar-brand", href="/") Automated Tool Operation Management System
-			ul(class="nav navbar-nav navbar-right")
-				if user
-					li
-						a(href="#") #{user.username}
-							if user.administrator
-								span &nbsp;(Admin)
-					li
-						a(href="/auth/logout") Logout
+div(class='container')
+
+	div(class="row")
+		div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
+			h2
+				b
+					Tools
+
+	if user && user.administrator
+		div(class="row")
+			div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
+				a(href="/",class="btn btn-primary disabled") Devices
+				|  
+				a(href="/terminals",class="btn btn-primary") Terminals
 
 	if user
-		div(class='container')
-	
-			div(class="row")
-				div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
-					h2 Tools
-
-			if devices
-				for device in devices
-					div(class="row spacious")
-						div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 device-card", id=device.id, data-last_seen=device.last_seen, data-powered=device.powered)
-							div(class="row tool-title")
-								div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-									b #{device.id}
-							if user.administrator
-								div(class="row spacious")
-									div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-										b Description: 
-											input(class="form-control description-control", data-id=device.id, value=device.description)
-								div(class="row spacious")
-									div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-										b Role:
-											if user.administrator
-												select(class="form-control role-control", data-id=device.id, name="role")
-													option= device.role
-													for role in roles
-														option= role.code
-							else
-								div(class="row spacious")
-									div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-										b Description: 
-										span= device.description
-
-							div(class="row spacious")
-								div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-									b State: 
-									span(data-id=device.id, class="powerstate") Unknown
-							div(class="row spacious")
-								div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-									b Last Seen: 
-									span(class='timeago', data-id=device.id, time=device.last_seen) Unknown
-							div(class="row spacious")
-								div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-									if user.administrator
-										button(class="btn btn-danger", data-id=device.id, ng-click="delete('" + device.id + "')") DELETE
-									button(class="btn pull-right powerbutton", data-id=device.id, ng-click="toggle('" + device.id + "')") Checking...
-			else
-				div(class="row spacious")
-					div(class="col-md-12") There are no devices
+		include section_devices.jade
 
 	else
-		div(class='container')
-
-			div(class="row")
-				div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
-					h2(class="panel-title") Login
-
-			div(class="row")
-				div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
-					p To access the tool manager, your membership account needs to be linked to one of the following providers
-				
-			div(class="row auths")
-				div(class="col-xs-12 col-sm-4")
-					a(href="/auth/slack" class="btn btn-info col-xs-12 col-xl-4 auth") Slack
-
-				div(class="col-xs-12 col-sm-4")
-					a(href="/auth/google" class="btn btn-info col-xs-12 col-xl-4 auth") Google
-
-				div(class="col-xs-12 col-sm-4")
-					a(href="/auth/github" class="btn btn-info col-xs-12 col-xl-4 auth") GitHub
-
-			div(class="row")
-					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-						p If your need to link your membership account&nbsp;
-						a(href="https://membership.vanhack.ca") link it here
+		include section_login.jade
+	
+include page_footer.jade
