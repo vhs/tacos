@@ -9,8 +9,10 @@ var express = require('express'),
     app = require('../app'),
     api = require('./api'),
     sio = require('../socket'),
-	nomos = require('../nomos'),
+	config = require('../config'),
     router = express.Router();
+
+var backend = require('../' + config.backend );
 
 function devicesStatuses(req, res, next) {
 	if( req.user ) {
@@ -25,7 +27,7 @@ function devicesStatuses(req, res, next) {
 
 router.use('/', function(req, res, next){
     res.locals.user = req.user;
-	res.locals.roles = nomos.getRoles();
+	res.locals.roles = backend.getRoles();
 	req.session.touch();
     next();
 });

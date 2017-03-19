@@ -5,12 +5,13 @@ var express = require('express'),
     passport = require('passport'),
     debug = require('debug')('app:auth'),
     slack = require('../slack'),
-    nomos = require('../nomos'),
     SlackStrategy = require('passport-slack').Strategy,
     GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
     GitHubStrategy = require('passport-github').Strategy;
 
 var config = require('../config');
+
+var backend = require('../' + config.backend );
 
 function checkOauthService(user, done){
     debug(user);
@@ -19,7 +20,7 @@ function checkOauthService(user, done){
         return done(null, user);
     }
 
-    nomos.checkUser( user )
+    backend.checkUser( user )
 	.then(function(valid){
 		user.authenticated = valid;
 		done(null, user);

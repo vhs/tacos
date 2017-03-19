@@ -11,6 +11,7 @@ var roles_last_loaded = Date.now();
 
 var loadRoles = function() {
 	debug( "nomos.js[12]: loading roles" );
+	
 	var params = {
 		"page": 0,
 		"size": 25,
@@ -22,24 +23,29 @@ var loadRoles = function() {
 			"value": "tool:%"
 		}
 	}
+	
 	return agent( 'POST', config[config.backend].rolesUrl )
 	.set( 'X-Api-Key', config[config.backend].credentials.key )
 	.send( params )
 	.end()
-	.then(function(res){
-		return JSON.parse(res.text);
+	.then( function( res ){
+		return JSON.parse( res.text );
 	})
-	.catch(function(err){
+	.catch( function( err ) {
 		debug( "nomos.js[19]: error caught" );
+		
 		//Log this for now and proceed to the next promise
 		console.error(err);
+		
 		return {"valid": false, error: true};
 	})
-	.then(function(roles_result){
+	.then( function( roles_result ) {
 		debug( "nomos.js[25]: error caught" );
+		
 		if( typeof roles_result == 'object' && roles_result.length > 0 ) {
 			roles = roles_result;
 		}
+		
 		return roles;
 	});
 }
@@ -58,9 +64,11 @@ module.exports.getRoles = getRoles;
 module.exports.checkUser = function( user ){
 	var service = user.provider;
 	var id = user.id;
+	
 	debug( service );
 	debug( id );
-    return agent('POST', config[config.backend].authUrl)
+    
+	return agent('POST', config[config.backend].authUrl)
         .send({service:service, id:id})
         .set('X-Api-Key', config[config.backend].credentials.key)
         .end()
@@ -80,9 +88,11 @@ module.exports.checkUser = function( user ){
 				// Save username
 				user.username = user_result.username;
 				
+				// Set defaults
 				user.administrator = false;
 				user.privileges = [];
 				
+				// Get default privileges
 				_.each( user_result.privileges, function( priv ) {
 					user.privileges.push( priv.code );
 				});
@@ -97,8 +107,10 @@ module.exports.checkUser = function( user ){
 					user.administrator = true;
 				}
 
+				// Set as authenticated
 				authenticated = true;
             }
+            
             return authenticated;
         });
 };
