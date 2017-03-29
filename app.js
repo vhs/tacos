@@ -8,12 +8,12 @@ var express = require('express'),
     session = require('express-session'),
 	LevelStore = require('express-session-level')(session),
 	sessionDB = require('level')('./shared/sessiondb'),
-    debug = require('debug')('app:web'),
+    debug = require('debug')('atoms:app'),
+    getLine = require('./utils').getLine,
     routes = require('./routes');
 
 var app = express();
 var server = require('http').Server(app);
-require("./socket").init(server);
 
 var init = false;
 
@@ -22,7 +22,7 @@ app.set( 'views', path.join(__dirname, 'views') );
 app.set( 'view engine', 'pug' );
 
 app.use( bodyParser.json() );
-app.use( bodyParser.urlencoded( { extended: false } ) );
+app.use( bodyParser.urlencoded( { extended: true } ) );
 app.use( cookieParser() );
 app.use( session({
 	store: new LevelStore(sessionDB),
@@ -54,7 +54,7 @@ module.exports.app = function(){
 
         // production error handler
         app.use(function (err, req, res, next) {
-            debug(err);
+            debug(getLine(), err);
             res.status(err.status || 500);
             res.render('error', {
                 message: err.message || err,

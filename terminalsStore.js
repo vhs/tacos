@@ -2,34 +2,36 @@
 
 var Promise = require('bluebird'),
     _ = require('underscore'),
-	debug = require('debug')('app:terminalsStore'),
+	debug = require('debug')('atoms:terminalsStore'),
+	getLine = require('./utils').getLine,
 	config = require('./config'),
 	EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter(),
 	loki = require( 'lokijs' ),
-	lokiDB = new loki( 'shared/terminalsStore.json' );
+	lokiDB = new loki( 'shared/terminalsStore.json' ),
+	CryptoJS = require("crypto-js");
 
 var terminals = {};
 	
 lokiDB.loadDatabase( {}, function() {
-	debug( "Loading database..." );
-	debug( "Loading terminals collection..." );
+	debug( getLine(), "Loading database..." );
+	debug( getLine(), "Loading terminals collection..." );
 	terminals = lokiDB.getCollection( 'terminals' );
-	if( terminals == null ) {
-		debug( "Collection not found!" );
-		debug( "Adding collection!" );
+	if( terminals === null ) {
+		debug( getLine(), "Collection not found!" );
+		debug( getLine(), "Adding collection!" );
 		terminals = lokiDB.addCollection( 'terminals', { indices: ['id'], autoupdate: true } );
 	}
 });
 
 setInterval( function() {
-	debug( "Autosaving" );
+	debug( getLine(), "Autosaving" );
 	lokiDB.saveDatabase();
 }, 10000 );
 
 var getAllTerminals = function() {
 	return terminals.find({'id': { '$ne' : '' }});
-}
+};
 
 module.exports.getAllTerminals = getAllTerminals;
 
@@ -42,7 +44,7 @@ var getAvailableTerminals = function( user ) {
 	});
 	
 	return terminals_list;
-}
+};
 
 module.exports.getAvailableTerminals = getAvailableTerminals;
 
@@ -59,9 +61,7 @@ var registerTerminal = function( terminal_id ) {
 			"secret" : ""
 		};
 		
-		var terminalResult = terminals.insert( terminalResult );
-		
-		terminalResult = terminals.findOne( { 'id': terminal_id } );
+		terminalResult = terminals.insert( terminalResult );
 	}
 	
 	terminalResult.last_seen = Date.now();
@@ -69,7 +69,7 @@ var registerTerminal = function( terminal_id ) {
 	terminals.update( terminalResult );
 	
 	return terminalResult;
-}
+};
 
 module.exports.registerTerminal = registerTerminal;
 
@@ -77,7 +77,7 @@ var enableTerminal = function( terminal_id ) {
 	var terminalResult = terminals.findOne( { 'id': terminal_id } );
 
 	if( terminalResult === null )
-		return result = { "error" : "No such terminal" };
+		return { "error" : "No such terminal" };
 	
 	terminalResult.enabled = 1;
 	
@@ -94,7 +94,7 @@ var disableTerminal = function( terminal_id ) {
 	var terminalResult = terminals.findOne( { 'id': terminal_id } );
 
 	if( terminalResult === null )
-		return result = { "error" : "No such terminal" };
+		return { "error" : "No such terminal" };
 	
 	terminalResult.enabled = 0;
 	
@@ -109,39 +109,25 @@ var updateTerminalDescription = function( terminal_id, description ) {
 	terminalResult.description = description;
 	
 	return getTerminalDetails( terminal_id );
-}
+};
 
 module.exports.updateTerminalDescription = updateTerminalDescription;
 
-var updateTerminalTarget = function( terminal_id, target ) {
+var updateTerminalEnabled = function( terminal_id, toggle ) {
 	var terminalResult = terminals.findOne( { 'id': terminal_id } );
 	
-	terminalResult.target = target;
+	debug( typeof toggle );
+	
+	if( toggle == 'true' ) {
+		terminalResult.enabled = true;
+	} else {
+		terminalResult.description = false;
+	}
 	
 	return getTerminalDetails( terminal_id );
-}
+};
 
-module.exports.updateTerminalRole = updateTerminalRole;
-
-var deleteTerminalSecret = function( terminal_id, secret ) {
-	var terminalResult = terminals.findOne( { 'id': terminal_id } );
-
-	terminalResult.secret = null;
-	
-	return getTerminalDetails( terminal_id );
-}
-
-module.exports.deleteTerminalSecret = deleteTerminalSecret;
-
-var updateTerminalHasSecret = function( terminal_id, hasSecret ) {
-	var terminalResult = terminals.findOne( { 'id': terminal_id } );
-
-	terminalResult.hasSecret = hasSecret;
-	
-	return getTerminalDetails( terminal_id );
-}
-
-module.exports.updateTerminalHasSecret = updateTerminalHasSecret;
+module.exports.updateTerminalEnabled = updateTerminalEnabled;
 
 var updateTerminalSecret = function( terminal_id, secret ) {
 	var terminalResult = terminals.findOne( { 'id': terminal_id } );
@@ -149,9 +135,29 @@ var updateTerminalSecret = function( terminal_id, secret ) {
 	terminalResult.secret = secret;
 	
 	return getTerminalDetails( terminal_id );
-}
+};
 
 module.exports.updateTerminalSecret = updateTerminalSecret;
+
+var updateTerminalTarget = function( terminal_id, target ) {
+	var terminalResult = terminals.findOne( { 'id': terminal_id } );
+	
+	terminalResult.target = target;
+	
+	return getTerminalDetails( terminal_id );
+};
+
+module.exports.updateTerminalTarget = updateTerminalTarget;
+
+var updateTerminalHasSecret = function( terminal_id, hasSecret ) {
+	var terminalResult = terminals.findOne( { 'id': terminal_id } );
+
+	terminalResult.hasSecret = hasSecret;
+	
+	return getTerminalDetails( terminal_id );
+};
+
+module.exports.updateTerminalHasSecret = updateTerminalHasSecret;
 
 var getTerminalList = function() {
 	return getAllTerminals();
@@ -159,18 +165,46 @@ var getTerminalList = function() {
 
 module.exports.getTerminalList = getTerminalList;
 
+var checkTerminalEnabled = function( terminal_id ) {
+	var terminalResult = terminals.findOne( { 'id': terminal_id } );
+	
+	debug( terminalResult );
+
+	if( terminalResult && terminalResult.enabled === true )
+		return true;
+	
+	return false;
+};
+
+module.exports.checkTerminalEnabled = checkTerminalEnabled;
+
+var checkTerminalHasTarget = function( terminal_id ) {
+	var terminalResult = terminals.findOne( { 'id': terminal_id } );
+
+	if( terminalResult && terminalResult.target !== "" )
+		return true;
+	
+	return false;
+};
+
+module.exports.checkTerminalHasTarget = checkTerminalHasTarget;
+
+var getTerminalTarget = function( terminal_id ) {
+	var terminalResult = terminals.findOne( { 'id': terminal_id } );
+	
+	return terminalResult.target;
+};
+
+module.exports.getTerminalTarget = getTerminalTarget;
+
 var getTerminalState = function( terminal_id ) {
 	var terminalResult = registerTerminal( terminal_id );
 
 	var result = {};
-	result.success = true;
-	result.id = terminalResult.id;
-	result.state = {};
-	result.state.powered = terminalResult.powered;
+	result.result = "OK";
+	result.hasTarget = terminalResult.target.length ? true : false;
+	result.secure = terminalResult.secure;
 	
-	if( ( terminalResult.activation_expiry < Date.now() ) ) {
-		result.state.powered = terminalResult.powered = 0;
-	}
 	
 	return result;
 };
@@ -181,7 +215,7 @@ var getTerminalDetails = function( terminal_id ) {
 	var terminalResult = terminals.findOne( { 'id': terminal_id } );
 
 	if( terminalResult === null )
-		return result = { "error" : "No such terminal" };
+		return { "error" : "No such terminal" };
 	
 	var result = {};
 	result.success = true;
@@ -202,7 +236,7 @@ module.exports.getTerminalDetails = getTerminalDetails;
 var deleteTerminal = function( terminal_id ) {
 	var terminalResult = terminals.chain().find( { 'id': { '$eq' : terminal_id } } ).remove().data();
 
-	if( terminalResult.length == 0 )
+	if( terminalResult.length === 0 )
 		return true;
 	
 	return false;
@@ -217,9 +251,29 @@ var checkTerminalExists = function( terminal_id ) {
 		return true;
 	
 	return false;
-}
+};
 
 module.exports.checkTerminalExists = checkTerminalExists;
+
+var checkTerminalSecured = function( terminal_id ) {
+	debug( getLine(), "checkTerminalSecured" );
+	var terminalResult = terminals.findOne( { 'id': terminal_id } );
+	
+	if( terminalResult !== null && ( terminalResult.secure == 1 || terminalResult.secret !== '' ) )
+		return true;
+	
+	return false;
+};
+
+module.exports.checkTerminalSecured = checkTerminalSecured;
+
+var setTerminalSecure = function( terminal_id ) {
+	var terminalResult = terminals.findOne( { 'id': terminal_id } );
+	
+	terminalResult.secure = 1;
+};
+
+module.exports.setTerminalSecure = setTerminalSecure;
 
 var checkTerminalAccess = function( terminal_id, user ) {
 	if( user.administrator )
@@ -234,3 +288,32 @@ var checkTerminalAccess = function( terminal_id, user ) {
 };
 
 module.exports.checkTerminalAccess = checkTerminalAccess;
+
+var verifyHMAC = function( terminal_id, packet ) {
+	var terminalResult = terminals.findOne( { 'id' : terminal_id } );
+	
+	if( ! terminalResult )
+		return false;
+	
+	var data = packet.data;
+	var hash = packet.hash;
+	
+	var key = data.nonce + data.ts + terminalResult.secret;
+
+	var checked_hash = CryptoJS.HmacSHA256( JSON.stringify( data ), key ).toString();
+	
+	if( checked_hash !== hash ) {
+		debug( getLine(), "verifyHMAC: incorrect hash");
+		terminalResult.secure = 0;
+		return false;
+	} else if(  ( packet.data.ts < (Date.now()-30000) ) || ( packet.data.ts > (Date.now() + 30000) ) ) {
+		debug( getLine(), "verifyHMAC: time out of scope - replay attack?");
+		return false;
+	}
+	
+	terminalResult.secure = 1;
+	
+	return true;
+};
+
+module.exports.verifyHMAC = verifyHMAC;

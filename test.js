@@ -1,3 +1,5 @@
+"use strict";
+
 var config = require('./config'),
     _ = require('underscore'),
     debug = require('debug')('app:nomos'),
@@ -18,7 +20,7 @@ var checkAuth = function(service, id){
 	})
 	.catch(function(err){
 		console.log( "checkAuth: 20" );
-		//Log this for now and proceed to the next promise
+		// Log this for now and proceed to the next promise
 		console.error(err);
 		return {"valid": false, error: true};
 	})

@@ -21,7 +21,7 @@
 	background-color: lightgreen;
 }
 
-.device-card {
+.device-card, .terminal-card {
 	border: solid 1px grey;
 	border-radius: 3px;
 }

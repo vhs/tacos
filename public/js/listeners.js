@@ -88,13 +88,43 @@ jQuery(document).ready(function() {
 		});
 	});
 	
+	$( ".terminal-description-control" ).on( 'blur', function() {
+		var device_id = $( this ).data( 'id' );
+		var postUrl = "/terminals/update/description/" + device_id;
+		var params = { "description" : $( this ).val() };
+		$.post( postUrl, params, function( response ) {
+			if( ! response.result == "OK" )
+				alert( "Something went wrong while updating the device description:\n" + response.message );
+		});
+	});
+	
 	$( ".secret-control" ).on( 'blur', function() {
 		var device_id = $( this ).data( 'id' );
-		var postUrl = "/devices/update/secret/" + device_id;
+		var postUrl = "/terminals/update/secret/" + device_id;
 		var params = { "secret" : $( this ).val() };
 		$.post( postUrl, params, function( response ) {
 			if( ! response.result == "OK" )
 				alert( "Something went wrong while updating the device secret:\n" + response.message );
+		});
+	});
+	
+	$( ".target-control" ).on( 'blur', function() {
+		var device_id = $( this ).data( 'id' );
+		var postUrl = "/terminals/update/target/" + device_id;
+		var params = { "target" : $( this ).val() };
+		$.post( postUrl, params, function( response ) {
+			if( ! response.result == "OK" )
+				alert( "Something went wrong while updating the terminal target:\n" + response.message );
+		});
+	});
+	
+	$( ".terminal-enabled-control" ).on( 'click', function() {
+		var device_id = $( this ).data( 'id' );
+		var postUrl = "/terminals/update/enabled/" + device_id;
+		var params = { "enabled" : $( this ).is(":checked") };
+		$.post( postUrl, params, function( response ) {
+			if( ! response.result == "OK" )
+				alert( "Something went wrong while updating the terminal enabled state:\n" + response.message );
 		});
 	});
 });

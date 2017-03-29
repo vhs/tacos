@@ -8,19 +8,31 @@ if terminals
 				div(class="row spacious")
 					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
 						b Description: 
-							input(class="form-control description-control", data-id=terminal.id, value=terminal.description)
+							input(class="form-control terminal-description-control", data-id=terminal.id, value=terminal.description)
 				div(class="row spacious")
 					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
-						b Role:
-							if user.administrator
-								select(class="form-control role-control", data-id=terminal.id, name="role")
-									option= terminal.role
-									for role in roles
-										option= role.code
+						b Target:
+							select(class="form-control target-control", data-id=terminal.id, name="target")
+								option= terminal.target
+								for device in devices
+									option= device.id
+				div(class="row spacious")
+					div(class="col-xs-6 col-sm-6 col-md-2 col-lg-2")
+						b Secured:
+					div(class="col-xs-6 col-sm-6 col-md-2 col-lg-2")
+						span= '' + ( terminal.secure ? "YES" : "NO" ) + ''
+				div(class="row spacious")
+					div(class="col-xs-6 col-sm-6 col-md-2 col-lg-2")
+						b Enabled: 
+					div(class="col-xs-6 col-sm-6 col-md-2 col-lg-2")
+						if terminal.enabled
+							input(class="terminal-enabled-control", type="checkbox", data-id=terminal.id, checked)
+						else
+							input(class="terminal-enabled-control", type="checkbox", data-id=terminal.id)
 				div(class="row spacious")
 					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
 						b Secret: 
-							input(class="form-control secret-control", type="password", data-id=terminal.id, value=terminal.secret)
+							input(class="form-control secret-control", type="password", data-id=terminal.id, value="********************")
 				div(class="row spacious")
 					div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12")
 						b Last Seen: 

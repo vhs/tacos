@@ -19,7 +19,7 @@ describe("Slack API client", function(){
                 groups.should.have.length(2);
                 groups.should.contain("CREATOR_ID");
                 groups.should.contain("MEMBER_ID_2");
-            })
+            });
     });
 
     it("tries users for an invalid group", function(){

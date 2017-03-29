@@ -5,6 +5,7 @@ node_modules
 .DS_Store
 coverage
 config.json
+config.json.*
 *.log
 sessiondb
 shared/*.json

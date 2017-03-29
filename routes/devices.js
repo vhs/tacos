@@ -1,204 +1,220 @@
 "use strict";
 
-var express = require('express'),
-    debug = require('debug')('app:web'),
-    devicesStore = require('../devicesStore'),
-    router = express.Router(),
-	requireAuthenticated = require('./auth').requireAuthenticated,
-	requireAdmin = require('./auth').requireAdmin;
+var express = require( 'express' ),
+	debug = require( 'debug' )( 'atoms:routes:devices' ),
+	getLine = require('../utils').getLine,
+	devicesStore = require( '../devicesStore' ),
+	router = express.Router(),
+	requireAuthenticated = require( './auth' ).requireAuthenticated,
+	requireAdmin = require( './auth' ).requireAdmin;
 
-var requireValidDevice = function(req, res, next) {
+function requireValidDevice( req, res, next ) {
 	var device_id = req.params.id;
-	
-	if( device_id == undefined || ! devicesStore.checkDeviceExists( device_id ) ) {
-		res.result = { message: "Missing device" }
-		next('route');
+
+	if( device_id === undefined || !devicesStore.checkDeviceExists( device_id ) ) {
+		res.result = {
+			message : "Missing device"
+		};
+		next( 'route' );
 	}
 }
 
-var requireToolAccess = function(req, res, next) {
+function requireToolAccess( req, res, next ) {
 	var device_id = req.params.id;
-	
-	if( device_id == undefined ) {
-		res.result = { message: "Missing device" }
-		next('route');
+
+	if( device_id === undefined ) {
+		res.result = {
+			message : "Missing device"
+		};
+		next( 'route' );
 	}
 
-    if( req.user && devicesStore.checkDeviceAccess( device_id, req.user ) ) {
-        return next();
-    }
+	if( req.user && devicesStore.checkDeviceAccess( device_id, req.user ) ) {
+		return next();
+	}
 
-    next({
-        statusCode: 401,
-        message: "Access Denied"
-    });
-};
+	next( {
+	    statusCode : 401,
+	    message : "Access Denied"
+	} );
+}
 
 // Set result array
-router.use("/", function(req, res, next){
-    res.result = {};
-
-    next();
-});
-
-// Query state
-router.get("/state/:id", function(req, res, next){
-	if( ! req.params.id ) {
-		res.result.message = "error: missing device id";
-		next();
-	}
-	
-	var device_id = req.params.id;
-	
-	res.result = devicesStore.getDeviceState( device_id );
-	
-    next();
-});
-
-// Query state
-router.get("/details/:id", function(req, res, next){
-	if( ! req.params.id ) {
-		res.result.message = "error: missing device id";
-		next();
-	}
-	
-	var device_id = req.params.id;
-	
-	res.result = devicesStore.getDeviceDetails( device_id );
-	
-    next();
-});
-
-// Delete device
-router.post("/delete/:id", requireAuthenticated, requireAdmin, function(req, res, next){
-	if( ! req.params.id ) {
-		res.result.message = "error: missing device id";
-		next();
-	}
-	
-	var device_id = req.params.id;
-	
+router.use( "/", function( req, res, next ) {
 	res.result = {};
 
-	if( devicesStore.deleteDevice( device_id ) )
-		res.result = { result: "ok" };
+	next();
+} );
 
-    next();
-});
-
-// Update device role
-router.post("/update/role/:id", requireAuthenticated, requireAdmin, function(req, res, next){
-	if( ! req.params.id ) {
-		res.result.message = "error: missing role id";
+// Query state
+router.get( "/state/:id", function( req, res, next ) {
+	if( !req.params.id ) {
+		res.result.message = "error: missing device id";
 		next();
 	}
-	
+
 	var device_id = req.params.id;
-	var role = req.body.role;
 
-	res.result = devicesStore.updateDeviceRole( device_id, role );
+	res.result = devicesStore.getDeviceState( device_id );
 
-    next();
-});
+	next();
+} );
+
+// Query state
+router.get( "/details/:id", function( req, res, next ) {
+	if( !req.params.id ) {
+		res.result.message = "error: missing device id";
+		next();
+	}
+
+	var device_id = req.params.id;
+
+	res.result = devicesStore.getDeviceDetails( device_id );
+
+	next();
+} );
+
+// Delete device
+router.post( "/delete/:id", requireAuthenticated, requireAdmin,
+    function( req, res, next ) {
+	    if( !req.params.id ) {
+		    res.result.message = "error: missing device id";
+		    next();
+	    }
+
+	    var device_id = req.params.id;
+
+	    res.result = {};
+
+	    if( devicesStore.deleteDevice( device_id ) ) res.result = {
+		    result : "ok"
+	    };
+
+	    next();
+    } );
 
 // Update device role
-router.post("/update/description/:id", requireAuthenticated, requireAdmin, function(req, res, next){
-	if( ! req.params.id || req.params.id === 0 ) {
-		res.result.message = "error: missing device id";
-		next('route');
-	}
-	
-	var device_id = req.params.id;
-	var description = req.body.description;
+router.post( "/update/role/:id", requireAuthenticated, requireAdmin,
+    function( req, res, next ) {
+	    if( !req.params.id ) {
+		    res.result.message = "error: missing role id";
+		    next();
+	    }
 
-	res.result = devicesStore.updateDeviceDescription( device_id, description );
+	    var device_id = req.params.id;
+	    var role = req.body.role;
 
-    next();
-});
+	    res.result = devicesStore.updateDeviceRole( device_id, role );
 
-// Update device role
-router.post("/update/hassecret/:id", requireAuthenticated, requireAdmin, function(req, res, next){
-	if( ! req.params.id || req.params.id === 0 ) {
-		res.result.message = "error: missing device id";
-		next('route');
-	}
-	
-	var device_id = req.params.id;
-	var hasSecret = req.body.hasSecret;
-
-	res.result = devicesStore.updateDeviceHasSecret( device_id, hasSecret );
-
-    next();
-});
+	    next();
+    } );
 
 // Update device role
-router.post("/update/secret/:id", requireAuthenticated, requireAdmin, function(req, res, next){
-	if( ! req.params.id || req.params.id === 0 ) {
-		res.result.message = "error: missing device id";
-		next('route');
-	}
-	
-	var device_id = req.params.id;
-	var secret = req.body.secret;
+router.post( "/update/description/:id", requireAuthenticated, requireAdmin,
+    function( req, res, next ) {
+	    if( !req.params.id || req.params.id === 0 ) {
+		    res.result.message = "error: missing device id";
+		    next( 'route' );
+	    }
 
-	res.result = devicesStore.updateDeviceSecret( device_id, secret );
+	    var device_id = req.params.id;
+	    var description = req.body.description;
 
-    next();
-});
+	    res.result = devicesStore.updateDeviceDescription( device_id,
+	        description );
+
+	    next();
+    } );
+
+// Update device role
+router
+    .post( "/update/hassecret/:id", requireAuthenticated, requireAdmin,
+        function( req, res, next ) {
+	        if( !req.params.id || req.params.id === 0 ) {
+		        res.result.message = "error: missing device id";
+		        next( 'route' );
+	        }
+
+	        var device_id = req.params.id;
+	        var hasSecret = req.body.hasSecret;
+
+	        res.result = devicesStore.updateDeviceHasSecret( device_id,
+	            hasSecret );
+
+	        next();
+        } );
+
+// Update device role
+router.post( "/update/secret/:id", requireAuthenticated, requireAdmin,
+    function( req, res, next ) {
+	    if( !req.params.id || req.params.id === 0 ) {
+		    res.result.message = "error: missing device id";
+		    next( 'route' );
+	    }
+
+	    var device_id = req.params.id;
+	    var secret = req.body.secret;
+
+	    res.result = devicesStore.updateDeviceSecret( device_id, secret );
+
+	    next();
+    } );
 
 // Activate device
-router.post("/arm/:id", requireAuthenticated, requireToolAccess, function(req, res, next){
-	if( ! req.params.id ) {
-		res.result.message = "error: missing device id";
-		next();
-	}
-	
-	var device_id = req.params.id;
+router.post( "/arm/:id", requireAuthenticated, requireToolAccess,
+    function( req, res, next ) {
+	    if( !req.params.id ) {
+		    res.result.message = "error: missing device id";
+		    next();
+	    }
 
-	res.result = devicesStore.armDevice( device_id );
+	    var device_id = req.params.id;
 
-    next();
-});
+	    res.result = devicesStore.armDevice( device_id );
+
+	    next();
+    } );
 
 // Deactivate device
-router.post("/unarm/:id", requireAuthenticated, requireToolAccess, function(req, res, next){
-	if( ! req.params.id ) {
-		res.result.message = "error: missing device id";
-		next();
-	}
-	
-	var device_id = req.params.id;
+router.post( "/unarm/:id", requireAuthenticated, requireToolAccess,
+    function( req, res, next ) {
+	    if( !req.params.id ) {
+		    res.result.message = "error: missing device id";
+		    next();
+	    }
 
-	res.result = devicesStore.unarmDevice( device_id );
+	    var device_id = req.params.id;
 
-    next();
-});
+	    res.result = devicesStore.unarmDevice( device_id );
+
+	    next();
+    } );
 
 // Convert to JSON
-router.use("/", function(req, res, next){
-    if (Object.keys(res.result).length>0){
-        return res.json(res.result);
-    }
-    var err = new Error('Not Found');
-    err.statusCode = 404;
-    next(err);
-});
+router.use( "/", function( req, res, next ) {
+	if( Object.keys( res.result ).length > 0 ) {
+		return res.json( res.result );
+	}
+	var err = new Error( 'Not Found' );
+	err.statusCode = 404;
+	next( err );
+} );
 
 // Export the router
 module.exports.router = router;
 
 // Module specific erroHandlers
-module.exports.addErrorHandlers = function(app, path){
-    app.use(path, function(err, req, res, next){ // jshint ignore:line
-        var response = {
-            "msg": err.message,
-            "type": err.type,
-            "status": err.statusCode || 500
-        };
-        if (response.status === 500) {
-            debug(err);
-        }
-        res.status(err.statusCode || 500);
-        return res.json(response);
-    });
+module.exports.addErrorHandlers = function( app, path ) {
+	app.use( path, function( err, req, res, next ) { // jshint ignore:line
+		var response = {
+		    "msg" : err.message,
+		    "type" : err.type,
+		    "status" : err.statusCode || 500
+		};
+		if( response.status === 500 ) {
+			debug( getLine(), err );
+		}
+		res.status( err.statusCode || 500 );
+		return res.json( response );
+	} );
 };

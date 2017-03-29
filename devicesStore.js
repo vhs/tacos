@@ -2,7 +2,8 @@
 
 var Promise = require('bluebird'),
     _ = require('underscore'),
-	debug = require('debug')('app:deviceStore'),
+	debug = require('debug')('atoms:deviceStore'),
+	getLine = require('./utils').getLine,
 	config = require('./config'),
 	EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter(),
@@ -12,24 +13,24 @@ var Promise = require('bluebird'),
 var devices = {};
 	
 lokiDB.loadDatabase( {}, function() {
-	debug( "Loading database..." );
-	debug( "Loading devices collection..." );
+	debug( getLine(), "Loading database..." );
+	debug( getLine(), "Loading devices collection..." );
 	devices = lokiDB.getCollection( 'devices' );
-	if( devices == null ) {
-		debug( "Collection not found!" );
-		debug( "Adding collection!" );
+	if( devices === null ) {
+		debug( getLine(), "Collection not found!" );
+		debug( getLine(), "Adding collection!" );
 		devices = lokiDB.addCollection( 'devices', { indices: ['id'], autoupdate: true } );
 	}
 });
 
 setInterval( function() {
-	debug( "Autosaving" );
+	debug( getLine(), "Autosaving" );
 	lokiDB.saveDatabase();
 }, 10000 );
 
 var getAllDevices = function() {
 	return devices.find({'id': { '$ne' : '' }});
-}
+};
 
 module.exports.getAllDevices = getAllDevices;
 
@@ -42,7 +43,7 @@ var getAvailableDevices = function( user ) {
 	});
 	
 	return devices_list;
-}
+};
 
 module.exports.getAvailableDevices = getAvailableDevices;
 
@@ -59,9 +60,7 @@ var registerDevice = function( device_id ) {
 			"secret" : ""
 		};
 		
-		var deviceResult = devices.insert( deviceResult );
-		
-		deviceResult = devices.findOne( { 'id': device_id } );
+		deviceResult = devices.insert( deviceResult );
 	}
 	
 	deviceResult.last_seen = Date.now();
@@ -69,7 +68,7 @@ var registerDevice = function( device_id ) {
 	devices.update( deviceResult );
 	
 	return deviceResult;
-}
+};
 
 module.exports.registerDevice = registerDevice;
 
@@ -79,7 +78,7 @@ var updateDeviceDescription = function( device_id, description ) {
 	deviceResult.description = description;
 	
 	return getDeviceDetails( device_id );
-}
+};
 
 module.exports.updateDeviceDescription = updateDeviceDescription;
 
@@ -89,7 +88,7 @@ var updateDeviceRole = function( device_id, role ) {
 	deviceResult.role = role;
 	
 	return getDeviceDetails( device_id );
-}
+};
 
 module.exports.updateDeviceRole = updateDeviceRole;
 
@@ -99,7 +98,7 @@ var deleteDeviceSecret = function( device_id, secret ) {
 	deviceResult.secret = null;
 	
 	return getDeviceDetails( device_id );
-}
+};
 
 module.exports.deleteDeviceSecret = deleteDeviceSecret;
 
@@ -109,7 +108,7 @@ var updateDeviceHasSecret = function( device_id, hasSecret ) {
 	deviceResult.hasSecret = hasSecret;
 	
 	return getDeviceDetails( device_id );
-}
+};
 
 module.exports.updateDeviceHasSecret = updateDeviceHasSecret;
 
@@ -119,7 +118,7 @@ var updateDeviceSecret = function( device_id, secret ) {
 	deviceResult.secret = secret;
 	
 	return getDeviceDetails( device_id );
-}
+};
 
 module.exports.updateDeviceSecret = updateDeviceSecret;
 
@@ -127,7 +126,7 @@ var armDevice = function( device_id ) {
 	var deviceResult = devices.findOne( { 'id': device_id } );
 
 	if( deviceResult === null )
-		return result = { "error" : "No such device" };
+		return false;
 	
 	deviceResult.powered = 1;
 	deviceResult.activation_expiry = ( Date.now() + parseInt( config.activation_timeout ) );
@@ -135,6 +134,8 @@ var armDevice = function( device_id ) {
 	var result = {};
 	result.id = deviceResult.id;
 	result.powered = deviceResult.powered;
+	
+	debug( getLine(), "Armed device: ", device_id );
 	
 	return getDeviceDetails( device_id );
 };
@@ -145,7 +146,7 @@ var unarmDevice = function( device_id ) {
 	var deviceResult = devices.findOne( { 'id': device_id } );
 
 	if( deviceResult === null )
-		return result = { "error" : "No such device" };
+		return { "error" : "No such device" };
 	
 	deviceResult.powered = 0;
 	
@@ -159,6 +160,14 @@ var getDeviceList = function() {
 };
 
 module.exports.getDeviceList = getDeviceList;
+
+var getDeviceRole = function( device_id ) {
+	var deviceResult = registerDevice( device_id );
+	
+	return deviceResult.role;
+};
+
+module.exports.getDeviceRole = getDeviceRole;
 
 var getDeviceState = function( device_id ) {
 	var deviceResult = registerDevice( device_id );
@@ -182,7 +191,7 @@ var getDeviceDetails = function( device_id ) {
 	var deviceResult = devices.findOne( { 'id': device_id } );
 
 	if( deviceResult === null )
-		return result = { "error" : "No such device" };
+		return { "error" : "No such device" };
 	
 	var result = {};
 	result.success = true;
@@ -203,7 +212,7 @@ module.exports.getDeviceDetails = getDeviceDetails;
 var deleteDevice = function( device_id ) {
 	var deviceResult = devices.chain().find( { 'id': { '$eq' : device_id } } ).remove().data();
 
-	if( deviceResult.length == 0 )
+	if( deviceResult.length === 0 )
 		return true;
 	
 	return false;
@@ -218,7 +227,7 @@ var checkDeviceExists = function( device_id ) {
 		return true;
 	
 	return false;
-}
+};
 
 module.exports.checkDeviceExists = checkDeviceExists;
 

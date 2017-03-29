@@ -16,8 +16,9 @@
 	},
 	"backend": "nomos",
 	"nomos": {
-		"rolesUrl": "https://membership.vanhack.ca/services/web/PrivilegeService1.svc/GetAllPrivileges",
-		"authUrl": "https://membership.vanhack.ca/services/web/AuthService1.svc/CheckService",
+		"userRolesUrl": "https://membership.vanhack.ca/services/web/PrivilegeService1.svc/GetAllPrivileges",
+		"userAuthUrl": "https://membership.vanhack.ca/services/web/AuthService1.svc/CheckService",
+		"cardAuthUrl": "https://membership.vanhack.ca/services/web/AuthService1.svc/CheckRfid",
 		"credentials": {
 			"key": "<nomos api key>"
 		}

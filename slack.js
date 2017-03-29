@@ -1,4 +1,5 @@
 "use strict";
+
 var agent = require('superagent-promise'),
     _ = require('underscore');
 

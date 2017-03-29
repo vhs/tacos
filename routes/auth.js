@@ -3,7 +3,8 @@
 var express = require( 'express' ),
     router = express.Router(),
     passport = require( 'passport' ),
-    debug = require( 'debug' )( 'app:auth' ),
+    debug = require( 'debug' )( 'atoms:routes:auth' ),
+    getLine = require('../utils').getLine,
     slack = require( '../slack' ),
     SlackStrategy = require( 'passport-slack' ).Strategy,
     GoogleStrategy = require( 'passport-google-oauth' ).OAuth2Strategy,
@@ -14,19 +15,18 @@ var config = require( '../config' );
 var backend = require( '../' + config.backend );
 
 function checkOauthService( user, done ) {
-    debug( user );
+    debug( getLine(), user );
 
     if( user.admin ) {
         user.admin = true;
         return done( null, user );
     }
 
-    backend.checkUser( user )
-    .then( function( valid ) {
+    backend.checkUser( user ).then( function( valid ) {
+    	debug( getLine(), valid );
     	user.authenticated = valid;
     	done( null, user );
-    })
-    .catch(done);
+    }).catch(done);
 }
 
 passport.use( new SlackStrategy(

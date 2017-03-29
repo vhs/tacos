@@ -3,9 +3,7 @@
 var request = require("supertest-as-promised"),
     testutil = require("./testutil"),
     app = testutil.getApp(),
-    config = require('../config'),
-    laser = require('../laserAccess'),
-    sinon = require("sinon");
+    config = require('../config');
 
 
 describe('Core express tests', function(){

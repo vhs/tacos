@@ -4,21 +4,23 @@ include section_menubar.jade
 
 div(class='container')
 
-	div(class="row")
-		div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
-			h2
-				b Terminals
-
-	div(class="row")
-		div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
-			a(href="/",class="btn btn-primary") Devices
-			|  
-			a(href="/terminals",class="btn btn-primary disabled") Terminals
-
-	if user
-		include section_terminals.jade
+	if ! user
+		include section_login.jade
 
 	else
-		include section_login.jade
+		div(class="row")
+			div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
+				h2
+					b Terminals
+	
+		if user && user.administrator
+			div(class="row")
+				div(class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel")
+					a(href="/",class="btn btn-primary") Tools
+					|  
+					a(href="/terminals",class="btn btn-primary disabled") Terminals
+	
+	
+		include section_terminals.jade
 	
 include page_footer.jade
