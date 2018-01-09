@@ -21,4 +21,10 @@ docker kill $NAME
 echo "Removing old instance (if any)"
 docker rm $NAME
 echo "Starting"
-docker run -p 3004:3004 -d -v $PKGDIR/shared:/usr/src/app/shared --restart=always --name $NAME -t $TEMPLATE bin/www
+docker run -d \
+  -p 3004:3004 \
+  -v $PKGDIR/shared:/usr/src/app/shared \
+  --restart=always \
+  --name $NAME \
+  -t $TEMPLATE \
+  bin/www

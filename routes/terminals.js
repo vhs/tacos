@@ -52,6 +52,9 @@ function setDefaultResultArray( req, res, next ) {
 	debug( getLine(), "setDefaultResultArray" );
 	
     res.result = { "result" : "ERROR" };
+    
+    if( typeof req.body != 'object' )
+		req.body = JSON.parse( req.body );
 
     next();
 }
@@ -79,9 +82,13 @@ function getTerminalState( req, res, next ) {
 		next();
 	}
 	
+	if( typeof req.body != 'object' )
+		req.body = JSON.parse( req.body );
+	
 	var terminal_id = req.params.id;
 	
 	res.result = terminalsStore.getTerminalState( terminal_id );
+	res.result.timestamp = Math.floor( Date.now() / 1000 );
 	
 	next();
 }
@@ -148,7 +155,7 @@ function verifyHMAC( req, res, next ) {
 		res.result.message = "error: missing secret";
 		res.status( 403 ).send( JSON.stringify( res.result ) );
 	} else if( req.body.data === undefined || req.body.hash === undefined ) {
-		debug( JSON.stringify( req.body ) );
+		debug( getLine(), JSON.stringify( req.body ) );
 		res.result.message = "error: incorrect message format, missing authentication data";
 		res.send( JSON.stringify( res.result ) );
 	} else if( ! req.body.data.nonce || ! req.body.data.ts || ! req.body.hash ) {
@@ -338,7 +345,6 @@ function convertToJSON( req, res, next ) {
 
 // route definitions
 debug( getLine(), "Setting route definitions" );
-
 
 // Default get request (for terminal listing in the web gui)
 router.get( '/', terminalStatuses, handleDefaultRequest );

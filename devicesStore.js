@@ -8,24 +8,24 @@ var Promise = require('bluebird'),
 	EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter(),
 	loki = require( 'lokijs' ),
-	lokiDB = new loki( 'shared/devicesStore.json' );
+	deviceDB = new loki( 'shared/devicesStore.json' );
 
 var devices = {};
 	
-lokiDB.loadDatabase( {}, function() {
+deviceDB.loadDatabase( {}, function() {
 	debug( getLine(), "Loading database..." );
 	debug( getLine(), "Loading devices collection..." );
-	devices = lokiDB.getCollection( 'devices' );
+	devices = deviceDB.getCollection( 'devices' );
 	if( devices === null ) {
 		debug( getLine(), "Collection not found!" );
 		debug( getLine(), "Adding collection!" );
-		devices = lokiDB.addCollection( 'devices', { indices: ['id'], autoupdate: true } );
+		devices = deviceDB.addCollection( 'devices', { indices: ['id'], autoupdate: true } );
 	}
 });
 
 setInterval( function() {
 	debug( getLine(), "Autosaving" );
-	lokiDB.saveDatabase();
+	deviceDB.saveDatabase();
 }, 10000 );
 
 var getAllDevices = function() {
@@ -232,6 +232,8 @@ var checkDeviceExists = function( device_id ) {
 module.exports.checkDeviceExists = checkDeviceExists;
 
 var checkDeviceAccess = function( device_id, user ) {
+  debug( getLine(), user );
+  
 	if( user.administrator )
 		return true;
 

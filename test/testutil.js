@@ -1,6 +1,7 @@
 "use strict";
 
-var Promise = require('bluebird');
+var sinon = require("sinon"),
+    Promise = require('bluebird');
 
 var init;
 

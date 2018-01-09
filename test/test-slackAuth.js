@@ -1,6 +1,7 @@
 "use strict";
 
 var request = require("supertest-as-promised"),
+	sinon = require("sinon"),
     testutil = require("./testutil"),
     app = testutil.getApp(),
     config = require('../config');

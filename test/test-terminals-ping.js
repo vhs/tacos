@@ -3,9 +3,9 @@
 var config = require("./config");
 var CryptoJS = require("crypto-js");
 var randomstring = require("randomstring");
-var request = require('request');
+var request = require('request-promise');
 var Packeteer = require('./packeteer');
-var debug = require('debug')('test:terminals-authenticate-rfid');
+var debug = require('debug')('test:terminals-ping');
 var getLine = require('../utils').getLine;
 
 var scenarios = [
@@ -13,11 +13,7 @@ var scenarios = [
 	{ "id" : "ping2", "terminal_id" : "reader2" }
 ];
 
-for( var s = 0 ; s < scenarios.length ; s++ ) {
-	doTest( scenarios[s] );
-}
-
-function doTest( scenario ) {
+function doScenario( scenario, done ) {
 	var data = {};
 	data.ping = randomstring.generate(128);
 	
@@ -40,3 +36,15 @@ function doTest( scenario ) {
 		
 	});
 }
+
+describe('Terminal Ping tests', function(){
+
+    it( "check for tablesaw1", function( done ) {
+        doScenario( scenarios[0], done );
+    });
+
+    it("check for tablesaw2", function( done ){
+        doScenario( scenarios[1], done );
+    });
+
+});

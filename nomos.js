@@ -48,6 +48,8 @@ var loadRoles = function() {
 		
 		debug( getLine(), "Roles:", roles );
 		
+		roles_last_loaded = Date.now();
+		
 		return roles;
 	}).catch( function( err ) {
 		debug( getLine(), "error caught" );
@@ -58,7 +60,8 @@ var loadRoles = function() {
 loadRoles();
 
 var getRoles = function() {
-	if( roles.length === 0 || ( roles_last_loaded < ( Date.now() - 60000 ) ) )
+	debug( getLine(), "getRoles" );
+	if( roles.length === 0 || ( ( roles_last_loaded + 60000 ) < Date.now() ) )
 		loadRoles();
 	
 	return roles;
@@ -67,6 +70,7 @@ var getRoles = function() {
 module.exports.getRoles = getRoles;
 
 var checkUser = function( user ){
+	debug( getLine(), "checkUser" );
 	var service = user.provider;
 	var id = user.id;
 	
@@ -129,6 +133,7 @@ var checkUser = function( user ){
 module.exports.checkUser = checkUser;
 
 var checkRFIDCard = function( card_request ){
+	debug( getLine(), "checkRFIDCard" );
 	debug( getLine(), card_request );
 	
 	var params = {};

@@ -4,8 +4,9 @@
   "description": "A Tool Operations & Management System",
   "scripts": {
     "start": "node_modules/.bin/supervisor -w .,routes bin/www",
-    "watch": "node_modules/.bin/supervisor bin/www",
-    "test": "node_modules/.bin/gulp test"
+    "rub": "node bin/www",
+    "test": "node_modules/.bin/gulp test",
+    "coverage": "node_modules/.bin/istanbul cover _mocha"
   },
   "dependencies": {
     "bluebird": "^3.4.7",
