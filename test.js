@@ -1,5 +1,7 @@
 "use strict";
 
+const environ = "test";
+
 var config = require('./config'),
     _ = require('underscore'),
     debug = require('debug')('app:nomos'),

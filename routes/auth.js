@@ -10,14 +10,14 @@ var express = require( 'express' ),
     GoogleStrategy = require( 'passport-google-oauth' ).OAuth2Strategy,
     GitHubStrategy = require( 'passport-github' ).Strategy;
 
-var config = require( '../config' );
+var config = require('../config');
 
 var backend = require( '../' + config.backend );
 
-function checkOauthService( user, done ) {
-    debug( getLine(), user );
-
-    if( user.admin ) {
+function checkOauthService(user, done){
+	debug( getLine(), user );
+	
+    if (user.admin) {
         user.admin = true;
         return done( null, user );
     }
