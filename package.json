@@ -30,6 +30,7 @@
     "passport-slack": "git+https://github.com/garthomite/passport-slack.git",
     "promise": "^7.1.1",
     "pug": "^0.1.0",
+    "randomstring": "^1.1.5",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
     "socket.io": "^1.7.2",
