@@ -27,7 +27,7 @@
     "passport": "^0.3.2",
     "passport-github": "^1.1.0",
     "passport-google-oauth": "^1.0.0",
-    "passport-slack": "git+https://github.com/garthomite/passport-slack.git",
+    "passport-slack": "git+https://github.com/vhs/passport-slack.git",
     "promise": "^7.1.1",
     "pug": "^0.1.0",
     "randomstring": "^1.1.5",
