@@ -1,9 +1,9 @@
 'use strict';
 
-var config = require('./config'),
+var config = require('../config'),
     _ = require('underscore'),
-    debug = require('debug')('atoms:nomos'),
-    getLine = require('./utils').getLine,
+    debug = require('debug')('atoms:backend-nomos'),
+    getLine = require('../lib/utils').getLine,
 	request = require('request'),
 	rp = require('request-promise');
 

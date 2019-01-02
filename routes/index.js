@@ -2,7 +2,7 @@
 
 var express = require( 'express' ),
 	debug = require( 'debug' )( 'atoms:routes:index' ),
-	getLine = require('../utils').getLine,
+	getLine = require('../lib/utils').getLine,
 	auth = require( './auth' ),
 	devices = require( './devices' ),
 	terminals = require( './terminals' ),
@@ -11,7 +11,7 @@ var express = require( 'express' ),
 	config = require( '../config' ),
 	router = express.Router();
 
-var backend = require( '../' + config.backend );
+var backend = require( '../backends/' + config.backend );
 
 function devicesStatuses( req, res, next ) {
 	if( req.user && req.user.authenticated ) {

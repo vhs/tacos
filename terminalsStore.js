@@ -3,7 +3,7 @@
 var Promise = require('bluebird'),
     _ = require('underscore'),
 	debug = require('debug')('atoms:terminalsStore'),
-	getLine = require('./utils').getLine,
+	getLine = require('./lib/utils').getLine,
 	config = require('./config'),
 	EventEmitter = require('events').EventEmitter,
     emitter = new EventEmitter(),

@@ -4,15 +4,15 @@ var express = require( 'express' ),
     router = express.Router(),
     passport = require( 'passport' ),
     debug = require( 'debug' )( 'atoms:routes:auth' ),
-    getLine = require('../utils').getLine,
-    slack = require( '../slack' ),
+    getLine = require('../lib/utils').getLine,
+    slack = require( '../lib/slack' ),
     SlackStrategy = require( 'passport-slack' ).Strategy,
     GoogleStrategy = require( 'passport-google-oauth' ).OAuth2Strategy,
     GitHubStrategy = require( 'passport-github' ).Strategy;
 
 var config = require('../config');
 
-var backend = require( '../' + config.backend );
+var backend = require( '../backends/' + config.backend );
 
 function checkOauthService(user, done){
 	debug( getLine(), user );

@@ -9,7 +9,7 @@ var express = require('express'),
 	LevelStore = require('express-session-level')(session),
 	sessionDB = require('level')('./shared/sessiondb'),
     debug = require('debug')('atoms:app'),
-    getLine = require('./utils').getLine,
+    getLine = require('./lib/utils').getLine,
     routes = require('./routes');
 
 var app = express();

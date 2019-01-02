@@ -1,7 +1,7 @@
 "use strict";
 
 var debug = require('debug')('app:web'),
-	getLine = require('./utils').getLine,
+	getLine = require('./lib/utils').getLine,
 	app = require('./app');
 
 app.app();

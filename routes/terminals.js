@@ -2,7 +2,7 @@
 
 var express = require( 'express' ),
 	debug = require( 'debug' )( 'atoms:routes:terminals' ),
-	getLine = require('../utils').getLine,
+	getLine = require('../lib/utils').getLine,
 	devicesStore = require( '../devicesStore' ),
 	terminalsStore = require( '../terminalsStore' ),
 	checkTerminalExists = require( '../terminalsStore' ).checkTerminalExists,
@@ -12,7 +12,7 @@ var express = require( 'express' ),
 
 var config = require( '../config' );
 
-var backend = require( '../' + config.backend );
+var backend = require( '../backends/' + config.backend );
 
 function requireValidTerminal( req, res, next ) {
 	debug( getLine(), "requireValidTerminal" );

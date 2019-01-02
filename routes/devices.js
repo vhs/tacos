@@ -2,7 +2,7 @@
 
 var express = require( 'express' ),
 	debug = require( 'debug' )( 'atoms:routes:devices' ),
-	getLine = require('../utils').getLine,
+	getLine = require('../lib/utils').getLine,
 	devicesStore = require( '../devicesStore' ),
 	router = express.Router(),
 	requireAuthenticated = require( './auth' ).requireAuthenticated,
