@@ -7,6 +7,6 @@ app.app();
 
 var server = app.server;
 
-server.listen(process.env.PORT || 3004, function() {
+server.listen(process.env.PORT || 3000, function() {
   debug('Express server listening on port ' + server.address().port);
 });
