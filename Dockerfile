@@ -1,7 +1,6 @@
 FROM node:boron
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-COPY package.json /usr/src/app/
-RUN cd /usr/src/app && npm install --production
-COPY . /usr/src/app
+COPY . /app
+RUN cd /app && rm -fR node_modules && npm install --production
