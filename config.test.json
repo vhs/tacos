@@ -1,0 +1,24 @@
+{
+	"authentication" : {
+		"slack": {
+			"clientID": "<clientId>",
+			"clientSecret": "<secret>",
+			"team": "<teamId>"
+		},
+		"google": {
+			"clientID": "<clientId>",
+			"clientSecret": "<secret>"
+		},
+		"github": {
+			"clientID": "<clientId>",
+			"clientSecret": "<secret>"
+		}
+	},
+	"backend": "test",
+	"devicesStore": "testDevicesStore",
+	"terminalsStore": "testTerminalStore",
+	"callbackHost": "http://localhost:3000",
+	"activation_timeout": 60000,
+	"administrator_role": "tool:manager",
+	"default_role": "tool:access"
+}
