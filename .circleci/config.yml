@@ -20,8 +20,8 @@ jobs: # a collection of steps
           paths:
             - ./node_modules
       - run:
-          name: copy-sample-config
-          command: cp config-sample.json config.json
+          name: copy-test-config
+          command: cp config.test.json config.json
       - run: # run tests
           name: test
           command: npm test
