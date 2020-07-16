@@ -1,70 +1,50 @@
-'use strict';
+'use strict'
 
-var express = require('express'),
-    path = require('path'),
-    logger = require('morgan'),
-    cookieParser = require('cookie-parser'),
-    bodyParser = require('body-parser'),
-    session = require('express-session'),
-	LevelStore = require('express-session-level')(session),
-	sessionDB = require('level')('./shared/sessiondb'),
-    debug = require('debug')('atoms:app'),
-    getLine = require('./lib/utils').getLine,
-    routes = require('./routes');
+const path = require('path')
 
-var app = express();
-var server = require('http').Server(app);
+var debug = require('debug')('atoms:app')
 
-var init = false;
+var express = require('express')
+var cors = require('cors')
+var logger = require('morgan')
+var bodyParser = require('body-parser')
+var session = require('express-session')
+var LevelStore = require('express-session-level')(session)
 
-// view engine setup
-app.set( 'views', path.join(__dirname, 'views') );
-app.set( 'view engine', 'pug' );
+var config = require('./lib/config')
+var sessionDB = require('level')(path.resolve(path.join(__dirname, '/data/sessiondb')))
+var { getLine } = require('./lib/utils')
+var passport = require('./lib/passport')
 
-app.use( bodyParser.json() );
-app.use( bodyParser.urlencoded( { extended: true } ) );
-app.use( cookieParser() );
-app.use( session({
-	store: new LevelStore(sessionDB),
-    resave: false,
-    saveUninitialized: false,
-    secret: 'up and at them!',
-    proxy: true,
-	cookie: { maxAge: 3600000 }
-}) );
+var middleware = require('./middleware/')
 
-module.exports.addHandler = function(path, handler){
-    app.use(path, handler);
-};
+var app = express()
+var server = require('http').Server(app)
 
-module.exports.app = function(){
-    if (!init) {
-        routes.addMiddleware(app);
-        app.use('/', routes.router);
-        routes.addErrorHandlers(app);
+app.use(logger('dev'));
 
-        app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors())
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(bodyParser.json())
+app.use(session({
+  secret: config.sessions.secret,
+  store: new LevelStore(sessionDB),
+  resave: false,
+  saveUninitialized: true,
+  proxy: true,
+  cookie: {
+    secure: false,
+    maxAge: 1000 * 3600 * 24
+  },
+  name: "atoms",
+  rolling: true
+}))
 
-        // catch 404 and forward to error handler
-        app.use(function (req, res, next) {
-            var err = new Error('Not Found');
-            err.status = 404;
-            next(err);
-        });
+passport.init(app)
 
-        // production error handler
-        app.use(function (err, req, res, next) {
-            debug(getLine(), err);
-            res.status(err.status || 500);
-            res.render('error', {
-                message: err.message || err,
-                error: {}
-            });
-        });
-        init = true;
-    }
+app.use(middleware.router)
 
-    return app;
-};
 
-module.exports.server = server;
+module.exports = { app, server }

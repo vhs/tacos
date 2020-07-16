@@ -19,7 +19,7 @@ For production:
 
 ## Config
 
-Start by adding a new config.json file, see config.json.sample for an example.
+Start by adding a new config.json file, see config.sample.json for an example.
 
 ## OAuth Access
 
@@ -47,6 +47,16 @@ To enable debug logging then set the environment variable DEBUG to atoms:* to lo
 Run bin/docker-run.sh to bootstrap and run the container, which will be made available under the name "atoms".
 
 Alternatively, checkout the vanhack/atoms package from Docker Hub.
+
+## Path Conventions
+
+| _Path_** | _Usage_**|
+|---|---|
+| backends | Backends (in separate directories) |
+| config | Configuration files |
+| data | Data files |
+| lib | Libraries |
+| middleware | Middleware (in separate directories, with _lib_ sub-directories) |
 
 ## Acknowledgements
 
