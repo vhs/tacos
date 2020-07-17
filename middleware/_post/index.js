@@ -45,4 +45,4 @@ router.use((err, req, res, next) => { // jshint ignore:line
     return res.json(response);
 });
 
-module.exports.router = router
+module.exports = { router }

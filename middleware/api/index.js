@@ -12,4 +12,4 @@ router.get("/ping", doPong)
 
 router.get("/roles", requireAuthenticated, requireAdmin, getRoles)
 
-module.exports.router = router;
+module.exports = { router }

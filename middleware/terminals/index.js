@@ -60,4 +60,4 @@ router.use('/', (req, res, next) => { console.log('res.result:', res.result); ne
 router.use('/', convertResultToJSON)
 
 // Export the router
-module.exports.router = router
+module.exports = { router }

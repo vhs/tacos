@@ -20,4 +20,4 @@ router.use('/api/terminals',terminals.router)
 router.use('/api/session',session.router)
 router.use(_post.router)
 
-module.exports.router = router
+module.exports = { router }

@@ -35,4 +35,3 @@ var requireAuthenticated = (req, res, next) => {
 }
 
 module.exports = { doLogout, requireAdmin, requireAuthenticated }
-module.exports.test = { doLogout, requireAdmin, requireAuthenticated }

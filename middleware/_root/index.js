@@ -22,4 +22,4 @@ var environment = process.env.NODE_ENV || 'development';
 if (environment == 'development')
     router.all('/reload', process.exit);
 
-module.exports.router = router;
+module.exports = { router };
