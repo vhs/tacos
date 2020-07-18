@@ -1,7 +1,7 @@
 'use strict'
 
 var express = require('express')
-var config = require('../../../lib/config')
+var { config } = require('../../../lib/config')
 var debug = require('debug')('atoms:routes:devices:lib')
 var { getLine } = require('../../../lib/utils')
 var { deviceStore } = require('../../../lib/stores')
@@ -194,18 +194,4 @@ var unarmDevice = function (req, res, next) {
 }
 
 // Export the router
-module.exports = {
-  setResultArray,
-  requireValidDevice,
-  requireToolAccess,
-  getDevices,
-  getDeviceState,
-  getDeviceDetails,
-  deleteDevice,
-  updateDeviceRole,
-  updateDeviceDescription,
-  updateDeviceHasSecret,
-  updateDeviceSecret,
-  armDevice,
-  unarmDevice
-}
+module.exports = { setResultArray, requireValidDevice, requireToolAccess, getDevices, getDeviceState, getDeviceDetails, deleteDevice, updateDeviceRole, updateDeviceDescription, updateDeviceHasSecret, updateDeviceSecret, armDevice, unarmDevice }

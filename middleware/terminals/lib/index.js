@@ -2,12 +2,12 @@
 
 var express = require('express')
 var debug = require('debug')('atoms:middleware:terminals:lib')
-var config = require('../../../lib/config')
+var { config } = require('../../../lib/config')
 
 var { getLine } = require('../../../lib/utils')
 var { deviceStore, terminalStore } = require('../../../lib/stores/')
 
-var backend = require('../../../lib/backend')
+var { backend } = require('../../../lib/backend')
 
 var getAllTerminals = function (req, res, next) {
   debug(getLine(), 'getAllTerminals')
@@ -183,11 +183,11 @@ var authenticateRFIDCard = function (req, res, next) {
   // Get target role
   var deviceRole = deviceStore.getDeviceRole(terminalTarget)
   debug(getLine(), 'authenticateRFIDCard', 'deviceRole', deviceRole)
-  
+
   // Check user privilege for role
   var cardRequest = {}
   cardRequest.id = cardId
-  
+
   debug(getLine(), 'authenticateRFIDCard', 'cardRequest', cardRequest)
 
   backend.checkCard(cardRequest)
@@ -320,20 +320,4 @@ var updateTerminalTarget = function (req, res, next) {
   next()
 }
 
-module.exports = {
-  getAllTerminals,
-  handleDefaultRequest,
-  setDefaultResultArray,
-  processTerminalPing,
-  getTerminalState,
-  getTerminalDetails,
-  verifyTerminal,
-  verifyTerminalEnabled,
-  verifyHMAC,
-  authenticateRFIDCard,
-  updateTerminalDescription,
-  updateTerminalEnabled,
-  deleteTerminal,
-  updateTerminalSecret,
-  updateTerminalTarget
-}
+module.exports = { getAllTerminals, handleDefaultRequest, setDefaultResultArray, processTerminalPing, getTerminalState, getTerminalDetails, verifyTerminal, verifyTerminalEnabled, verifyHMAC, authenticateRFIDCard, updateTerminalDescription, updateTerminalEnabled, deleteTerminal, updateTerminalSecret, updateTerminalTarget }

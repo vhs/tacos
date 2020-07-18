@@ -1,7 +1,7 @@
 'use strict'
 
 var express = require('express')
-var config = require('../../lib/config')
+var { config } = require('../../lib/config')
 var debug = require('debug')('atoms:middleware:terminals')
 var router = express.Router()
 

@@ -6,8 +6,8 @@ var _ = require('underscore')
 var debug = require('debug')('atoms:backend:nomos')
 var axios = require('axios')
 
-var config = require(path.join(__dirname, '../../lib/config'))
-var { getLine } = require(path.join(__dirname, '../../lib/utils'))
+var { config } = require('../../lib/config')
+var { getLine } = require('../../lib/utils')
 
 debug(getLine(), 'Loading nomos backend')
 

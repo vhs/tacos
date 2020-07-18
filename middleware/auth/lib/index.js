@@ -5,8 +5,8 @@ var router = express.Router()
 var debug = require('debug')('atoms:middleware:auth:lib')
 var { getLine } = require('../../../lib/utils')
 
-var config = require('../../../lib/config')
-var backend = require('../../../lib/backend')
+var { config } = require('../../../lib/config')
+var { backend } = require('../../../lib/backend')
 
 debug(getLine(), 'Loading with', backend)
 

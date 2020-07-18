@@ -7,7 +7,7 @@ debug('Starting application')
 
 var { app, server } = require('../app')
 
-var config = require('../lib/config')
+var { config } = require('../lib/config')
 var port = config.port || process.env.PORT || 3000
 
 app.set('port', port)

@@ -6,9 +6,9 @@ var { deviceStore } = require('../../../lib/stores')
 function devicesStatuses(req, res, next) {
     if (req.user) {
         if (req.user.administrator) {
-            res.locals.devices = devicesStore.getAllDevices();
+            res.locals.devices = deviceStore.getAllDevices();
         } else {
-            res.locals.devices = devicesStore.getAvailableDevices(req.user);
+            res.locals.devices = deviceStore.getAvailableDevices(req.user);
         }
     }
     next();

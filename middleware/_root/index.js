@@ -5,9 +5,9 @@ const path = require('path')
 var express = require('express'),
     debug = require('debug')('app:middleware:_root'),
     router = express.Router(),
-    config = require('../../lib/config'),
+    { config } = require('../../lib/config'),
     lib = require('./lib'),
-    backend = require('../../lib/backend')
+    { backend } = require('../../lib/backend')
 
 router.use('/', function (req, res, next) {
     res.locals.user = req.user;
