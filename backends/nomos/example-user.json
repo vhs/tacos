@@ -1,0 +1,72 @@
+{
+    "valid": true,
+    "type": "vhs_membership_keyholder",
+    "privileges": [
+        {
+            "id": 1,
+            "name": "Vetted for Keyholder",
+            "code": "vetted",
+            "description": "Member has been vetted for keyholder membership level",
+            "icon": null,
+            "enabled": true
+        },
+        {
+            "id": 3,
+            "name": "Laser Access",
+            "code": "laser",
+            "description": "Member has successfully completed Laser Certification Training",
+            "icon": null,
+            "enabled": true
+        },
+        {
+            "id": 6,
+            "name": "Administrator",
+            "code": "administrator",
+            "description": "Administrator level access",
+            "icon": null,
+            "enabled": true
+        },
+        {
+            "id": 9,
+            "name": "Grant Laser Access",
+            "code": "grant:laser",
+            "description": "Grants a user laser access",
+            "icon": "laser",
+            "enabled": true
+        },
+        {
+            "id": 11,
+            "name": "full-profile",
+            "code": "full-profile",
+            "description": "full-profile",
+            "icon": "full-profile",
+            "enabled": true
+        },
+        {
+            "id": 21,
+            "name": "Tool Manager",
+            "code": "tool:manager",
+            "description": "Tool Manager",
+            "icon": "toolmanager",
+            "enabled": true
+        },
+        {
+            "id": 2,
+            "name": "Door Access",
+            "code": "door",
+            "description": "Member has door access privileges",
+            "icon": null,
+            "enabled": true
+        },
+        {
+            "id": 4,
+            "name": "Inherits User Privileges",
+            "code": "inherit",
+            "description": "Used with user owned keys to inherit all the owner's privileges.",
+            "icon": null,
+            "enabled": true
+        }
+    ],
+    "userId": 128,
+    "username": "tycho"
+}

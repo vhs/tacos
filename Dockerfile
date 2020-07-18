@@ -1,7 +1,17 @@
-FROM node:boron
+FROM node
 
-WORKDIR /usr/src/app
+EXPOSE 3000
+WORKDIR /app
+CMD ["npm","start"]
 
-COPY package.json /usr/src/app/
-RUN cd /usr/src/app && npm install --production
-COPY . /usr/src/app
+COPY . /app
+
+RUN cd /app \
+    && git submodule update --init --recursive \
+    && cd /app/frontend \
+    && rm -fR node_modules \
+    && npx yarn install \
+    && npm run build \
+    && cd /app \
+    && rm -fR node_modules \
+    && npx yarn install --production

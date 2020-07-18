@@ -1,0 +1,723 @@
+{
+    "ApiKeyService1.svc": {
+        "name": "IApiKeyService1",
+        "methods": {
+            "GetSystemApiKeys": [],
+            "GenerateSystemApiKey": [
+                "notes"
+            ],
+            "GetApiKey": [
+                "keyid"
+            ],
+            "GetUserApiKeys": [
+                "userid"
+            ],
+            "GenerateUserApiKey": [
+                "userid",
+                "notes"
+            ],
+            "UpdateApiKey": [
+                "keyid",
+                "notes",
+                "expires"
+            ],
+            "PutApiKeyPrivileges": [
+                "keyid",
+                "privileges"
+            ],
+            "DeleteApiKey": [
+                "keyid"
+            ]
+        }
+    },
+    "AuthService1.svc": {
+        "name": "IAuthService1",
+        "methods": {
+            "Logout": [],
+            "Login": [
+                "username",
+                "password"
+            ],
+            "CheckPin": [
+                "pin"
+            ],
+            "CheckService": [
+                "service",
+                "id"
+            ],
+            "CheckRfid": [
+                "rfid"
+            ],
+            "CurrentUser": [],
+            "CheckUsername": [
+                "username"
+            ],
+            "ListUserAccessLog": [
+                "userid",
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountUserAccessLog": [
+                "userid",
+                "filters"
+            ],
+            "ListAccessLog": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountAccessLog": [
+                "filters"
+            ],
+            "GetAccessToken": [
+                "bearerToken"
+            ],
+            "SaveAccessToken": [
+                "userId",
+                "accessToken",
+                "clientId",
+                "expires"
+            ],
+            "GetUser": [
+                "username",
+                "password"
+            ],
+            "GetClient": [
+                "clientId",
+                "clientSecret"
+            ],
+            "RegisterClient": [
+                "name",
+                "description",
+                "url",
+                "redirecturi"
+            ],
+            "ListUserClients": [
+                "userid",
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "ListClients": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountClients": [
+                "filters"
+            ],
+            "EnableClient": [
+                "id",
+                "enabled"
+            ],
+            "DeleteClient": [
+                "id"
+            ],
+            "GetRefreshToken": [
+                "refreshToken"
+            ],
+            "SaveRefreshToken": [
+                "userId",
+                "refreshToken",
+                "clientId",
+                "expires"
+            ],
+            "RevokeRefreshToken": [
+                "refreshToken"
+            ]
+        }
+    },
+    "EmailService1.svc": {
+        "name": "IEmailService1",
+        "methods": {
+            "GetTemplate": [
+                "id"
+            ],
+            "UpdateTemplateName": [
+                "id",
+                "name"
+            ],
+            "UpdateTemplateCode": [
+                "id",
+                "code"
+            ],
+            "UpdateTemplateSubject": [
+                "id",
+                "subject"
+            ],
+            "UpdateTemplateHelp": [
+                "id",
+                "help"
+            ],
+            "UpdateTemplateBody": [
+                "id",
+                "body"
+            ],
+            "UpdateTemplateHtml": [
+                "id",
+                "html"
+            ],
+            "PutTemplate": [
+                "name",
+                "code",
+                "subject",
+                "help",
+                "body",
+                "html"
+            ],
+            "DeleteTemplate": [
+                "id"
+            ],
+            "ListTemplates": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountTemplates": [
+                "filters"
+            ]
+        }
+    },
+    "EventService1.svc": {
+        "name": "IEventService1",
+        "methods": {
+            "GetEvents": [],
+            "GetDomainDefinitions": [],
+            "GetDomainDefinition": [
+                "domain"
+            ],
+            "GetAccessibleEvents": [],
+            "GetEvent": [
+                "id"
+            ],
+            "CreateEvent": [
+                "name",
+                "domain",
+                "event",
+                "description",
+                "enabled"
+            ],
+            "EnableEvent": [
+                "id",
+                "enabled"
+            ],
+            "PutEventPrivileges": [
+                "id",
+                "privileges"
+            ],
+            "UpdateEvent": [
+                "id",
+                "name",
+                "domain",
+                "event",
+                "description",
+                "enabled"
+            ],
+            "DeleteEvent": [
+                "id"
+            ],
+            "ListEvents": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountEvents": [
+                "filters"
+            ]
+        }
+    },
+    "IpnService1.svc": {
+        "name": "IIpnService1",
+        "methods": {
+            "GetAll": [],
+            "Get": [
+                "ipnId"
+            ],
+            "ListRecords": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountRecords": [
+                "filters"
+            ]
+        }
+    },
+    "KeyService1.svc": {
+        "name": "IKeyService1",
+        "methods": {
+            "GetSystemKeys": [],
+            "GetAllKeys": [],
+            "GetKey": [
+                "keyid"
+            ],
+            "GetUserKeys": [
+                "userid",
+                "types"
+            ],
+            "GenerateUserKey": [
+                "userid",
+                "type",
+                "value",
+                "notes"
+            ],
+            "UpdateKey": [
+                "keyid",
+                "notes",
+                "expires"
+            ],
+            "PutKeyPrivileges": [
+                "keyid",
+                "privileges"
+            ],
+            "DeleteKey": [
+                "keyid"
+            ]
+        }
+    },
+    "MemberCardService1.svc": {
+        "name": "IMemberCardService1",
+        "methods": {
+            "RegisterGenuineCard": [
+                "key",
+                "notes"
+            ],
+            "ValidateGenuineCard": [
+                "key"
+            ],
+            "IssueCard": [
+                "email",
+                "key"
+            ],
+            "ListGenuineCards": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "ListUserGenuineCards": [
+                "userid",
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "GetGenuineCardDetails": [
+                "key"
+            ],
+            "UpdateGenuineCardActive": [
+                "key",
+                "active"
+            ]
+        }
+    },
+    "MembershipService1.svc": {
+        "name": "IMembershipService1",
+        "methods": {
+            "Create": [
+                "title",
+                "description",
+                "price",
+                "code",
+                "days",
+                "period"
+            ],
+            "GetAll": [],
+            "Get": [
+                "membershipId"
+            ],
+            "Update": [
+                "membershipId",
+                "title",
+                "description",
+                "price",
+                "code",
+                "days",
+                "period"
+            ],
+            "UpdatePrivate": [
+                "membershipId",
+                "private"
+            ],
+            "UpdateRecurring": [
+                "membershipId",
+                "recurring"
+            ],
+            "UpdateTrial": [
+                "membershipId",
+                "trial"
+            ],
+            "UpdateActive": [
+                "membershipId",
+                "active"
+            ],
+            "PutPrivileges": [
+                "membershipId",
+                "privileges"
+            ]
+        }
+    },
+    "MetricService1.svc": {
+        "name": "IMetricService1",
+        "methods": {
+            "GetNewMembers": [
+                "start_range",
+                "end_range"
+            ],
+            "GetNewKeyHolders": [
+                "start_range",
+                "end_range"
+            ],
+            "GetTotalMembers": [],
+            "GetTotalKeyHolders": [],
+            "GetPendingAccounts": [],
+            "GetExceptionPayments": [],
+            "GetRevenue": [
+                "start_range",
+                "end_range",
+                "group"
+            ],
+            "GetMembers": [
+                "start_range",
+                "end_range",
+                "group"
+            ],
+            "GetCreatedDates": [
+                "start_range",
+                "end_range"
+            ]
+        }
+    },
+    "PaymentService1.svc": {
+        "name": "IPaymentService1",
+        "methods": {
+            "GetPayment": [
+                "id"
+            ],
+            "ListUserPayments": [
+                "userid",
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountUserPayments": [
+                "userid",
+                "filters"
+            ],
+            "ListPayments": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountPayments": [
+                "filters"
+            ],
+            "ReplayPaymentProcessing": [
+                "paymentid"
+            ]
+        }
+    },
+    "PinService1.svc": {
+        "name": "IPinService1",
+        "methods": {
+            "GetUserPin": [
+                "userid"
+            ],
+            "GeneratePin": [
+                "userid"
+            ],
+            "GenerateTemporaryPin": [
+                "expires",
+                "privileges",
+                "notes"
+            ],
+            "UpdateUserPin": [
+                "userid",
+                "pin"
+            ],
+            "UpdatePin": [
+                "keyid",
+                "pin"
+            ],
+            "AccessInstructions": []
+        }
+    },
+    "PreferenceService1.svc": {
+        "name": "IPreferenceService1",
+        "methods": {
+            "GetAllSystemPreferences": [],
+            "SystemPreference": [
+                "key"
+            ],
+            "ListSystemPreferences": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "PutSystemPreference": [
+                "key",
+                "value",
+                "enabled",
+                "notes"
+            ],
+            "UpdateSystemPreference": [
+                "id",
+                "key",
+                "value",
+                "enabled",
+                "notes"
+            ],
+            "UpdateSystemPreferenceEnabled": [
+                "key",
+                "enabled"
+            ],
+            "PutSystemPreferencePrivileges": [
+                "id",
+                "privileges"
+            ],
+            "DeleteSystemPreference": [
+                "key"
+            ]
+        }
+    },
+    "PrivilegeService1.svc": {
+        "name": "IPrivilegeService1",
+        "methods": {
+            "GetAllSystemPermissions": [],
+            "GetAllPrivileges": [],
+            "ListPrivileges": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "GetUserPrivileges": [
+                "userid"
+            ],
+            "GetPrivilege": [
+                "id"
+            ],
+            "CreatePrivilege": [
+                "name",
+                "code",
+                "description",
+                "icon",
+                "enabled"
+            ],
+            "UpdatePrivilegeName": [
+                "id",
+                "name"
+            ],
+            "UpdatePrivilegeDescription": [
+                "id",
+                "description"
+            ],
+            "UpdatePrivilegeIcon": [
+                "id",
+                "icon"
+            ],
+            "UpdatePrivilegeEnabled": [
+                "id",
+                "enabled"
+            ],
+            "DeletePrivilege": [
+                "id"
+            ]
+        }
+    },
+    "UserService1.svc": {
+        "name": "IUserService1",
+        "methods": {
+            "Register": [
+                "username",
+                "password",
+                "email",
+                "fname",
+                "lname"
+            ],
+            "Create": [
+                "username",
+                "password",
+                "email",
+                "fname",
+                "lname",
+                "membershipid"
+            ],
+            "RequestPasswordReset": [
+                "email"
+            ],
+            "ResetPassword": [
+                "token",
+                "password"
+            ],
+            "GetUsers": [],
+            "ListUsers": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountUsers": [
+                "filters"
+            ],
+            "GetUser": [
+                "userid"
+            ],
+            "UpdatePassword": [
+                "userid",
+                "password"
+            ],
+            "UpdateNewsletter": [
+                "userid",
+                "subscribe"
+            ],
+            "UpdateUsername": [
+                "userid",
+                "username"
+            ],
+            "UpdateName": [
+                "userid",
+                "fname",
+                "lname"
+            ],
+            "UpdateEmail": [
+                "userid",
+                "email"
+            ],
+            "UpdatePaymentEmail": [
+                "userid",
+                "email"
+            ],
+            "UpdateCash": [
+                "userid",
+                "cash"
+            ],
+            "PutUserPrivileges": [
+                "userid",
+                "privileges"
+            ],
+            "UpdateMembership": [
+                "userid",
+                "membershipid"
+            ],
+            "UpdateStatus": [
+                "userid",
+                "status"
+            ],
+            "GetStatuses": [],
+            "UpdateExpiry": [
+                "userid",
+                "date"
+            ],
+            "GetStanding": [
+                "userid"
+            ],
+            "GetGrantUserPrivileges": [
+                "userid"
+            ],
+            "GrantPrivilege": [
+                "userid",
+                "privilege"
+            ],
+            "RevokePrivilege": [
+                "userid",
+                "privilege"
+            ],
+            "RequestSlackInvite": [
+                "email"
+            ]
+        }
+    },
+    "WebHookService1.svc": {
+        "name": "IWebHookService1",
+        "methods": {
+            "GetAllHooks": [],
+            "GetHooks": [
+                "domain",
+                "event"
+            ],
+            "GetHook": [
+                "id"
+            ],
+            "CreateHook": [
+                "name",
+                "description",
+                "enabled",
+                "url",
+                "translation",
+                "headers",
+                "method",
+                "eventid"
+            ],
+            "PutHookPrivileges": [
+                "id",
+                "privileges"
+            ],
+            "UpdateHook": [
+                "id",
+                "name",
+                "description",
+                "enabled",
+                "url",
+                "translation",
+                "headers",
+                "method",
+                "eventid"
+            ],
+            "EnableHook": [
+                "id",
+                "enabled"
+            ],
+            "DeleteHook": [
+                "id"
+            ],
+            "ListHooks": [
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountHooks": [
+                "filters"
+            ],
+            "ListUserHooks": [
+                "userid",
+                "page",
+                "size",
+                "columns",
+                "order",
+                "filters"
+            ],
+            "CountUserHooks": [
+                "userid",
+                "filters"
+            ]
+        }
+    }
+}
