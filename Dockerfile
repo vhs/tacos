@@ -8,7 +8,6 @@ COPY . /app
 
 RUN cd /app \
     && cd /app/frontend \
-    && git pull origin master \
     && npx yarn install \
     && npm run build \
     && cd /app \
