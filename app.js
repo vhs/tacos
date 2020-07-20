@@ -12,7 +12,7 @@ var session = require('express-session')
 var LevelStore = require('express-session-level')(session)
 
 var { config } = require('./lib/config')
-var sessionDB = require('level')(path.resolve(path.join(__dirname, '/data/sessiondb')))
+var sessionDB = require('level')(path.resolve(path.join(__dirname, '/', config.datadir, '/sessiondb')))
 var { getLine } = require('./lib/utils')
 var passport = require('./lib/passport')
 
