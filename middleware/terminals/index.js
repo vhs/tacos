@@ -56,7 +56,6 @@ router.post('/update/secret/:id', requireAuthenticated, requireAdmin, updateTerm
 router.post('/update/target/:id', requireAuthenticated, requireAdmin, updateTerminalTarget)
 
 router.use('/', (req, res, next) => { res.set("Connection", "close"); next() })
-router.use('/', (req, res, next) => { console.log('res.result:', res.result); next() })
 router.use('/', convertResultToJSON)
 
 // Export the router
