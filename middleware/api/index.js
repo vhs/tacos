@@ -10,6 +10,6 @@ const { doPong, getRoles } = require('./lib')
 
 router.get("/ping", doPong)
 
-router.get("/roles", requireAuthenticated, requireAdmin, getRoles)
+router.get("/roles", requireAuthenticated, getRoles)
 
 module.exports = { router }
