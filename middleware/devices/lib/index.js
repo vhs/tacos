@@ -45,13 +45,13 @@ var requireToolAccess = function (req, res, next) {
 }
 
 function getDevices(req, res, next) {
-  if (req.user === undefined || req.user.administrator === undefined) {
+  if (req.user === undefined) {
     res.result.result = 'ERROR'
     res.result.message = 'error: missing user information'
     next()
   }
 
-  if (req.user.administrator) {
+  if (req.user.administrator !== undefined && req.user.administrator === true) {
     res.result = deviceStore.getAllDevices();
   } else {
     res.result = deviceStore.getAvailableDevices(req.user);
