@@ -30,7 +30,7 @@
     "passport": "^0.4.0",
     "passport-github": "^1.1.0",
     "passport-google-oauth": "^2.0.0",
-    "passport-slack": "git+https://github.com/vhs/passport-slack.git",
+    "passport-slack-oauth2": "^1.0.2",
     "promise": "^8.0.3",
     "pug": "^2.0.3",
     "randomstring": "^1.1.5",
