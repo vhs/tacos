@@ -1,17 +1,17 @@
 var assert = require('assert')
 
-var testObj = require('../lib/utils/index.js')
-
 describe('lib/utils/index.js', function () {
+
+	var testObj = require('../lib/utils/index.js')
 
 	describe('functions', function () {
 
 		it('it tests getLine', async function () {
-			// Do a test
+			// Write test for testObj.getLine
 		})
 
 		it('it tests convertResultToJSON', async function () {
-			// Do a test
+			// Write test for testObj.convertResultToJSON
 		})
 
 	})

@@ -1,21 +1,21 @@
 var assert = require('assert')
 
-var testObj = require('../middleware/auth/lib/index.js')
-
 describe('middleware/auth/lib/index.js', function () {
+
+	var testObj = require('../middleware/auth/lib/index.js')
 
 	describe('functions', function () {
 
 		it('it tests doLogout', async function () {
-			// Do a test
+			// Write test for testObj.doLogout
 		})
 
 		it('it tests requireAdmin', async function () {
-			// Do a test
+			// Write test for testObj.requireAdmin
 		})
 
 		it('it tests requireAuthenticated', async function () {
-			// Do a test
+			// Write test for testObj.requireAuthenticated
 		})
 
 	})

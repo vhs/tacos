@@ -1,17 +1,17 @@
 var assert = require('assert')
 
-var testObj = require('../middleware/api/lib/index.js')
-
 describe('middleware/api/lib/index.js', function () {
+
+	var testObj = require('../middleware/api/lib/index.js')
 
 	describe('functions', function () {
 
 		it('it tests doPong', async function () {
-			// Do a test
+			// Write test for testObj.doPong
 		})
 
 		it('it tests getRoles', async function () {
-			// Do a test
+			// Write test for testObj.getRoles
 		})
 
 	})

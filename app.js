@@ -21,7 +21,8 @@ var middleware = require('./middleware/')
 var app = express()
 var server = require('http').Server(app)
 
-app.use(logger('dev'));
+if(process.env.ATOMS_TEST === undefined)
+  app.use(logger('dev'))
 
 app.use(cors())
 app.use(bodyParser.urlencoded({

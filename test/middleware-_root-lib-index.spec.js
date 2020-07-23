@@ -1,13 +1,13 @@
 var assert = require('assert')
 
-var testObj = require('../middleware/_root/lib/index.js')
-
 describe('middleware/_root/lib/index.js', function () {
+
+	var testObj = require('../middleware/_root/lib/index.js')
 
 	describe('functions', function () {
 
 		it('it tests devicesStatuses', async function () {
-			// Do a test
+			// Write test for testObj.devicesStatuses
 		})
 
 	})

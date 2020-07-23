@@ -1,61 +1,61 @@
 var assert = require('assert')
 
-var testObj = require('../middleware/devices/lib/index.js')
-
 describe('middleware/devices/lib/index.js', function () {
+
+	var testObj = require('../middleware/devices/lib/index.js')
 
 	describe('functions', function () {
 
 		it('it tests setResultArray', async function () {
-			// Do a test
+			// Write test for testObj.setResultArray
 		})
 
 		it('it tests requireValidDevice', async function () {
-			// Do a test
+			// Write test for testObj.requireValidDevice
 		})
 
 		it('it tests requireToolAccess', async function () {
-			// Do a test
+			// Write test for testObj.requireToolAccess
 		})
 
 		it('it tests getDevices', async function () {
-			// Do a test
+			// Write test for testObj.getDevices
 		})
 
 		it('it tests getDeviceState', async function () {
-			// Do a test
+			// Write test for testObj.getDeviceState
 		})
 
 		it('it tests getDeviceDetails', async function () {
-			// Do a test
+			// Write test for testObj.getDeviceDetails
 		})
 
 		it('it tests deleteDevice', async function () {
-			// Do a test
+			// Write test for testObj.deleteDevice
 		})
 
 		it('it tests updateDeviceRole', async function () {
-			// Do a test
+			// Write test for testObj.updateDeviceRole
 		})
 
 		it('it tests updateDeviceDescription', async function () {
-			// Do a test
+			// Write test for testObj.updateDeviceDescription
 		})
 
 		it('it tests updateDeviceHasSecret', async function () {
-			// Do a test
+			// Write test for testObj.updateDeviceHasSecret
 		})
 
 		it('it tests updateDeviceSecret', async function () {
-			// Do a test
+			// Write test for testObj.updateDeviceSecret
 		})
 
 		it('it tests armDevice', async function () {
-			// Do a test
+			// Write test for testObj.armDevice
 		})
 
 		it('it tests unarmDevice', async function () {
-			// Do a test
+			// Write test for testObj.unarmDevice
 		})
 
 	})

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "node_modules/.bin/supervisor -w .,middleware,lib,backends bin/www",
     "start": "node bin/www",
-    "test": "node_modules/.bin/gulp test",
+    "test": "ATOMS_TEST=1 ATOMS_CONF=config.test.json node_modules/.bin/gulp test",
     "coverage": "node_modules/.bin/istanbul cover _mocha"
   },
   "dependencies": {
@@ -51,6 +51,7 @@
     "jshint": "^2.10.2",
     "jshint-stylish": "*",
     "mocha": "^8.0.1",
+    "should": "^13.2.3",
     "sinon": "^7.3.1",
     "sinon-express-mock": "^2.2.0",
     "supertest": "^4.0.2",

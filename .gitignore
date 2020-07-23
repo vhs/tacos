@@ -12,3 +12,4 @@ shared/*.json
 misc/**
 data/**
 config/**
+sync-*.sh

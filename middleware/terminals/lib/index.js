@@ -104,11 +104,11 @@ var verifyTerminal = function (req, res, next) {
   // Check terminalId
   if (!req.params.id) {
     res.result.message = 'error: missing terminal id'
-    res.status(403)
+    // res.status(403)
     next('route')
   } else if (!terminalStore.checkTerminalExists(req.params.id)) {
     res.result.message = 'error: no such terminal '
-    res.status(403)
+    // res.status(403)
     next('route')
   } else {
     next()

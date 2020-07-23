@@ -6,6 +6,7 @@ const auth = require('./auth')
 const devices = require('./devices')
 const terminals = require('./terminals')
 const session = require('./session')
+// const test = require('./test')
 
 const express = require('express')
 const debug = require('debug')('app:middleware')
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.use(_pre.router)
 router.use('/', _root.router)
+// if (process.env.ATOMS_TEST !== undefined) router.use('/', test.router)
 router.use('/auth', auth.router)
 router.use('/api', api.router)
 router.use('/api/devices', devices.router)
