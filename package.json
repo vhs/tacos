@@ -1,7 +1,7 @@
 {
-  "name": "vhs-atoms",
+  "name": "tacos",
   "version": "0.0.1",
-  "description": "A Tool Operations & Management System",
+  "description": "Tool Access Control & Operations System",
   "scripts": {
     "dev": "node_modules/.bin/supervisor -w .,middleware,lib,backends bin/www",
     "start": "node bin/www",
