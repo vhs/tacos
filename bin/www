@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict'
 
-var debug = require('debug')('atoms:www')
+var debug = require('debug')('tacos:www')
 
 debug('Starting application')
 

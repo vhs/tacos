@@ -2,7 +2,7 @@
 
 var express = require('express')
 var { config } = require('../../../lib/config')
-var debug = require('debug')('atoms:routes:devices:lib')
+var debug = require('debug')('tacos:routes:devices:lib')
 var { getLine } = require('../../../lib/utils')
 var { deviceStore } = require('../../../lib/stores')
 var router = express.Router()
