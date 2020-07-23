@@ -27,6 +27,10 @@
 		}
 	},
 	"datadir": "data",
+	"stores": {
+		"persistence": true,
+		"save_interval": 10000
+	},
 	"callbackHost": "http://<callback host>",
 	"activation_timeout": 60000,
 	"administrator_role": "<ADMIN ROLE>",

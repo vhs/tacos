@@ -26,7 +26,7 @@ gulp.task('unittest', function () {
     .pipe(istanbul()) // Covering files
     .pipe(istanbul.hookRequire()) // Force `require` to return covered files
     .on('finish', function () {
-      gulp.src(['test/test-*.js'])
+      gulp.src(['test/*.spec.js'])
         .pipe(mocha({
           reporter: 'nyan'
         }))
