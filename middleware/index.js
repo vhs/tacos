@@ -14,7 +14,7 @@ const router = express.Router();
 
 router.use(_pre.router)
 router.use('/', _root.router)
-// if (process.env.ATOMS_TEST !== undefined) router.use('/', test.router)
+// if (process.env.TACOS_TEST !== undefined) router.use('/', test.router)
 router.use('/auth', auth.router)
 router.use('/api', api.router)
 router.use('/api/devices', devices.router)
