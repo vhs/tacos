@@ -2,7 +2,7 @@
 
 var express = require('express')
 var router = express.Router()
-var debug = require('debug')('atoms:routes:auth')
+var debug = require('debug')('tacos:routes:auth')
 var { getLine } = require('../../lib/utils')
 
 var { passport } = require('../../lib/passport')

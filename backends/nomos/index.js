@@ -3,7 +3,7 @@
 const path = require('path')
 
 var _ = require('underscore')
-var debug = require('debug')('atoms:backend:nomos')
+var debug = require('debug')('tacos:backend:nomos')
 var axios = require('axios')
 
 var { config } = require('../../lib/config')

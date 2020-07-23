@@ -1,7 +1,7 @@
 'use strict'
 
 var express = require('express')
-var debug = require('debug')('atoms:middleware:terminals:lib')
+var debug = require('debug')('tacos:middleware:terminals:lib')
 var { config } = require('../../../lib/config')
 
 var { getLine } = require('../../../lib/utils')

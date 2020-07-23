@@ -2,7 +2,7 @@
 
 const path = require('path')
 
-var debug = require('debug')('atoms:app')
+var debug = require('debug')('tacos:app')
 
 var express = require('express')
 var cors = require('cors')
@@ -38,7 +38,7 @@ app.use(session({
     secure: false,
     maxAge: 1000 * 3600 * 24
   },
-  name: "atoms",
+  name: "tacos",
   rolling: true
 }))
 

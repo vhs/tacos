@@ -2,7 +2,7 @@
 
 var express = require('express')
 var { config } = require('../../lib/config')
-var debug = require('debug')('atoms:routes:devices')
+var debug = require('debug')('tacos:routes:devices')
 var { convertResultToJSON, getLine } = require('../../lib/utils')
 var router = express.Router()
 var { requireAuthenticated, requireAdmin } = require('../auth/lib')

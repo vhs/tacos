@@ -2,7 +2,7 @@
 
 var express = require('express')
 var router = express.Router()
-var debug = require('debug')('atoms:middleware:auth:lib')
+var debug = require('debug')('tacos:middleware:auth:lib')
 var { getLine } = require('../../../lib/utils')
 
 var { config } = require('../../../lib/config')
