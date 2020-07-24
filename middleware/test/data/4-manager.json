@@ -1,0 +1,16 @@
+{
+    "id": "4",
+    "provider": "platform",
+    "name": "Manager",
+    "username": "manager",
+    "administrator": true,
+    "privileges": [
+        "vetted",
+        "laser",
+        "tool:manager",
+        "tool:test",
+        "door",
+        "inherit"
+    ],
+    "authenticated": true
+}
