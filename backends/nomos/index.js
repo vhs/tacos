@@ -123,9 +123,9 @@ var checkUser = async function (user) {
       }
 
       // Else if user is Nomos administrator override administrator
-      if (user.privileges.indexOf('administrator') >= 0) {
-        user.administrator = true
-      }
+      // if (user.privileges.indexOf('administrator') >= 0) {
+      //   user.administrator = true
+      // }
 
       // Set as authenticated
       authenticated = true
