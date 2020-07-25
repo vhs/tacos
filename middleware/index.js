@@ -4,8 +4,9 @@ const _post = require('./_post')
 const api = require('./api')
 const auth = require('./auth')
 const devices = require('./devices')
-const terminals = require('./terminals')
 const session = require('./session')
+const terminals = require('./terminals')
+const test = (process.env.TACOS_TEST !== undefined ? require('./test') : null)
 
 const express = require('express')
 const debug = require('debug')('app:middleware')
@@ -13,6 +14,7 @@ const router = express.Router();
 
 router.use(_pre.router)
 router.use('/', _root.router)
+if (test !== null) router.use('/', test.router)
 router.use('/auth', auth.router)
 router.use('/api', api.router)
 router.use('/api/devices', devices.router)

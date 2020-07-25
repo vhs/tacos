@@ -1,0 +1,9 @@
+{
+    "id": "1",
+    "provider": "platform",
+    "name": "User 1",
+    "username": "user1",
+    "administrator": false,
+    "privileges": [],
+    "authenticated": false
+}

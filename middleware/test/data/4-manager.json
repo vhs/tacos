@@ -1,0 +1,17 @@
+{
+    "id": "4",
+    "provider": "platform",
+    "name": "User 4",
+    "username": "manager",
+    "administrator": true,
+    "privileges": [
+        "vetted",
+        "laser",
+        "tool:manager",
+        "tool:metal-lathe",
+        "tool:test",
+        "door",
+        "inherit"
+    ],
+    "authenticated": true
+}
