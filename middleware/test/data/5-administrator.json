@@ -1,0 +1,15 @@
+{
+    "id": "5",
+    "provider": "platform",
+    "name": "User 5",
+    "username": "administrator",
+    "administrator": false,
+    "privileges": [
+        "vetted",
+        "laser",
+        "administrator",
+        "door",
+        "inherit"
+    ],
+    "authenticated": true
+}
