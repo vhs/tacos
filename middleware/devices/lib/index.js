@@ -2,10 +2,12 @@
 
 var express = require('express')
 var { config } = require('../../../lib/config')
-var debug = require('debug')('tacos:routes:devices:lib')
+var debug = require('debug')('tacos:middleware:devices:lib')
 var { getLine } = require('../../../lib/utils')
-var { deviceStore } = require('../../../lib/stores')
+var { deviceStore, loggingStore } = require('../../../lib/stores')
 var router = express.Router()
+
+const Logger = loggingStore.getLogger('tacos:middleware:devices:lib')
 
 var setResultArray = function (req, res, next) {
   res.result = {}
@@ -88,6 +90,8 @@ var getDeviceDetails = function (req, res, next) {
 }
 
 var deleteDevice = function (req, res, next) {
+  Logger.info({ action: 'deleteDevice', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' deleted device: ' + req.params.id })
+
   if (!req.params.id) {
     res.result.message = 'error: missing device id'
     next()
@@ -107,6 +111,8 @@ var deleteDevice = function (req, res, next) {
 }
 
 var updateDeviceRole = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceRole', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' updated device role: ' + req.params.id })
+
   if (!req.params.id) {
     res.result.message = 'error: missing role id'
     next()
@@ -121,6 +127,8 @@ var updateDeviceRole = function (req, res, next) {
 }
 
 var updateDeviceDescription = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceDescription', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' updated description device: ' + req.params.id })
+
   debug('updateDeviceDescription', 'req.params:', req.params)
   debug('updateDeviceDescription', 'req.body:', req.body)
 
@@ -140,6 +148,8 @@ var updateDeviceDescription = function (req, res, next) {
 }
 
 var updateDeviceHasSecret = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceHasSecret', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update device has secret: ' + req.params.id })
+
   if (!req.params.id || req.params.id === 0) {
     res.result.message = 'error: missing device id'
     next('route')
@@ -154,6 +164,8 @@ var updateDeviceHasSecret = function (req, res, next) {
 }
 
 var updateDeviceSecret = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceHasSecret', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update device secret: ' + req.params.id })
+
   if (!req.params.id || req.params.id === 0) {
     res.result.message = 'error: missing device id'
     next('route')
@@ -168,6 +180,8 @@ var updateDeviceSecret = function (req, res, next) {
 }
 
 var armDevice = function (req, res, next) {
+  Logger.info({ action: 'armDevice', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' armed device: ' + req.params.id })
+
   if (!req.params.id) {
     res.result.message = 'error: missing device id'
     next()
@@ -181,6 +195,8 @@ var armDevice = function (req, res, next) {
 }
 
 var unarmDevice = function (req, res, next) {
+  Logger.info({ action: 'unarmDevice', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' unarmed device: ' + req.params.id })
+
   if (!req.params.id) {
     res.result.message = 'error: missing device id'
     next()
