@@ -12,9 +12,9 @@ var lib = require('./lib')
 var { config } = require('../../lib/config')
 
 // Slack
-router.get('/slack/callback', passport.authenticate('slack', { failureRedirect: '/login', successRedirect: '/dashboard' }), (req, res) => { res.redirect('/dashboard') })
+router.get('/slack/callback', passport.authenticate('Slack', { failureRedirect: '/login', successRedirect: '/dashboard' }), (req, res) => { res.redirect('/dashboard') })
 
-router.get('/slack', passport.authenticate('slack', { scope: ['identify', 'groups:read'], team: config.authentication.slack.team }))
+router.get('/slack', passport.authenticate('Slack'))
 
 // Google
 router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => { res.redirect('/dashboard') })
