@@ -5,9 +5,11 @@ var debug = require('debug')('tacos:middleware:terminals:lib')
 var { config } = require('../../../lib/config')
 
 var { getLine } = require('../../../lib/utils')
-var { deviceStore, terminalStore } = require('../../../lib/stores/')
+var { deviceStore, loggingStore, terminalStore } = require('../../../lib/stores/')
 
 var { backend } = require('../../../lib/backend')
+
+const Logger = loggingStore.getLogger('tacos:middleware:terminals:lib')
 
 var getAllTerminals = function (req, res, next) {
   debug(getLine(), 'getAllTerminals')
@@ -220,6 +222,8 @@ var authenticateRFIDCard = function (req, res, next) {
 
 // Enable terminal
 var updateTerminalDescription = function (req, res, next) {
+  Logger.info({ action: 'updateTerminalDescription', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update terminal description device: ' + req.params.id })
+
   debug(getLine(), 'updateTerminalDescription')
 
   if (!req.params.id) {
@@ -243,6 +247,8 @@ var updateTerminalDescription = function (req, res, next) {
 
 // Enable terminal
 var updateTerminalEnabled = function (req, res, next) {
+  Logger.info({ action: 'updateTerminalEnabled', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update terminal enabled device: ' + req.params.id })
+
   debug(getLine(), 'updateTerminalEnabled')
 
   if (!req.params.id) {
@@ -266,6 +272,8 @@ var updateTerminalEnabled = function (req, res, next) {
 
 // Delete terminal
 var deleteTerminal = function (req, res, next) {
+  Logger.info({ action: 'deleteTerminal', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' deleted terminal: ' + req.params.id })
+
   debug(getLine(), 'deleteTerminal')
 
   if (!req.params.id) {
@@ -288,6 +296,8 @@ var deleteTerminal = function (req, res, next) {
 
 // Update terminal secret
 var updateTerminalSecret = function (req, res, next) {
+  Logger.info({ action: 'updateTerminalSecret', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update terminal secret: ' + req.params.id })
+
   debug(getLine(), 'updateTerminalSecret')
 
   if (!req.params.id || req.params.id === 0) {
@@ -305,6 +315,8 @@ var updateTerminalSecret = function (req, res, next) {
 
 // Update terminal role
 var updateTerminalTarget = function (req, res, next) {
+  Logger.info({ action: 'updateTerminalTarget', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update terminal' + req.params.id + ' target: ' + req.body.target })
+
   debug(getLine(), 'updateTerminalTarget')
 
   if (!req.params.id) {
