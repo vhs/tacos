@@ -93,8 +93,6 @@ var getTerminalDetails = function (req, res, next) {
 
   res.result = terminalStore.getTerminalDetails(terminalId)
 
-  debug(getLine(), 'getTerminalDetails', res.result)
-
   next()
 }
 
@@ -140,14 +138,17 @@ var verifyHMAC = function (req, res, next) {
 
   if (!terminalStore.checkTerminalSecured(terminalId)) {
     res.result.message = 'error: missing secret'
+    Logger.info({ action: 'authenticateRFIDCard', user: cardRequest.username, terminal: terminalId, message: 'Terminal ' + terminalId + ' is missing secret' })
     res.status(403).send(JSON.stringify(res.result))
   } else if (req.body.data === undefined || req.body.hash === undefined) {
     debug(getLine(), 'verifyHMAC', 'req.params', req.params)
     debug(getLine(), 'verifyHMAC', 'req.body', req.body)
     res.result.message = 'error: incorrect message format, missing authentication data'
+    Logger.info({ action: 'authenticateRFIDCard', user: cardRequest.username, terminal: terminalId, message: 'Terminal ' + terminalId + ' request had incorrect message format, missing authentication data' })
     res.send(JSON.stringify(res.result))
   } else if (!req.body.data.nonce || !req.body.data.ts || !req.body.hash) {
     res.result.message = 'error: missing auth data'
+    Logger.info({ action: 'authenticateRFIDCard', user: cardRequest.username, terminal: terminalId, message: 'Terminal ' + terminalId + ' request had missing auth data (nonce, ts or hash missing' })
     res.status(403).send(JSON.stringify(res.result))
   } else {
     debug(getLine(), 'Checking HMAC')
@@ -156,6 +157,7 @@ var verifyHMAC = function (req, res, next) {
 
     if (!terminalStore.verifyHMAC(terminalId, packet)) {
       res.result.message = 'error: HMAC verification failed'
+      Logger.info({ action: 'authenticateRFIDCard', user: cardRequest.username, terminal: terminalId, message: 'Terminal ' + terminalId + ' HMAC verification failed' })
       res.status(403).send(JSON.stringify(res.result))
     } else {
       next()
@@ -197,24 +199,29 @@ var authenticateRFIDCard = function (req, res, next) {
       if (!cardRequest.valid) {
         console.log(Date.now() + ': RFID ACCESS DENIED for ' + cardRequest.id)
         res.result.message = 'ACCESS DENIED: invalid card id'
+        Logger.info({ action: 'authenticateRFIDCard', user: cardRequest.username, terminal: terminalId, target: terminalTarget, card_id: cardId, message: 'ACCESS DENIED for user ' + cardRequest.username + ' for device ' + terminalTarget + ' from ' + terminalId })
         next('route')
       } else {
         // Check role against received privileges
         if (cardRequest.administrator || cardRequest.privileges.indexOf(deviceRole) >= 0) {
           console.log(Date.now() + ': RFID ACCESS PERMITTED for ' + cardRequest.id + ' - ' + cardRequest.username)
-
+          
           // Arm device
           var armResult = deviceStore.armDevice(terminalTarget)
           if (!armResult) {
             res.result.message = 'Failed to arm device'
+            Logger.info({ action: 'authenticateRFIDCard', 'user': cardRequest.username, terminal: terminalId, target: terminalTarget, card_id: cardId, message: 'Failed to arm device - ' + cardRequest.username + ' armed ' + terminalTarget + ' from ' + terminalId })
           } else {
+            Logger.info({ action: 'authenticateRFIDCard', 'user': cardRequest.username, terminal: terminalId, target: terminalTarget, card_id: cardId, message: 'ACCESS GRANTED - user ' + cardRequest.username + ' armed ' + terminalTarget + ' from ' + terminalId })
             res.result.message = 'ACCESS GRANTED - Device armed'
             res.result.result = 'OK'
           }
         } else {
           console.log(Date.now() + ': RFID ACCESS DENIED for ' + cardRequest.id + ' - ' + cardRequest.username)
           res.result.message = 'ACCESS DENIED'
+          Logger.info({ action: 'authenticateRFIDCard', user: cardRequest.username, terminal: terminalId, target: terminalTarget, card_id: cardId, message: 'ACCESS DENIED - user ' + cardRequest.id + ' - ' + cardRequest.username + ' for device ' + terminalTarget + ' from ' + terminalId })
         }
+
         next('route')
       }
     })
