@@ -71,5 +71,8 @@
     }
   },
   "author": "Ty Eggen",
-  "license": "ISC"
+  "license": "ISC",
+  "resolutions": {
+    "levelup-defaults": "^2.0.0"
+  }
 }
