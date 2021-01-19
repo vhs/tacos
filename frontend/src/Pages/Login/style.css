@@ -1,0 +1,14 @@
+#GitHubLoginButton {
+    background-color: #999;
+    border-color: #999;
+}
+
+#GoogleLoginButton {
+    background-color: #de5246;
+    border-color: #de5246;
+}
+
+#SlackLoginButton {
+    background-color: #611f69;
+    border-color: #611f69;
+}
