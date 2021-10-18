@@ -1,0 +1,6 @@
+{
+    "valid": false,
+    "privileges": ["tool:test"],
+    "userId": 3,
+    "username": "user3"
+}
