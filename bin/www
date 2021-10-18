@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 'use strict'
 
-var debug = require('debug')('tacos:www')
+const debug = require('debug')('tacos:www')
 
 debug('Starting application')
 
-var { app, server } = require('../app')
+const { app, server } = require('../app')
 
-var { config } = require('../lib/config')
-var port = config.port || process.env.PORT || 3000
+const { config } = require('../lib/config')
+const port = config.port || process.env.PORT || 3000
 
 app.set('port', port)
 
 server.listen(port, function () {
-  debug('Express server listening on port ' + server.address().port)
+  debug('Express server listening on port ' + server.address())
 })

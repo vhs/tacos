@@ -2,26 +2,27 @@
 
 const path = require('path')
 
-var debug = require('debug')('tacos:app')
+const debug = require('debug')('tacos:app')
 
-var express = require('express')
-var cors = require('cors')
-var logger = require('morgan')
-var bodyParser = require('body-parser')
-var session = require('express-session')
-var LevelStore = require('express-session-level')(session)
+const express = require('express')
+const cors = require('cors')
+const logger = require('morgan')
+const bodyParser = require('body-parser')
+const session = require('express-session')
+const LevelStore = require('express-session-level')(session)
 
-var { config } = require('./lib/config')
-var sessionDB = require('level')(path.resolve(path.join(__dirname, '/', config.datadir, '/sessiondb')))
-var { getLine } = require('./lib/utils')
-var passport = require('./lib/passport')
+const { config } = require('./lib/config')
+const sessionDB = require('level')(path.resolve(path.join(__dirname, '/', config.datadir, '/sessiondb')))
+const passport = require('./lib/passport')
 
-var middleware = require('./middleware/')
+const middleware = require('./middleware/')
 
-var app = express()
-var server = require('http').Server(app)
+const app = express()
+const server = require('http').createServer(app)
 
-app.use(logger('dev'));
+debug('Setting up app')
+
+app.use(logger('dev'))
 
 app.use(cors())
 app.use(bodyParser.urlencoded({
@@ -30,6 +31,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json())
 app.use(session({
   secret: config.sessions.secret,
+  // @ts-ignore
   store: new LevelStore(sessionDB),
   resave: false,
   saveUninitialized: true,
@@ -38,13 +40,12 @@ app.use(session({
     secure: false,
     maxAge: 1000 * 3600 * 24
   },
-  name: "tacos",
+  name: 'tacos',
   rolling: true
 }))
 
 passport.init(app)
 
 app.use(middleware.router)
-
 
 module.exports = { app, server }

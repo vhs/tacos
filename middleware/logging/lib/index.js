@@ -1,38 +1,34 @@
-'use strict'
+const debug = require('debug')('tacos:middleware:logging:lib')
+const { getLine } = require('../../../lib/utils')
+debug(getLine(), 'Loading')
 
-var express = require('express')
-var { config } = require('../../../lib/config')
-var debug = require('debug')('tacos:middleware:logging:lib')
-var { getLine } = require('../../../lib/utils')
-var { loggingStore } = require('../../../lib/stores')
-var router = express.Router()
+const { loggingStore } = require('../../../lib/stores')
 
-const Logger = loggingStore.getLogger('tacos:middleware:logging:lib')
+// const Logger = loggingStore.getLogger('tacos:middleware:logging:lib')
 
-var setDefaultResultArray = function (req, res, next) {
-    debug(getLine(), 'setDefaultResultArray')
+const setDefaultResultArray = function (req, res, next) {
+  debug(getLine(), 'setDefaultResultArray')
 
-    res.result = {
-        result: 'ERROR'
-    }
+  res.locals.result = {
+    result: 'ERROR'
+  }
 
-    if (typeof req.body !== 'object') {
-        req.body = JSON.parse(req.body)
-    }
+  if (typeof req.body !== 'object') {
+    req.body = JSON.parse(req.body)
+  }
 
-    next()
+  next()
 }
 
-
 const getAllLogs = function (req, res, next) {
-    res.result.data = loggingStore.getAllLogs()
+  res.locals.result.data = loggingStore.getAllLogs()
 
-    debug('getAllLogs', res.result)
-    next()
+  debug('getAllLogs', res.locals.result)
+  next()
 }
 
 const getLogDetails = function (req, res, next) {
-    next()
+  next()
 }
 
 // Export the router

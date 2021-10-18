@@ -1,14 +1,13 @@
-'use strict'
+const debug = require('debug')('tacos:middleware:logging')
+const { convertResultToJSON, getLine } = require('../../lib/utils')
+debug(getLine(), 'Loading')
 
-var express = require('express')
-var { config } = require('../../lib/config')
-var debug = require('debug')('tacos:middleware:logging')
-var router = express.Router()
+const express = require('express')
+const router = express.Router()
 
-var { convertResultToJSON, getLine } = require('../../lib/utils')
-var { requireAuthenticated, requireAdmin } = require('../auth/lib')
+const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
-var { setDefaultResultArray, getAllLogs, getLogDetails } = require('./lib')
+const { setDefaultResultArray, getAllLogs, getLogDetails } = require('./lib')
 
 // route definitions
 debug(getLine(), 'Setting route definitions')
@@ -22,7 +21,7 @@ router.get('/', requireAuthenticated, requireAdmin, getAllLogs)
 // Get terminal details (web console)
 router.get('/details/:id', requireAuthenticated, requireAdmin, getLogDetails)
 
-router.use('/', (req, res, next) => { res.set("Connection", "close"); next() })
+router.use('/', (req, res, next) => { res.set('Connection', 'close'); next() })
 router.use('/', convertResultToJSON)
 
 // Export the router

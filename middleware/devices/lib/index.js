@@ -1,36 +1,33 @@
-'use strict'
+const debug = require('debug')('tacos:middleware:devices:lib')
+const { getLine } = require('../../../lib/utils')
+debug(getLine(), 'Loading')
 
-var express = require('express')
-var { config } = require('../../../lib/config')
-var debug = require('debug')('tacos:middleware:devices:lib')
-var { getLine } = require('../../../lib/utils')
-var { deviceStore, loggingStore } = require('../../../lib/stores')
-var router = express.Router()
+const { deviceStore, loggingStore } = require('../../../lib/stores')
 
 const Logger = loggingStore.getLogger('tacos:middleware:devices:lib')
 
-var setResultArray = function (req, res, next) {
-  res.result = {}
+const setResultArray = function (req, res, next) {
+  res.locals.result = {}
 
   next()
 }
 
-var requireValidDevice = function (req, res, next) {
-  var deviceId = req.params.id
+const requireValidDevice = function (req, res, next) {
+  const deviceId = req.params.id
 
   if (deviceId === undefined || !deviceStore.checkDeviceExists(deviceId)) {
-    res.result = {
+    res.locals.result = {
       message: 'Missing device'
     }
     next('route')
   }
 }
 
-var requireToolAccess = function (req, res, next) {
-  var deviceId = req.params.id
+const requireToolAccess = function (req, res, next) {
+  const deviceId = req.params.id
 
   if (deviceId === undefined) {
-    res.result = {
+    res.locals.result = {
       message: 'Missing device'
     }
     next('route')
@@ -46,63 +43,62 @@ var requireToolAccess = function (req, res, next) {
   })
 }
 
-function getDevices(req, res, next) {
+function getDevices (req, res, next) {
   if (req.user === undefined) {
-    res.result.result = 'ERROR'
-    res.result.message = 'error: missing user information'
+    res.locals.result.result = 'ERROR'
+    res.locals.result.message = 'error: missing user information'
     next()
   }
 
   if (req.user.administrator !== undefined && req.user.administrator === true) {
-    res.result = deviceStore.getAllDevices();
+    res.locals.result = deviceStore.getAllDevices()
   } else {
-    res.result = deviceStore.getAvailableDevices(req.user);
+    res.locals.result = deviceStore.getAvailableDevices(req.user)
   }
 
   next('route')
 }
 
-
-var getDeviceState = function (req, res, next) {
+const getDeviceState = function (req, res, next) {
   if (!req.params.id) {
-    res.result.message = 'error: missing device id'
+    res.locals.result.message = 'error: missing device id'
     next()
   }
 
-  var deviceId = req.params.id
+  const deviceId = req.params.id
 
-  res.result = deviceStore.getDeviceState(deviceId)
+  res.locals.result = deviceStore.getDeviceState(deviceId)
 
   next()
 }
 
-var getDeviceDetails = function (req, res, next) {
+const getDeviceDetails = function (req, res, next) {
   if (!req.params.id) {
-    res.result.message = 'error: missing device id'
+    res.locals.result.message = 'error: missing device id'
     next()
   }
 
-  var deviceId = req.params.id
+  const deviceId = req.params.id
 
-  res.result = deviceStore.getDeviceDetails(deviceId)
+  res.locals.result = deviceStore.getDeviceDetails(deviceId)
 
   next()
 }
 
-var deleteDevice = function (req, res, next) {
-  Logger.info({ action: 'deleteDevice', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' deleted device: ' + req.params.id })
+const deleteDevice = function (req, res, next) {
+  Logger.info({ action: 'deleteDevice', user: req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' deleted device: ' + req.params.id })
 
   if (!req.params.id) {
-    res.result.message = 'error: missing device id'
+    res.locals.result.message = 'error: missing device id'
     next()
   }
 
-  var deviceId = req.params.id
+  const deviceId = req.params.id
 
-  res.result = {}
+  res.locals.result = {}
 
   if (deviceStore.deleteDevice(deviceId)) {
-    res.result = {
+    res.locals.result = {
       result: 'ok'
     }
   }
@@ -110,101 +106,101 @@ var deleteDevice = function (req, res, next) {
   next()
 }
 
-var updateDeviceRole = function (req, res, next) {
-  Logger.info({ action: 'updateDeviceRole', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' updated device role: ' + req.params.id })
+const updateDeviceRole = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceRole', user: req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' updated device role: ' + req.params.id })
 
   if (!req.params.id) {
-    res.result.message = 'error: missing role id'
+    res.locals.result.message = 'error: missing role id'
     next()
   }
 
-  var deviceId = req.params.id
-  var role = req.body.role
+  const deviceId = req.params.id
+  const role = req.body.role
 
-  res.result = deviceStore.updateDeviceRole(deviceId, role)
+  res.locals.result = deviceStore.updateDeviceRole(deviceId, role)
 
   next()
 }
 
-var updateDeviceDescription = function (req, res, next) {
-  Logger.info({ action: 'updateDeviceDescription', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' updated description device: ' + req.params.id })
+const updateDeviceDescription = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceDescription', user: req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' updated description device: ' + req.params.id })
 
   debug('updateDeviceDescription', 'req.params:', req.params)
   debug('updateDeviceDescription', 'req.body:', req.body)
 
   if (!req.params.id || req.params.id === 0) {
-    res.result.message = 'error: missing device id'
+    res.locals.result.message = 'error: missing device id'
     next('route')
   }
 
-  var deviceId = req.params.id
-  var description = req.body.description
+  const deviceId = req.params.id
+  const description = req.body.description
 
   debug('updateDeviceDescription', 'description:', description)
 
-  res.result = deviceStore.updateDeviceDescription(deviceId, description)
+  res.locals.result = deviceStore.updateDeviceDescription(deviceId, description)
 
   next()
 }
 
-var updateDeviceHasSecret = function (req, res, next) {
-  Logger.info({ action: 'updateDeviceHasSecret', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update device has secret: ' + req.params.id })
+const updateDeviceHasSecret = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceHasSecret', user: req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update device has secret: ' + req.params.id })
 
   if (!req.params.id || req.params.id === 0) {
-    res.result.message = 'error: missing device id'
+    res.locals.result.message = 'error: missing device id'
     next('route')
   }
 
-  var deviceId = req.params.id
-  var hasSecret = req.body.hasSecret
+  const deviceId = req.params.id
+  const hasSecret = req.body.hasSecret
 
-  res.result = deviceStore.updateDeviceHasSecret(deviceId, hasSecret)
+  res.locals.result = deviceStore.updateDeviceHasSecret(deviceId, hasSecret)
 
   next()
 }
 
-var updateDeviceSecret = function (req, res, next) {
-  Logger.info({ action: 'updateDeviceHasSecret', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update device secret: ' + req.params.id })
+const updateDeviceSecret = function (req, res, next) {
+  Logger.info({ action: 'updateDeviceHasSecret', user: req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' update device secret: ' + req.params.id })
 
   if (!req.params.id || req.params.id === 0) {
-    res.result.message = 'error: missing device id'
+    res.locals.result.message = 'error: missing device id'
     next('route')
   }
 
-  var deviceId = req.params.id
-  var secret = req.body.secret
+  const deviceId = req.params.id
+  const secret = req.body.secret
 
-  res.result = deviceStore.updateDeviceSecret(deviceId, secret)
-
-  next()
-}
-
-var armDevice = function (req, res, next) {
-  Logger.info({ action: 'armDevice', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' armed device: ' + req.params.id })
-
-  if (!req.params.id) {
-    res.result.message = 'error: missing device id'
-    next()
-  }
-
-  var deviceId = req.params.id
-
-  res.result = deviceStore.armDevice(deviceId)
+  res.locals.result = deviceStore.updateDeviceSecret(deviceId, secret)
 
   next()
 }
 
-var unarmDevice = function (req, res, next) {
-  Logger.info({ action: 'unarmDevice', 'user': req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' unarmed device: ' + req.params.id })
+const armDevice = function (req, res, next) {
+  Logger.info({ action: 'armDevice', user: req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' armed device: ' + req.params.id })
 
   if (!req.params.id) {
-    res.result.message = 'error: missing device id'
+    res.locals.result.message = 'error: missing device id'
     next()
   }
 
-  var deviceId = req.params.id
+  const deviceId = req.params.id
 
-  res.result = deviceStore.unarmDevice(deviceId)
+  res.locals.result = deviceStore.armDevice(deviceId)
+
+  next()
+}
+
+const unarmDevice = function (req, res, next) {
+  Logger.info({ action: 'unarmDevice', user: req.user.username, device: req.params.id, message: 'user ' + req.user.username + ' unarmed device: ' + req.params.id })
+
+  if (!req.params.id) {
+    res.locals.result.message = 'error: missing device id'
+    next()
+  }
+
+  const deviceId = req.params.id
+
+  res.locals.result = deviceStore.unarmDevice(deviceId)
 
   next()
 }

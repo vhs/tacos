@@ -1,27 +1,12 @@
-'use strict'
+const debug = require('debug')('tacos:routes:devices')
+const { convertResultToJSON, getLine } = require('../../lib/utils')
+debug(getLine(), 'Loading')
 
-var express = require('express')
-var { config } = require('../../lib/config')
-var debug = require('debug')('tacos:routes:devices')
-var { convertResultToJSON, getLine } = require('../../lib/utils')
-var router = express.Router()
-var { requireAuthenticated, requireAdmin } = require('../auth/lib')
+const express = require('express')
+const router = express.Router()
+const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
-const {
-  setResultArray,
-  requireValidDevice,
-  requireToolAccess,
-  getDevices,
-  getDeviceState,
-  getDeviceDetails,
-  deleteDevice,
-  updateDeviceRole,
-  updateDeviceDescription,
-  updateDeviceHasSecret,
-  updateDeviceSecret,
-  armDevice,
-  unarmDevice
-} = require('./lib')
+const { setResultArray, requireToolAccess, getDevices, getDeviceState, getDeviceDetails, deleteDevice, updateDeviceRole, updateDeviceDescription, updateDeviceHasSecret, updateDeviceSecret, armDevice, unarmDevice } = require('./lib')
 
 // Set result array
 router.use('/', setResultArray)
@@ -30,7 +15,7 @@ router.use('/', setResultArray)
 router.get('/', getDevices)
 
 // Query state
-router.get('/state/:id', getDeviceState, (req, res, next) => { res.set("Connection", "close"); next() })
+router.get('/state/:id', getDeviceState, (req, res, next) => { res.set('Connection', 'close'); next() })
 
 // Query state
 router.get('/details/:id', getDeviceDetails)
