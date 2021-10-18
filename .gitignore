@@ -12,3 +12,5 @@ shared/*.json
 misc/**
 data/**
 config/**
+.nyc_output
+.vscode
