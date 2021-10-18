@@ -1,39 +1,36 @@
 'use strict'
 
-const path = require('path')
+const debug = require('debug')('tacos:backend:nomos')
+const axios = require('axios')
 
-var _ = require('underscore')
-var debug = require('debug')('tacos:backend:nomos')
-var axios = require('axios')
-
-var { config } = require('../../lib/config')
-var { getLine } = require('../../lib/utils')
+const { config } = require('../../lib/config')
+const { getLine } = require('../../lib/utils')
 
 debug(getLine(), 'Loading nomos backend')
 
-var rolesCache = []
-var rolesLastLoaded = Date.now()
-var fetchingRoles = false
+let rolesCache = []
+let rolesLastLoaded = Date.now()
+let fetchingRoles = false
 
-var loadRoles = function () {
+const loadRoles = function () {
   if (fetchingRoles) return
 
   fetchingRoles = true
   debug(getLine(), 'loading roles', rolesLastLoaded)
 
-  var params = {
-    'page': 0,
-    'size': 25,
-    'columns': 'id,name,code,description,enabled',
-    'order': 'name',
-    'filters': {
-      'column': 'code',
-      'operator': 'like',
-      'value': 'tool:%'
+  const params = {
+    page: 0,
+    size: 25,
+    columns: 'id,name,code,description,enabled',
+    order: 'name',
+    filters: {
+      column: 'code',
+      operator: 'like',
+      value: 'tool:%'
     }
   }
 
-  var options = {
+  const options = {
     method: 'POST',
     url: config[config.backend].userRolesUrl,
     headers: {
@@ -43,12 +40,12 @@ var loadRoles = function () {
     data: params
   }
 
+  // @ts-ignore
   return axios(options)
     .then((rolesResult) => {
-      let rolesData = rolesResult.data
+      const rolesData = rolesResult.data
       debug(getLine(), 'got data:', rolesData.status, rolesData.statusText)
       debug(getLine(), 'data:', rolesData.data)
-
 
       if (typeof rolesData === 'object' && rolesData.length > 0) {
         rolesCache = rolesData
@@ -62,32 +59,31 @@ var loadRoles = function () {
     }).catch((err) => {
       debug(getLine(), 'error caught:')
       debug(getLine(), err)
-      return { 'valid': false, error: true }
+      return { valid: false, error: true }
     }).finally(() => { fetchingRoles = false })
 }
 
 loadRoles()
 
-var getRoles = function () {
-  if (((rolesLastLoaded + config[config.backend].caching.timeout) < Date.now()))
-    loadRoles()
+const getRoles = function () {
+  if (((rolesLastLoaded + config[config.backend].caching.timeout) < Date.now())) { loadRoles() }
 
   return rolesCache
 }
 
-var checkUser = async function (user) {
+const checkUser = async function (user) {
   debug(getLine(), 'checkUser', user)
-  var service = user.provider
-  var id = user.id
+  const service = user.provider
+  const id = user.id
 
   debug(getLine(), 'checkUser', 'Service Name: ' + service)
   debug(getLine(), 'checkUser', 'Service ID: ' + id)
 
-  var params = {}
+  const params = {}
   params.service = service
   params.id = id
 
-  var options = {
+  const options = {
     method: 'POST',
     url: config[config.backend].userAuthUrl,
     headers: {
@@ -97,12 +93,13 @@ var checkUser = async function (user) {
     data: params
   }
 
-  var authenticated = false
+  let authenticated = false
 
   try {
-    let userResult = await axios(options)
+    // @ts-ignore
+    const userResult = await axios(options)
 
-    let userData = userResult.data
+    const userData = userResult.data
 
     debug(getLine(), 'checkUser', 'userData', JSON.stringify(userData))
 
@@ -141,14 +138,14 @@ var checkUser = async function (user) {
   }
 }
 
-var checkCard = function (cardRequest) {
+const checkCard = function (cardRequest) {
   debug(getLine(), 'checkCard')
   debug(getLine(), 'checkCard', 'cardRequest', cardRequest)
 
-  var params = {}
+  const params = {}
   params.rfid = cardRequest.id
 
-  var options = {
+  const options = {
     method: 'POST',
     url: config[config.backend].cardAuthUrl,
     headers: {
@@ -160,11 +157,12 @@ var checkCard = function (cardRequest) {
 
   debug(getLine(), 'checkCard', 'options', options)
 
+  // @ts-ignore
   return axios(options).then((requestResult) => {
-    let cardResult = requestResult.data
+    const cardResult = requestResult.data
 
     debug(getLine(), 'got CheckRFID result:', cardResult.valid)
-    var valid = false
+    let valid = false
 
     if (cardResult && cardResult.valid) {
       // Save valid
@@ -179,9 +177,9 @@ var checkCard = function (cardRequest) {
         cardRequest.username = cardResult.username
 
         // Get default privileges
-        _.each(cardResult.privileges, (priv) => {
-          cardRequest.privileges.push(priv.code)
-        })
+        for (const privIdx in cardResult.privileges) {
+          cardRequest.privileges.push(cardResult.privileges[privIdx].code)
+        }
 
         // If the user has the administrator_role, set administrator
         if (cardRequest.privileges.indexOf(config.administrator_role) >= 0) {
@@ -203,7 +201,7 @@ var checkCard = function (cardRequest) {
       debug(getLine(), 'caught error')
       // Log this for now and proceed to the next promise
       debug(getLine(), err)
-      return { 'valid': false, error: true }
+      return { valid: false, error: true }
     })
 }
 
