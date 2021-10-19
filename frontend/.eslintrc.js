@@ -21,7 +21,7 @@ module.exports = {
   root: true,
   settings: {
     react: {
-      version: "16.13.1"
+      version: '16.13.1'
     }
   }
 }

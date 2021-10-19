@@ -1,8 +1,10 @@
-import axios from 'axios'
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
 
+import axios from 'axios'
 import { stateMachine } from 'pretty-state-machine'
 
 import AdminElement from '../AdminElement'
@@ -46,11 +48,14 @@ class DeviceCard extends Component {
 
   componentDidMount () {
     this.intervalIds.getDevice = setInterval(this.getDevice, 1000)
+
     const newUserState = stateMachine.fetch('user', {
       administrator: false,
       authenticated: false
     })
+
     log.debug('componentDidMount', 'newUserState', newUserState)
+
     this.setState(newUserState)
   }
 
@@ -72,14 +77,11 @@ class DeviceCard extends Component {
 
   async _deviceHot () {
     let response
+
     if (this.state.device.armed === 0) {
-      response = await axios.post(
-        '/api/devices/arm/' + this.props.device.id
-      )
+      response = await axios.post('/api/devices/arm/' + this.props.device.id)
     } else {
-      response = await axios.post(
-        '/api/devices/unarm/' + this.props.device.id
-      )
+      response = await axios.post('/api/devices/unarm/' + this.props.device.id)
     }
 
     this.setState({ device: response.data })
@@ -106,7 +108,7 @@ class DeviceCard extends Component {
 
     this.setState({ device })
 
-    const response = await axios.post(
+    await axios.post(
       '/api/devices/update/description/' + this.state.device.id,
       { description }
     )
@@ -125,7 +127,7 @@ class DeviceCard extends Component {
 
     this.setState({ device })
 
-    const response = await axios.post(
+    await axios.post(
       '/api/devices/update/role/' + this.state.device.id,
       { role }
     )
@@ -135,105 +137,110 @@ class DeviceCard extends Component {
 
   render () {
     return (
-			<Col xs={12} sm={12} md={6} lg={4} className='DeviceCard'>
-				<Row className='spacious'>
-					<Col>
-						<Row className='tool-title'>
-							<Col>
-								<h3>{this.props.device.id}</h3>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col xs='12' sm='12' md='4' lg='4'>
-								<b>Description:</b>
-							</Col>
-							<Col xs='12' sm='12' md='8' lg='8'>
-								{this.state.device.description}
-							</Col>
-						</Row>
-						<AdminElement user={this.state.user}>
-							<Row className='spacious'>
-								<Col xs='12' sm='12' md='4' lg='4'>
-									<b> Description:</b>
-								</Col>
-								<Col>
-									<FormControl
-										id='DeviceId'
-										className='description-control'
-										type='input'
-										onChange={this.updateDescription}
-										value={this.state.device.description}
-									/>
-								</Col>
-							</Row>
-							<Row className='spacious'>
-								<Col xs='12' sm='12' md='4' lg='4'>
-									<b>Role:</b>
-								</Col>
-								<Col>
-									<Form.Group controlId='SelectRole'>
-										<Form.Control
-											as='select'
-											custom
-											value={this.state.device.role}
-											onChange={this.updateRole}
-										>
-											<RoleOptions
-												roles={this.props.roles}
-											/>
-										</Form.Control>
-									</Form.Group>
-								</Col>
-							</Row>
-						</AdminElement>
-						<Row className='spacious'>
-							<Col xs='12' sm='12' md='4' lg='4'>
-								<b>State:</b>
-							</Col>
-							<Col>
-								<span className='powerstate'>
-									{this.state.device.armed
-									  ? 'Armed'
-									  : 'Unarmed'}
-								</span>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col xs='12' sm='12' md='4' lg='4'>
-								<b>Last Seen:</b>
-							</Col>
-							<Col>
-								<TimeAgo date={this.props.device.last_seen} />
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<AdminElement user={this.state.user}>
-									<Button
-										className='btn-danger'
-										onClick={this.deleteDevice}
-									>
-										DELETE
-									</Button>
-								</AdminElement>
-							</Col>
-							<Col></Col>
-							<Col className='pull-right'>
-								<Button
-									className='pull-right powerbutton'
-									onClick={this.deviceHot}
-								>
-									{this.state.device.armed === 0
-									  ? 'ARM'
-									  : 'DISARM'}
-								</Button>
-							</Col>
-						</Row>
-					</Col>
-				</Row>
-			</Col>
+      <Col xs={12} sm={12} md={6} lg={4} className='DeviceCard'>
+        <Row className='spacious'>
+          <Col>
+            <Row className='tool-title'>
+              <Col>
+                <h3>{this.props.device.id}</h3>
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col xs='12' sm='12' md='4' lg='4'>
+                <b>Description:</b>
+              </Col>
+              <Col xs='12' sm='12' md='8' lg='8'>
+                {this.state.device.description}
+              </Col>
+            </Row>
+            <AdminElement user={this.state.user}>
+              <Row className='spacious'>
+                <Col xs='12' sm='12' md='4' lg='4'>
+                  <b> Description:</b>
+                </Col>
+                <Col>
+                  <FormControl
+                    id='DeviceId'
+                    className='description-control'
+                    type='input'
+                    onChange={this.updateDescription}
+                    value={this.state.device.description}
+                  />
+                </Col>
+              </Row>
+              <Row className='spacious'>
+                <Col xs='12' sm='12' md='4' lg='4'>
+                  <b>Role:</b>
+                </Col>
+                <Col>
+                  <Form.Group controlId='SelectRole'>
+                    <Form.Control
+                      as='select'
+                      custom
+                      value={this.state.device.role}
+                      onChange={this.updateRole}
+                    >
+                      <RoleOptions
+                        roles={this.props.roles}
+                      />
+                    </Form.Control>
+                  </Form.Group>
+                </Col>
+              </Row>
+            </AdminElement>
+            <Row className='spacious'>
+              <Col xs='12' sm='12' md='4' lg='4'>
+                <b>State:</b>
+              </Col>
+              <Col>
+                <span className='powerstate'>
+                  {this.state.device.armed
+                    ? 'Armed'
+                    : 'Unarmed'}
+                </span>
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col xs='12' sm='12' md='4' lg='4'>
+                <b>Last Seen:</b>
+              </Col>
+              <Col>
+                <TimeAgo date={this.props.device.last_seen} />
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <AdminElement user={this.state.user}>
+                  <Button
+                    className='btn-danger'
+                    onClick={this.deleteDevice}
+                  >
+                    DELETE
+                  </Button>
+                </AdminElement>
+              </Col>
+              <Col></Col>
+              <Col className='pull-right'>
+                <Button
+                  className='pull-right powerbutton'
+                  onClick={this.deviceHot}
+                >
+                  {this.state.device.armed === 0
+                    ? 'ARM'
+                    : 'DISARM'}
+                </Button>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Col>
     )
   }
 }
 
 export default DeviceCard
+
+DeviceCard.propTypes = {
+  device: PropTypes.object,
+  roles: PropTypes.array
+}

@@ -73,7 +73,7 @@ class Terminals extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        {this.state.terminals.length > 0 ? <TerminalCards terminals={this.state.terminals} devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can't find any terminals at this time!</span>}
+                        {this.state.terminals.length > 0 ? <TerminalCards terminals={this.state.terminals} devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any terminals at this time!</span>}
                     </Col>
                 </Row>
             </Loading>

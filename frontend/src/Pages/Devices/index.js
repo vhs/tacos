@@ -72,7 +72,7 @@ class Devices extends Component {
                     </Col>
                 </Row>
                 <Row>
-                    {this.state.devices.length > 0 ? <DeviceCards devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can't find any devices at this time!</span>}
+                    {this.state.devices.length > 0 ? <DeviceCards devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any devices at this time!</span>}
                 </Row>
             </Loading>
     )

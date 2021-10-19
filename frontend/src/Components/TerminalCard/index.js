@@ -1,7 +1,10 @@
-import axios from 'axios'
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
+
+import axios from 'axios'
 
 import './style.css'
 
@@ -97,7 +100,7 @@ class TerminalCard extends Component {
 
     this.setState({ terminal })
 
-    const response = await axios.post(
+    await axios.post(
       '/api/terminals/update/description/' + this.state.terminal.id,
       { description }
     )
@@ -116,7 +119,7 @@ class TerminalCard extends Component {
 
     this.setState({ terminal })
 
-    const response = await axios.post(
+    await axios.post(
       '/api/terminals/update/secret/' + this.state.terminal.id,
       { secret }
     )
@@ -135,7 +138,7 @@ class TerminalCard extends Component {
 
     this.setState({ terminal })
 
-    const response = await axios.post(
+    await axios.post(
       '/api/terminals/update/target/' + this.state.terminal.id,
       { target }
     )
@@ -166,120 +169,124 @@ class TerminalCard extends Component {
 
   render () {
     return (
-			<Col xs='12' sm='12' md='6' lg='6' className='TerminalCard'>
-				<Row className='spacious'>
-					<Col>
-						<Row className='tool-title'>
-							<Col>
-								<h3>{this.props.terminal.id}</h3>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<b> Description:</b>
-							</Col>
-							<Col>
-								<FormControl
-									id='TerminalId'
-									className='description-control'
-									type='input'
-									onChange={this.updateDescription}
-									value={this.state.terminal.description}
-								/>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<b>Enabled:</b>
-							</Col>
-							<Col>
-								<Form.Check
-									type='checkbox'
-									checked={
-										this.state.terminal.enabled === 1
-									}
-									label={
-										this.state.terminal.enabled === 1
-										  ? 'Enabled'
-										  : 'Disabled'
-									}
-									onChange={this.updateEnabled}
-								/>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<b>Target:</b>
-							</Col>
-							<Col>
-								<Form.Group controlId='SelectTarget'>
-									<Form.Control
-										as='select'
-										custom
-										value={
-											this.state.terminal.target || '---'
-										}
-										onChange={this.updateTarget}
-									>
-										<option>---</option>
-										<TargetOptions
-											targets={this.state.devices}
-										/>
-									</Form.Control>
-								</Form.Group>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<b>Secure:</b>
-							</Col>
-							<Col>
-								<span className='securestate'>
-									{this.state.terminal.secure
-									  ? 'Secured'
-									  : 'Not secured'}
-								</span>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<b> Secret:</b>
-							</Col>
-							<Col>
-								<FormControl
-									id='TerminalSecret'
-									className='description-control'
-									type='password'
-									onChange={this.updateSecret}
-									value={this.state.terminal.secret}
-								/>
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<b>Last Seen:</b>
-							</Col>
-							<Col>
-								<TimeAgo date={this.props.terminal.last_seen} />
-							</Col>
-						</Row>
-						<Row className='spacious'>
-							<Col>
-								<Button
-									className='btn-danger'
-									onClick={this.deleteTerminal}
-								>
-									DELETE
-								</Button>
-							</Col>
-							<Col>&nbsp;</Col>
-							<Col className='pull-right'></Col>
-						</Row>
-					</Col>
-				</Row>
-			</Col>
+      <Col xs='12' sm='12' md='6' lg='6' className='TerminalCard'>
+        <Row className='spacious'>
+          <Col>
+            <Row className='tool-title'>
+              <Col>
+                <h3>{this.props.terminal.id}</h3>
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <b> Description:</b>
+              </Col>
+              <Col>
+                <FormControl
+                  id='TerminalId'
+                  className='description-control'
+                  type='input'
+                  onChange={this.updateDescription}
+                  value={this.state.terminal.description}
+                />
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <b>Enabled:</b>
+              </Col>
+              <Col>
+                <Form.Check
+                  type='checkbox'
+                  checked={
+                    this.state.terminal.enabled === 1
+                  }
+                  label={
+                    this.state.terminal.enabled === 1
+                      ? 'Enabled'
+                      : 'Disabled'
+                  }
+                  onChange={this.updateEnabled}
+                />
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <b>Target:</b>
+              </Col>
+              <Col>
+                <Form.Group controlId='SelectTarget'>
+                  <Form.Control
+                    as='select'
+                    custom
+                    value={
+                      this.state.terminal.target || '---'
+                    }
+                    onChange={this.updateTarget}
+                  >
+                    <option>---</option>
+                    <TargetOptions
+                      targets={this.state.devices}
+                    />
+                  </Form.Control>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <b>Secure:</b>
+              </Col>
+              <Col>
+                <span className='securestate'>
+                  {this.state.terminal.secure
+                    ? 'Secured'
+                    : 'Not secured'}
+                </span>
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <b> Secret:</b>
+              </Col>
+              <Col>
+                <FormControl
+                  id='TerminalSecret'
+                  className='description-control'
+                  type='password'
+                  onChange={this.updateSecret}
+                  value={this.state.terminal.secret}
+                />
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <b>Last Seen:</b>
+              </Col>
+              <Col>
+                <TimeAgo date={this.props.terminal.last_seen} />
+              </Col>
+            </Row>
+            <Row className='spacious'>
+              <Col>
+                <Button
+                  className='btn-danger'
+                  onClick={this.deleteTerminal}
+                >
+                  DELETE
+                </Button>
+              </Col>
+              <Col>&nbsp;</Col>
+              <Col className='pull-right'></Col>
+            </Row>
+          </Col>
+        </Row>
+      </Col>
     )
   }
 }
 
 export default TerminalCard
+
+TerminalCard.propTypes = {
+  terminal: PropTypes.object
+}

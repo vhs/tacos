@@ -13,7 +13,7 @@ class Dashboard extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <p>We're currently dumb and don't have any stats, but check out the devices and terminals pages!</p>
+                        <p>We&apos;re currently dumb and don&apos;t have any stats, but check out the devices and terminals pages!</p>
                     </Col>
                 </Row>
             </>

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import CustomLogger from '../../lib/custom-logger'
 
@@ -25,3 +26,8 @@ class AdminElement extends Component {
 }
 
 export default AdminElement
+
+AdminElement.propTypes = {
+  user: PropTypes.object,
+  children: PropTypes.any
+}
