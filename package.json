@@ -32,11 +32,12 @@
     "supervisor": "^0.12.0"
   },
   "devDependencies": {
-    "eslint": "^8.0.1",
-    "eslint-config-standard": "^16.0.3",
+    "eslint": "^v7.*",
+    "eslint-config-standard": "^14.0.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.26.1",
     "passport-local": "^1.0.0"
   },
   "jshintConfig": {
