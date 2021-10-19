@@ -11,33 +11,34 @@ import CustomLogger from '../../lib/custom-logger'
 const log = new CustomLogger('tacos:Pages:Logging')
 
 const LogLines = ({ logs }) => {
-    log.debug('LogLines', { logs })
-    var LogLinesResult = logs.map(log => {
-        return (
+  log.debug('LogLines', { logs })
+  const LogLinesResult = logs.map(log => {
+    return (
             <LogLine key={log.ts} log={log} />
-        )
-    })
+    )
+  })
 
-    return LogLinesResult
+  return LogLinesResult
 }
 
 class Logging extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            ...{
-                logs: []
-            }, ...props
-        }
+  constructor (props) {
+    super(props)
+    this.state = {
+      ...{
+        logs: []
+      },
+      ...props
     }
+  }
 
-    async componentDidMount() {
-        let response = await axios('/api/logging')
-        this.setState({ logs: response.data.data })
-    }
+  async componentDidMount () {
+    const response = await axios('/api/logging')
+    this.setState({ logs: response.data.data })
+  }
 
-    render() {
-        return (
+  render () {
+    return (
             <>
                 <Row>
                     <Col>
@@ -53,8 +54,8 @@ class Logging extends Component {
                 </Row>
                 <LogLines logs={this.state.logs} />
             </>
-        )
-    }
+    )
+  }
 }
 
 export default Logging

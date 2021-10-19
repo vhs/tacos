@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import React, { Component } from 'react'
 
-import stateMachine from '../../services/statemachine'
+import { stateMachine } from 'pretty-state-machine'
 
 import { Row, Col } from 'react-bootstrap'
 
@@ -14,56 +14,57 @@ import CustomLogger from '../../lib/custom-logger'
 const log = new CustomLogger('tacos:Pages:Terminals')
 
 const TerminalCards = ({ terminals, devices, roles, user }) => {
-    var TerminalCardsResult = terminals.map(terminal => {
-        return (
+  const TerminalCardsResult = terminals.map(terminal => {
+    return (
             <TerminalCard key={terminal.id} terminal={terminal} devices={devices} roles={roles} user={user} />
-        )
-    })
+    )
+  })
 
-    return TerminalCardsResult
+  return TerminalCardsResult
 }
 
 class Terminals extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            ...{
-                devices: [],
-                terminals: [],
-                loading: true,
-                user: { authenticated: false, administrator: false },
-                loggedIn: false
-            }, ...props
-        }
+  constructor (props) {
+    super(props)
+    this.state = {
+      ...{
+        devices: [],
+        terminals: [],
+        loading: true,
+        user: { authenticated: false, administrator: false },
+        loggedIn: false
+      },
+      ...props
     }
+  }
 
-    componentDidMount() {
-        this.getDevices()
-        this.getTerminals()
-        setInterval(this.getDevices.bind(this), 5000)
-        setInterval(this.getTerminals.bind(this), 5000)
+  componentDidMount () {
+    this.getDevices()
+    this.getTerminals()
+    setInterval(this.getDevices.bind(this), 5000)
+    setInterval(this.getTerminals.bind(this), 5000)
 
-        stateMachine.attach('loggedIn', this.setState.bind(this))
-        stateMachine.attach('user', this.setState.bind(this))
-        stateMachine.attach('roles', this.setState.bind(this))
+    stateMachine.attach('loggedIn', this.setState.bind(this))
+    stateMachine.attach('user', this.setState.bind(this))
+    stateMachine.attach('roles', this.setState.bind(this))
 
-        this.setState({ loading: false })
-    }
+    this.setState({ loading: false })
+  }
 
-    async getDevices() {
-        let response = await axios.get('/api/devices/')
-        log.debug('getDevices', response.data)
-        this.setState({ devices: response.data })
-    }
+  async getDevices () {
+    const response = await axios.get('/api/devices/')
+    log.debug('getDevices', response.data)
+    this.setState({ devices: response.data })
+  }
 
-    async getTerminals() {
-        let response = await axios.get('/api/terminals/')
-        log.debug('getTerminals', response.data)
-        this.setState({ terminals: response.data })
-    }
+  async getTerminals () {
+    const response = await axios.get('/api/terminals/')
+    log.debug('getTerminals', response.data)
+    this.setState({ terminals: response.data })
+  }
 
-    render() {
-        return (
+  render () {
+    return (
             <Loading loading={this.state.loading}>
                 <Row>
                     <Col>
@@ -76,8 +77,8 @@ class Terminals extends Component {
                     </Col>
                 </Row>
             </Loading>
-        )
-    }
+    )
+  }
 }
 
 export default Terminals

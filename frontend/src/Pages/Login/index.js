@@ -1,4 +1,4 @@
-import stateMachine from '../../services/statemachine'
+import { stateMachine } from 'pretty-state-machine'
 
 import React, { Component } from 'react'
 import { Row, Col, Button } from 'react-bootstrap'
@@ -13,16 +13,15 @@ import './style.css'
 
 library.add(fab)
 
-
 class Login extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-        }
+  constructor (props) {
+    super(props)
+    this.state = {
     }
+  }
 
-    render() {
-        return (
+  render () {
+    return (
             <>
                 <Row className="spacious">
                     <Col>
@@ -47,8 +46,8 @@ class Login extends Component {
                     </Col>
                 </Row>
             </>
-        )
-    }
+    )
+  }
 }
 
 export default Login

@@ -1,64 +1,68 @@
 import axios from 'axios'
 
-import stateMachine from '../statemachine'
+import { stateMachine } from 'pretty-state-machine'
 
 import CustomLogger from '../../lib/custom-logger'
 
-var log = new CustomLogger('tacos:services:api')
+const log = new CustomLogger('tacos:services:api')
 
 class APIService {
-    intervalIds
+  intervalIds
 
-    constructor() {
-        log.debug('start')
-        this.intervalIds = {}
-        this.getSession()
-        this.getRoles()
-        this.intervalIds.getSession = setInterval(this.getSession, 2000)
-        this.intervalIds.rolesChecker = setInterval(this.getRoles, 2000)
-    }
+  constructor () {
+    log.debug('start')
+    this.intervalIds = {}
+    this.getSession()
+    this.getRoles()
+    this.intervalIds.getSession = setInterval(this.getSession, 2000)
+    this.intervalIds.rolesChecker = setInterval(this.getRoles, 2000)
+  }
 
-    getRoles() {
-        log.debug('getRoles')
-        axios.get('/api/roles')
-            .then(function (response) {
-                let data = response.data
-                if (data.roles !== undefined) {
-                    let newState = {
-                        roles: data.roles
-                    }
-                    stateMachine.pub(newState)
-                } else {
-                    let newState = { roles: [] }
-                    stateMachine.pub(newState)
-                }
-            })
-            .catch((err) => {
-                stateMachine.pub({ roles: [] })
-            })
-    }
+  async getRoles () {
+    log.debug('getRoles')
 
-    async getSession() {
-        let response = await axios.get('/api/session')
+    try {
+      const result = await axios.get('/api/roles')
 
-        let data = response.data
-
-        let newState = { user: { authenticated: false }, loggedIn: false }
-
-        if (data.user !== undefined) {
-            newState = {
-                ...newState,
-                ...{
-                    user: data.user,
-                    loggedIn: data.user.authenticated
-                }
-            }
+      const data = result.data
+      if (data.roles !== undefined) {
+        const newState = {
+          roles: data.roles
         }
-
         stateMachine.pub(newState)
-
-        return newState
+      } else {
+        stateMachine.pub({ roles: [] })
+      }
+    } catch (err) {
+      stateMachine.pub({ roles: [] })
     }
+  }
+
+  async getSession () {
+    try {
+      const response = await axios.get('/api/session')
+
+      const data = response.data
+
+      let newState = { user: { authenticated: false }, loggedIn: false }
+
+      if (data.user !== undefined) {
+        newState = {
+          ...newState,
+          ...{
+            user: data.user,
+            loggedIn: data.user.authenticated
+          }
+        }
+      }
+
+      stateMachine.pub(newState)
+
+      return newState
+    } catch (err) {
+
+    }
+  }
 }
 
 const apiService = new APIService()

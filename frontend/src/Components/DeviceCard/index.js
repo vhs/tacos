@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
 
-import stateMachine from '../../services/statemachine'
+import { stateMachine } from 'pretty-state-machine'
 
 import AdminElement from '../AdminElement'
 
@@ -14,126 +14,127 @@ import CustomLogger from '../../lib/custom-logger'
 const log = new CustomLogger('tacos:Components:DeviceCard')
 
 const RoleOptions = ({ roles }) => {
-	var RolesOptionsResult = roles.map((role) => {
-		return <option key={role.code}>{role.code}</option>
-	})
+  const RolesOptionsResult = roles.map((role) => {
+    return <option key={role.code}>{role.code}</option>
+  })
 
-	return RolesOptionsResult
+  return RolesOptionsResult
 }
 
 class DeviceCard extends Component {
-	intervalIds
+  intervalIds
 
-	constructor(props) {
-		super(props)
-		log.debug('DeviceCard', 'props', props)
-		this.intervalIds = {}
-		this.state = {
-			...{
-				device: {},
-				roles: [],
-				user: { administrator: false, authenticated: false }
-			},
-			...props
-		}
-		log.debug('DeviceCard', 'state', this.state)
-		this.deviceHot = this._deviceHot.bind(this)
-		this.getDevice = this._getDevice.bind(this)
-		this.deleteDevice = this._deleteDevice.bind(this)
-		this.updateDescription = this._updateDescription.bind(this)
-		this.updateRole = this._updateRole.bind(this)
-	}
+  constructor (props) {
+    super(props)
+    log.debug('DeviceCard', 'props', props)
+    this.intervalIds = {}
+    this.state = {
+      ...{
+        device: {},
+        roles: [],
+        user: { administrator: false, authenticated: false }
+      },
+      ...props
+    }
+    log.debug('DeviceCard', 'state', this.state)
+    this.deviceHot = this._deviceHot.bind(this)
+    this.getDevice = this._getDevice.bind(this)
+    this.deleteDevice = this._deleteDevice.bind(this)
+    this.updateDescription = this._updateDescription.bind(this)
+    this.updateRole = this._updateRole.bind(this)
+  }
 
-	componentDidMount() {
-		this.intervalIds.getDevice = setInterval(this.getDevice, 1000)
-		let newUserState = stateMachine.fetch('user', {
-			administrator: false,
-			authenticated: false
-		})
-		log.debug('componentDidMount', 'newUserState', newUserState)
-		this.setState(newUserState)
-	}
+  componentDidMount () {
+    this.intervalIds.getDevice = setInterval(this.getDevice, 1000)
+    const newUserState = stateMachine.fetch('user', {
+      administrator: false,
+      authenticated: false
+    })
+    log.debug('componentDidMount', 'newUserState', newUserState)
+    this.setState(newUserState)
+  }
 
-	componentWillUnmount() {
-		for (let intervalId in this.intervalIds) {
-			clearInterval(this.intervalIds[intervalId])
-		}
-	}
+  componentWillUnmount () {
+    for (const intervalId in this.intervalIds) {
+      clearInterval(this.intervalIds[intervalId])
+    }
+  }
 
-	async _getDevice() {
-		let response = await axios.get(
-			'/api/devices/details/' + this.state.device.id
-		)
+  async _getDevice () {
+    const response = await axios.get(
+      '/api/devices/details/' + this.state.device.id
+    )
 
-		log.debug('getDetails', 'response', response.data)
+    log.debug('getDetails', 'response', response.data)
 
-		this.setState({ device: response.data })
-	}
+    this.setState({ device: response.data })
+  }
 
-	async _deviceHot() {
-		let response
-		if (this.state.device.armed === 0)
-			response = await axios.post(
-				'/api/devices/arm/' + this.props.device.id
-			)
-		else
-			response = await axios.post(
-				'/api/devices/unarm/' + this.props.device.id
-			)
+  async _deviceHot () {
+    let response
+    if (this.state.device.armed === 0) {
+      response = await axios.post(
+        '/api/devices/arm/' + this.props.device.id
+      )
+    } else {
+      response = await axios.post(
+        '/api/devices/unarm/' + this.props.device.id
+      )
+    }
 
-		this.setState({ device: response.data })
-	}
+    this.setState({ device: response.data })
+  }
 
-	async _deleteDevice() {
-		if (window.confirm('Are you sure?') === true) {
-			let response = await axios.post(
-				'/api/devices/delete/' + this.state.device.id
-			)
+  async _deleteDevice () {
+    if (window.confirm('Are you sure?') === true) {
+      const response = await axios.post(
+        '/api/devices/delete/' + this.state.device.id
+      )
 
-			log.debug('deleteDevice', 'response', response.data)
-		}
-	}
+      log.debug('deleteDevice', 'response', response.data)
+    }
+  }
 
-	async _updateDescription(event) {
-		let description = event.target.value
+  async _updateDescription (event) {
+    const description = event.target.value
 
-		log.debug('_updateDescription', 'description', description)
+    log.debug('_updateDescription', 'description', description)
 
-		let device = { ...this.state.device, ...{ description } }
+    const device = { ...this.state.device, ...{ description } }
 
-		log.debug('_updateDescription', 'device', device)
+    log.debug('_updateDescription', 'device', device)
 
-		this.setState({ device })
+    this.setState({ device })
 
-		let response = await axios.post(
-			'/api/devices/update/description/' + this.state.device.id,
-			{ description }
-		)
+    const response = await axios.post(
+      '/api/devices/update/description/' + this.state.device.id,
+      { description }
+    )
 
-		return true
-	}
+    return true
+  }
 
-	async _updateRole(event) {
-		let role = event.target.value
+  async _updateRole (event) {
+    const role = event.target.value
 
-		log.debug('_updateRole', 'role', role)
+    log.debug('_updateRole', 'role', role)
 
-		let device = { ...this.state.device, ...{ role } }
+    const device = { ...this.state.device, ...{ role } }
 
-		log.debug('_updateRole', 'device', device)
+    log.debug('_updateRole', 'device', device)
 
-		this.setState({ device })
+    this.setState({ device })
 
-		let response = await axios.post(
-			'/api/devices/update/role/' + this.state.device.id,
-			{ role }
-		)
+    const response = await axios.post(
+      '/api/devices/update/role/' + this.state.device.id,
+      { role }
+    )
 
-		return true
-	}
+    return true
+  }
 
-	render() {
-		return (
+  render () {
+    return (
 			<Col xs={12} sm={12} md={6} lg={4} className='DeviceCard'>
 				<Row className='spacious'>
 					<Col>
@@ -192,8 +193,8 @@ class DeviceCard extends Component {
 							<Col>
 								<span className='powerstate'>
 									{this.state.device.armed
-										? 'Armed'
-										: 'Unarmed'}
+									  ? 'Armed'
+									  : 'Unarmed'}
 								</span>
 							</Col>
 						</Row>
@@ -223,16 +224,16 @@ class DeviceCard extends Component {
 									onClick={this.deviceHot}
 								>
 									{this.state.device.armed === 0
-										? 'ARM'
-										: 'DISARM'}
+									  ? 'ARM'
+									  : 'DISARM'}
 								</Button>
 							</Col>
 						</Row>
 					</Col>
 				</Row>
 			</Col>
-		)
-	}
+    )
+  }
 }
 
 export default DeviceCard

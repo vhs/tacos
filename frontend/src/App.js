@@ -1,17 +1,13 @@
 import React, { Component } from 'react'
 
-import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 import { Container } from 'react-bootstrap'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { stateMachine } from 'pretty-state-machine'
 
 // import logo from './logo.svg';
-import './App.css';
+import './App.css'
 
 import Menu from './Components/Menu'
 import Login from './Pages/Login'
@@ -21,15 +17,14 @@ import Devices from './Pages/Devices'
 import Terminals from './Pages/Terminals'
 import Logging from './Pages/Logging'
 
-import stateMachine from './services/statemachine'
 import apiSvc from './services/api'
 
 import CustomLogger from './lib/custom-logger'
 
-var log = new CustomLogger('tacos:app')
+const log = new CustomLogger('tacos:app')
 
 class App extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     log.debug('constructor', this.props)
@@ -43,15 +38,16 @@ class App extends Component {
     this.apiSvc = apiSvc
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // log.debug('App', 'componentDidMount', 'apiSvc.getSession()', apiSvc.getSession())
-    this.setState({ ...this.state, ...this.session })
+    const session = apiSvc.getSession()
+
+    this.setState({ ...this.state, ...session })
 
     stateMachine.sub('state', (args) => {
-      let updateState = {}
-      for (let arg in args) {
-        if (this.state[arg] !== undefined && this.state[arg] !== args[arg])
-          updateState[arg] = args[arg]
+      const updateState = {}
+      for (const arg in args) {
+        if (this.state[arg] !== undefined && this.state[arg] !== args[arg]) { updateState[arg] = args[arg] }
       }
 
       if (Object.keys(updateState).length > 0) {
@@ -61,7 +57,7 @@ class App extends Component {
     })
   }
 
-  render() {
+  render () {
     return (
       <Router>
         <Container>
@@ -82,14 +78,14 @@ class App extends Component {
             <Route path="/login">
               {this.state.loggedIn ? <Redirect to="/dashboard" /> : <Login />}
             </Route>
-            <Route path="/" exact="true">
+            <Route path="/" exact>
               {this.state.loggedIn ? <Redirect to="/dashboard" /> : <Home />}
             </Route>
           </Switch>
         </Container>
       </Router>
-    );
+    )
   }
 }
 
-export default (App);
+export default (App)

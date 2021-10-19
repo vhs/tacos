@@ -3,8 +3,8 @@ import React, { Component } from 'react'
 import { Row, Col } from 'react-bootstrap'
 
 class Dashboard extends Component {
-    render() {
-        return (
+  render () {
+    return (
             <>
                 <Row>
                     <Col>
@@ -17,8 +17,8 @@ class Dashboard extends Component {
                     </Col>
                 </Row>
             </>
-        )
-    }
+    )
+  }
 }
 
 export default Dashboard

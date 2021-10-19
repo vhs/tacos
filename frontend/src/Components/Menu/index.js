@@ -1,34 +1,34 @@
 import React, { Component } from 'react'
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 import { Navbar, Nav, Button } from 'react-bootstrap'
 import AdminElement from '../AdminElement'
 import AuthenticatedElement from '../AuthenticatedElement'
 import UserControlElement from '../UserControlElement'
 
-import stateMachine from '../../services/statemachine'
+import { stateMachine } from 'pretty-state-machine'
 
 import './style.css'
 
 import CustomLogger from '../../lib/custom-logger'
 
-var log = new CustomLogger('tacos:components:menu')
+const log = new CustomLogger('tacos:components:menu')
 
 class Menu extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            loggedIn: false,
-            user: {}
-        }
+  constructor (props) {
+    super(props)
+    this.state = {
+      loggedIn: false,
+      user: {}
     }
+  }
 
-    componentDidMount() {
-        stateMachine.sub('loggedIn', this.setState.bind(this))
-        stateMachine.sub('user', this.setState.bind(this))
-    }
+  componentDidMount () {
+    stateMachine.sub('loggedIn', this.setState.bind(this))
+    stateMachine.sub('user', this.setState.bind(this))
+  }
 
-    render() {
-        return (
+  render () {
+    return (
             <Navbar expand="lg">
                 <Navbar.Brand><Nav.Link to="/">TAC•OS</Nav.Link></Navbar.Brand>
                 <Navbar.Toggle />
@@ -44,8 +44,8 @@ class Menu extends Component {
                     </Navbar.Text>
                 </Navbar.Collapse>
             </Navbar>
-        )
-    }
+    )
+  }
 }
 
 export default Menu

@@ -1,11 +1,9 @@
 import axios from 'axios'
 
-import stateMachine from '../statemachine'
+import { stateMachine } from 'pretty-state-machine'
 
 class APIService {
-    constructor()
-    {
-        
-    }
-}
+  constructor () {
 
+  }
+}

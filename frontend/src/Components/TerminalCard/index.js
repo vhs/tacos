@@ -10,161 +10,162 @@ import CustomLogger from '../../lib/custom-logger'
 const log = new CustomLogger('tacos:Components:TerminalCard')
 
 const TargetOptions = ({ targets }) => {
-	var TargetsOptionsResult = targets.map((target) => {
-		return <option key={target.id}>{target.id}</option>
-	})
+  const TargetsOptionsResult = targets.map((target) => {
+    return <option key={target.id}>{target.id}</option>
+  })
 
-	return TargetsOptionsResult
+  return TargetsOptionsResult
 }
 
 class TerminalCard extends Component {
-	intervalIds
+  intervalIds
 
-	constructor(props) {
-		super(props)
-		log.debug('TerminalCard', 'props', props)
-		this.intervalIds = {}
+  constructor (props) {
+    super(props)
+    log.debug('TerminalCard', 'props', props)
+    this.intervalIds = {}
 
-		this.state = {
-			...{ terminal: {}, devices: [], targets: [], user: {} },
-			...props
-		}
+    this.state = {
+      ...{ terminal: {}, devices: [], targets: [], user: {} },
+      ...props
+    }
 
-		this.getTerminal = this._getTerminal.bind(this)
-		this.deleteTerminal = this._deleteTerminal.bind(this)
-		this.updateDescription = this._updateDescription.bind(this)
-		this.updateEnabled = this._updateEnabled.bind(this)
-		this.updateSecret = this._updateSecret.bind(this)
-		this.updateTarget = this._updateTarget.bind(this)
-	}
+    this.getTerminal = this._getTerminal.bind(this)
+    this.deleteTerminal = this._deleteTerminal.bind(this)
+    this.updateDescription = this._updateDescription.bind(this)
+    this.updateEnabled = this._updateEnabled.bind(this)
+    this.updateSecret = this._updateSecret.bind(this)
+    this.updateTarget = this._updateTarget.bind(this)
+  }
 
-	componentDidMount() {
-		this.intervalIds.getTerminal = setInterval(
-			this.getTerminal.bind(this),
-			1000
-		)
-	}
+  componentDidMount () {
+    this.intervalIds.getTerminal = setInterval(
+      this.getTerminal.bind(this),
+      1000
+    )
+  }
 
-	componentWillUnmount() {
-		for (let intervalId in this.intervalIds) {
-			clearInterval(this.intervalIds[intervalId])
-		}
-	}
+  componentWillUnmount () {
+    for (const intervalId in this.intervalIds) {
+      clearInterval(this.intervalIds[intervalId])
+    }
+  }
 
-	async _getTerminal() {
-		let response = await axios.get(
-			'/api/terminals/details/' + this.state.terminal.id
-		)
+  async _getTerminal () {
+    const response = await axios.get(
+      '/api/terminals/details/' + this.state.terminal.id
+    )
 
-		log.debug('getTerminal', 'response', response.data)
+    log.debug('getTerminal', 'response', response.data)
 
-		this.setState({ terminal: response.data })
-	}
+    this.setState({ terminal: response.data })
+  }
 
-	async _terminalHot() {
-		let response
-		if (this.state.terminal.armed === 0)
-			response = await axios.post(
-				'/api/terminals/arm/' + this.props.terminal.id
-			)
-		else
-			response = await axios.post(
-				'/api/terminals/unarm/' + this.props.terminal.id
-			)
+  async _terminalHot () {
+    let response
+    if (this.state.terminal.armed === 0) {
+      response = await axios.post(
+        '/api/terminals/arm/' + this.props.terminal.id
+      )
+    } else {
+      response = await axios.post(
+        '/api/terminals/unarm/' + this.props.terminal.id
+      )
+    }
 
-		this.setState({ terminal: response.data })
-	}
+    this.setState({ terminal: response.data })
+  }
 
-	async _deleteTerminal() {
-		if (window.confirm('Are you sure?') === true) {
-			let response = await axios.post(
-				'/api/terminals/delete/' + this.state.terminal.id
-			)
+  async _deleteTerminal () {
+    if (window.confirm('Are you sure?') === true) {
+      const response = await axios.post(
+        '/api/terminals/delete/' + this.state.terminal.id
+      )
 
-			log.debug('deleteTerminal', 'response', response.data)
-		}
-	}
+      log.debug('deleteTerminal', 'response', response.data)
+    }
+  }
 
-	async _updateDescription(event) {
-		let description = event.target.value
+  async _updateDescription (event) {
+    const description = event.target.value
 
-		log.debug('_updateDescription', 'description', description)
+    log.debug('_updateDescription', 'description', description)
 
-		let terminal = { ...this.state.terminal, ...{ description } }
+    const terminal = { ...this.state.terminal, ...{ description } }
 
-		log.debug('_updateDescription', 'terminal', terminal)
+    log.debug('_updateDescription', 'terminal', terminal)
 
-		this.setState({ terminal })
+    this.setState({ terminal })
 
-		let response = await axios.post(
-			'/api/terminals/update/description/' + this.state.terminal.id,
-			{ description }
-		)
+    const response = await axios.post(
+      '/api/terminals/update/description/' + this.state.terminal.id,
+      { description }
+    )
 
-		return true
-	}
+    return true
+  }
 
-	async _updateSecret(event) {
-		let secret = event.target.value
+  async _updateSecret (event) {
+    const secret = event.target.value
 
-		log.debug('_updateTarget', 'secret', secret)
+    log.debug('_updateTarget', 'secret', secret)
 
-		let terminal = { ...this.state.terminal, ...{ secret } }
+    const terminal = { ...this.state.terminal, ...{ secret } }
 
-		log.debug('_updateTarget', 'terminal', terminal)
+    log.debug('_updateTarget', 'terminal', terminal)
 
-		this.setState({ terminal })
+    this.setState({ terminal })
 
-		let response = await axios.post(
-			'/api/terminals/update/secret/' + this.state.terminal.id,
-			{ secret }
-		)
+    const response = await axios.post(
+      '/api/terminals/update/secret/' + this.state.terminal.id,
+      { secret }
+    )
 
-		return true
-	}
+    return true
+  }
 
-	async _updateTarget(event) {
-		let target = event.target.value
+  async _updateTarget (event) {
+    const target = event.target.value
 
-		log.debug('_updateTarget', 'target', target)
+    log.debug('_updateTarget', 'target', target)
 
-		let terminal = { ...this.state.terminal, ...{ target } }
+    const terminal = { ...this.state.terminal, ...{ target } }
 
-		log.debug('_updateTarget', 'terminal', terminal)
+    log.debug('_updateTarget', 'terminal', terminal)
 
-		this.setState({ terminal })
+    this.setState({ terminal })
 
-		let response = await axios.post(
-			'/api/terminals/update/target/' + this.state.terminal.id,
-			{ target }
-		)
+    const response = await axios.post(
+      '/api/terminals/update/target/' + this.state.terminal.id,
+      { target }
+    )
 
-		return true
-	}
+    return true
+  }
 
-	async _updateEnabled(event) {
-		let enabled = event.target.checked ? 1 : 0
+  async _updateEnabled (event) {
+    const enabled = event.target.checked ? 1 : 0
 
-		log.debug('_updateEnabled', 'enabled', enabled)
+    log.debug('_updateEnabled', 'enabled', enabled)
 
-		let terminal = { ...this.state.terminal, ...{ enabled } }
+    const terminal = { ...this.state.terminal, ...{ enabled } }
 
-		log.debug('_updateEnabled', 'terminal', terminal)
+    log.debug('_updateEnabled', 'terminal', terminal)
 
-		this.setState({ terminal })
+    this.setState({ terminal })
 
-		let response = await axios.post(
-			'/api/terminals/update/enabled/' + this.state.terminal.id,
-			{ enabled }
-		)
+    const response = await axios.post(
+      '/api/terminals/update/enabled/' + this.state.terminal.id,
+      { enabled }
+    )
 
-		log.debug('_updateEnabled', response)
+    log.debug('_updateEnabled', response)
 
-		return true
-	}
+    return true
+  }
 
-	render() {
-		return (
+  render () {
+    return (
 			<Col xs='12' sm='12' md='6' lg='6' className='TerminalCard'>
 				<Row className='spacious'>
 					<Col>
@@ -196,13 +197,11 @@ class TerminalCard extends Component {
 									type='checkbox'
 									checked={
 										this.state.terminal.enabled === 1
-											? true
-											: false
 									}
 									label={
 										this.state.terminal.enabled === 1
-											? 'Enabled'
-											: 'Disabled'
+										  ? 'Enabled'
+										  : 'Disabled'
 									}
 									onChange={this.updateEnabled}
 								/>
@@ -237,8 +236,8 @@ class TerminalCard extends Component {
 							<Col>
 								<span className='securestate'>
 									{this.state.terminal.secure
-										? 'Secured'
-										: 'Not secured'}
+									  ? 'Secured'
+									  : 'Not secured'}
 								</span>
 							</Col>
 						</Row>
@@ -279,8 +278,8 @@ class TerminalCard extends Component {
 					</Col>
 				</Row>
 			</Col>
-		)
-	}
+    )
+  }
 }
 
 export default TerminalCard

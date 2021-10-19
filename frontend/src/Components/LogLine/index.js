@@ -4,8 +4,8 @@ import { Row, Col } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
 
 class LogLine extends Component {
-    render() {
-        return (
+  render () {
+    return (
             <Row>
                 <Col xs={6} sm={6} className="d-md-none d-lg-none d-xl-none"><b>Timestamp</b></Col>
                 <Col xs={6} sm={6} md={2} lg={2} xl={2}><TimeAgo date={this.props.log.ts} /></Col>
@@ -18,8 +18,8 @@ class LogLine extends Component {
                 <Col xs={12} sm={12} className="d-md-none d-lg-none d-xl-none"><b>Data</b></Col>
                 <Col xs={12} sm={12} md={3} lg={3} xl={3}>{JSON.stringify(this.props.log.data, null, '\t')}</Col>
             </Row>
-        )
-    }
+    )
+  }
 }
 
 export default LogLine
