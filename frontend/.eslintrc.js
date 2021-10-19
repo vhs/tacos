@@ -1,7 +1,6 @@
 module.exports = {
   env: {
-    browser: true,
-    es2021: true
+    browser: true
   },
   extends: [
     'plugin:react/recommended',
@@ -19,5 +18,10 @@ module.exports = {
   ],
   rules: {
   },
-  root: true
+  root: true,
+  settings: {
+    react: {
+      version: "16.13.1"
+    }
+  }
 }
