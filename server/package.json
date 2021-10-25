@@ -1,0 +1,63 @@
+{
+  "name": "tacos-server",
+  "version": "0.0.1",
+  "description": "Tool Access Control & Operations System",
+  "scripts": {
+    "dev": "node_modules/.bin/supervisor -w .,middleware,lib,backends,bin/www bin/www",
+    "start": "node bin/www",
+    "test": "node_modules/.bin/gulp test",
+    "coverage": "node_modules/.bin/istanbul cover _mocha"
+  },
+  "dependencies": {
+    "axios": "^0.23.0",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
+    "debug": "^4.3.2",
+    "dotenv": "^10.0.0",
+    "dotenv-load": "^2.0.0",
+    "eventemitter2": "^6.4.5",
+    "express": "^4.16.4",
+    "express-session": "^1.17.2",
+    "express-session-level": "^1.0.0",
+    "fs": "0.0.2",
+    "level": "^7.0.1",
+    "lokijs": "^1.5.12",
+    "morgan": "^1.9.1",
+    "passport": "^0.5.0",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth": "^2.0.0",
+    "passport-slack-oauth2": "^1.1.1",
+    "pug": "^3.0.2",
+    "socket.io": "^4.3.1",
+    "supervisor": "^0.12.0"
+  },
+  "devDependencies": {
+    "eslint": "^v7.*",
+    "eslint-config-standard": "^14.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "passport-local": "^1.0.0"
+  },
+  "jshintConfig": {
+    "node": true,
+    "globalstrict": true,
+    "globals": {
+      "describe": false,
+      "it": false,
+      "before": false,
+      "beforeEach": false,
+      "after": false,
+      "afterEach": false
+    }
+  },
+  "author": "Ty Eggen",
+  "license": "ISC",
+  "resolutions": {
+    "levelup-defaults": "^2.0.0"
+  }
+}

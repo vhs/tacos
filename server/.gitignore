@@ -1,0 +1,16 @@
+node_modules
+.project
+.idea
+.sass-cache
+.DS_Store
+coverage
+config.json
+config.json.*
+*.log
+sessiondb
+shared/*.json
+misc/**
+data/**
+config/**
+.nyc_output
+.vscode
