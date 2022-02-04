@@ -14,3 +14,16 @@ data/**
 config/**
 .nyc_output
 .vscode
+attic/
+fix-permissions.sh
+generate-route-tests.sh
+generate-testcases.js
+routes.txt
+shell.nix
+sync-to-vhs-test1.sh
+sync-to-windows.sh
+test.js
+test/
+tests.json
+tmp/
+public/*
