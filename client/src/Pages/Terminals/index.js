@@ -16,7 +16,7 @@ const log = new CustomLogger('tacos:Pages:Terminals')
 const TerminalCards = ({ terminals, devices, roles, user }) => {
   const TerminalCardsResult = terminals.map(terminal => {
     return (
-            <TerminalCard key={terminal.id} terminal={terminal} devices={devices} roles={roles} user={user} />
+      <TerminalCard key={terminal.id} terminal={terminal} devices={devices} roles={roles} user={user} />
     )
   })
 
@@ -65,18 +65,18 @@ class Terminals extends Component {
 
   render () {
     return (
-            <Loading loading={this.state.loading}>
-                <Row>
-                    <Col>
-                        <h1>Terminals</h1>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        {this.state.terminals.length > 0 ? <TerminalCards terminals={this.state.terminals} devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any terminals at this time!</span>}
-                    </Col>
-                </Row>
-            </Loading>
+      <Loading loading={this.state.loading}>
+        <Row>
+          <Col>
+            <h1>Terminals</h1>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            {this.state.terminals.length > 0 ? <TerminalCards terminals={this.state.terminals} devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any terminals at this time!</span>}
+          </Col>
+        </Row>
+      </Loading>
     )
   }
 }

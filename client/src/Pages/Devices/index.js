@@ -18,7 +18,7 @@ const DeviceCards = ({ devices, roles, user }) => {
   log.debug('DeviceCards', { devices, roles, user })
   const DeviceCardsResult = devices.map(device => {
     return (
-            <DeviceCard key={device.id} device={device} roles={roles} user={user} />
+      <DeviceCard key={device.id} device={device} roles={roles} user={user} />
     )
   })
 
@@ -26,8 +26,6 @@ const DeviceCards = ({ devices, roles, user }) => {
 }
 
 class Devices extends Component {
-  intervals
-
   constructor (props) {
     super(props)
     this.intervals = {}
@@ -65,16 +63,16 @@ class Devices extends Component {
 
   render () {
     return (
-            <Loading loading={this.state.loading}>
-                <Row>
-                    <Col>
-                        <h1>Devices</h1>
-                    </Col>
-                </Row>
-                <Row>
-                    {this.state.devices.length > 0 ? <DeviceCards devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any devices at this time!</span>}
-                </Row>
-            </Loading>
+      <Loading loading={this.state.loading}>
+        <Row>
+          <Col>
+            <h1>Devices</h1>
+          </Col>
+        </Row>
+        <Row>
+          {this.state.devices.length > 0 ? <DeviceCards devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any devices at this time!</span>}
+        </Row>
+      </Loading>
     )
   }
 }

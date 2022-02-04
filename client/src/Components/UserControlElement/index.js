@@ -19,9 +19,9 @@ class UserControlElement extends Component {
 
   render () {
     return (
-            <>
-                Signed in as: <b><i>{this.state.user.username}</i></b> {this.state.user.administrator ? ' (Admin)' : ''}&nbsp;<Button onClick={this.doLogout}>Logout</Button>
-            </>
+      <>
+        Signed in as: <b><i>{this.state.user.username}</i></b> {this.state.user.administrator ? ' (Admin)' : ''}&nbsp;<Button onClick={this.doLogout}>Logout</Button>
+      </>
     )
   }
 }

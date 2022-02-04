@@ -22,30 +22,30 @@ class Login extends Component {
 
   render () {
     return (
-        <>
-            <Row className="spacious">
-                <Col>
-                    Login using one of the following providers:
-                </Col>
-            </Row>
-            <Row className="centered spacious">
-                <Col>
-                    <Button id="GitHubLoginButton" onClick={() => { window.location.href = '/auth/github' }}><FontAwesomeIcon icon={['fab', 'github']} /> Login with Github</Button>
-                </Col>
-                <Col>
-                    <Button id="GoogleLoginButton" onClick={() => { window.location.href = '/auth/google' }}><FontAwesomeIcon icon={['fab', 'google']} /> Login with Google</Button>
-                </Col>
-                <Col>
-                    <Button id="SlackLoginButton" onClick={() => { window.location.href = '/auth/slack' }}><FontAwesomeIcon icon={['fab', 'slack-hash']} /> Login with Slack</Button>
-                </Col>
-            </Row>
-            <Row className="spacious">
-                <Col>
-                    To access TAC•OS, your membership account needs to be linked to one of the providers above. You can link your membership account below:<br />
-                    <a href="https://membership.vanhack.ca">NOMOS</a>
-                </Col>
-            </Row>
-        </>
+      <>
+        <Row className="spacious">
+          <Col>
+            Login using one of the following providers:
+          </Col>
+        </Row>
+        <Row className="centered spacious">
+          <Col>
+            <Button id="GitHubLoginButton" onClick={() => { window.location.href = '/auth/github' }}><FontAwesomeIcon icon={['fab', 'github']} /> Login with Github</Button>
+          </Col>
+          <Col>
+            <Button id="GoogleLoginButton" onClick={() => { window.location.href = '/auth/google' }}><FontAwesomeIcon icon={['fab', 'google']} /> Login with Google</Button>
+          </Col>
+          <Col>
+            <Button id="SlackLoginButton" onClick={() => { window.location.href = '/auth/slack' }}><FontAwesomeIcon icon={['fab', 'slack-hash']} /> Login with Slack</Button>
+          </Col>
+        </Row>
+        <Row className="spacious">
+          <Col>
+            To access TAC•OS, your membership account needs to be linked to one of the providers above. You can link your membership account below:<br />
+            <a href="https://membership.vanhack.ca">NOMOS</a>
+          </Col>
+        </Row>
+      </>
     )
   }
 }

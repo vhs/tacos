@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 class AuthenticatedElement extends Component {
   render () {
     return (
-            <>
-                {this.props.loggedIn ? this.props.children : null}
-            </>
+      <>
+        {this.props.loggedIn ? this.props.children : null}
+      </>
     )
   }
 }

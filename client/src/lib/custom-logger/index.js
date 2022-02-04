@@ -5,10 +5,6 @@ const logColours = {
   warn: 'color: indianred;font-weight:bold'
 }
 class CustomLogger {
-  loggerName
-  logColours
-  regex
-
   constructor (loggerName) {
     this.loggerName = loggerName
     this.logColours = logColours

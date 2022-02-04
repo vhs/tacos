@@ -18,9 +18,9 @@ class AdminElement extends Component {
     log.debug('render', 'this.props.user.administrator', this.props.user.administrator)
 
     return (
-            <>
-                {isAdmin ? this.props.children : null}
-            </>
+      <>
+        {isAdmin ? this.props.children : null}
+      </>
     )
   }
 }

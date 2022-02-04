@@ -7,8 +7,6 @@ import CustomLogger from '../../lib/custom-logger'
 const log = new CustomLogger('tacos:services:api')
 
 class APIService {
-  intervalIds
-
   constructor () {
     log.debug('start')
     this.intervalIds = {}

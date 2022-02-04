@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 class Loading extends Component {
   render () {
     return (
-            <>
-                {this.props.loading ? 'Loading...' : this.props.children}
-            </>
+      <>
+        {this.props.loading ? 'Loading...' : this.props.children}
+      </>
     )
   }
 }

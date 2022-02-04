@@ -24,8 +24,6 @@ const RoleOptions = ({ roles }) => {
 }
 
 class DeviceCard extends Component {
-  intervalIds
-
   constructor (props) {
     super(props)
     log.debug('DeviceCard', 'props', props)

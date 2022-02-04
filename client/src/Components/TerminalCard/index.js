@@ -21,8 +21,6 @@ const TargetOptions = ({ targets }) => {
 }
 
 class TerminalCard extends Component {
-  intervalIds
-
   constructor (props) {
     super(props)
     log.debug('TerminalCard', 'props', props)

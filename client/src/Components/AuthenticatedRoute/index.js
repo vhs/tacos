@@ -18,9 +18,9 @@ class AuthenticatedRoute extends Component {
 
   render () {
     return (
-            <>
-                {this.state.loggedIn ? this.props.children : null}
-            </>
+      <>
+        {this.state.loggedIn ? this.props.children : null}
+      </>
     )
   }
 }
