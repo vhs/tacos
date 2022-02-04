@@ -1,12 +1,17 @@
 {
-  "name": "TACOS",
+  "name": "tacos",
   "version": "1.0.0",
   "description": "TACOS is a React/NodeJS based solution for managing tool access control in a hack-/makerspace environment.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "yarn workspace tacos-client start",
     "server": "yarn workspace tacos-server start",
-    "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\""
+    "server-dev": "yarn workspace tacos-server run dev",
+    "prebuild": "echo Starting build...",
+    "build": "yarn workspace tacos-client run build",
+    "postbuild": "rsync -avz ./client/build/ ./server/public/",
+    "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\"",
+    "dev": "concurrently --kill-others-on-fail \"yarn server-dev\"  \"yarn client\""
   },
   "repository": {
     "type": "git",

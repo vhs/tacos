@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Tool Access Control & Operations System",
   "scripts": {
-    "dev": "node_modules/.bin/supervisor -w .,middleware,lib,backends,bin/www bin/www",
+    "dev": "node_modules/.bin/supervisor -w .,middleware,lib,backends,bin/www,config/config.json bin/www",
     "start": "node bin/www",
     "test": "node_modules/.bin/gulp test",
     "coverage": "node_modules/.bin/istanbul cover _mocha"
