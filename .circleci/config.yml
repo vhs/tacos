@@ -25,6 +25,8 @@ jobs:
                                   key: dependency-cache-{{ checksum "package.json" }}
                                   paths:
                                           - ./node_modules
+                                          - ./client/node_modules
+                                          - ./server/node_modules
 
                         - store_artifacts:
                                   path: report.xml
