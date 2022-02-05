@@ -20,5 +20,3 @@ CMD ["npm","start"]
 WORKDIR /app
 
 COPY --from=build /build/server/ /app/
-
-RUN ls /app/* && sleep 3m
