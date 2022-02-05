@@ -14,9 +14,11 @@ jobs: # a collection of steps
                                   key: dependency-cache-{{ checksum "package.json" }}
                         - run:
                                   name: install-npm-wee
+                                  no_output_timeout: 30m
                                   command: npx yarn install
                         - run:
                                   name: build client
+                                  no_output_timeout: 30m
                                   command: npx yarn run build
                         - save_cache: # special step to save the dependency cache
                                   key: dependency-cache-{{ checksum "package.json" }}
