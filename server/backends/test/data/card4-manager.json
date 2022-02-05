@@ -1,0 +1,6 @@
+{
+    "valid": true,
+    "privileges": ["tool:manager"],
+    "userId": 4,
+    "username": "user4"
+}

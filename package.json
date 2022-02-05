@@ -1,78 +1,35 @@
 {
   "name": "tacos",
-  "version": "0.0.1",
-  "description": "Tool Access Control & Operations System",
+  "version": "1.0.0",
+  "description": "TACOS is a React/NodeJS based solution for managing tool access control in a hack-/makerspace environment.",
   "scripts": {
-    "dev": "node_modules/.bin/supervisor -w .,middleware,lib,backends bin/www",
-    "start": "node bin/www",
-    "test": "node_modules/.bin/gulp test",
-    "coverage": "node_modules/.bin/istanbul cover _mocha"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "yarn workspace tacos-client start",
+    "server": "yarn workspace tacos-server start",
+    "server-dev": "yarn workspace tacos-server run dev",
+    "prebuild": "echo Starting build...",
+    "build": "yarn workspace tacos-client run build",
+    "postbuild": "rsync -avz ./client/build/ ./server/public/",
+    "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\"",
+    "dev": "concurrently --kill-others-on-fail \"yarn server-dev\"  \"yarn client\""
   },
-  "dependencies": {
-    "acorn": "^6.1.1",
-    "axios": "^0.21.1",
-    "bluebird": "^3.5.3",
-    "body-parser": "^1.18.3",
-    "cookie-parser": "^1.4.4",
-    "cors": "^2.8.5",
-    "crypto-js": "^3.1.9-1",
-    "debug": "^4.1.1",
-    "eventemitter2": "^6.4.3",
-    "express": "^4.16.4",
-    "express-session": "^1.14.2",
-    "express-session-level": "^1.0.0",
-    "fs": "0.0.2",
-    "jsmart": "^3.1.0",
-    "jsonfile": "^5.0.0",
-    "level": "^5.0.1",
-    "lokijs": "^1.5.6",
-    "morgan": "^1.9.1",
-    "nedb": "^1.8.0",
-    "passport": "^0.4.0",
-    "passport-github": "^1.1.0",
-    "passport-google-oauth": "^2.0.0",
-    "passport-slack-oauth2": "^1.0.2",
-    "promise": "^8.0.3",
-    "pug": "^2.0.3",
-    "randomstring": "^1.1.5",
-    "socket.io": "^2.4.0",
-    "superagent": "^5.0.2",
-    "superagent-promise": "^1.1.0",
-    "supervisor": "^0.12.0",
-    "underscore": "^1.9.1"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vhs/tacos.git"
   },
-  "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-as-promised": "*",
-    "del": "^4.1.0",
-    "gulp": "^4.0.0",
-    "gulp-istanbul": "*",
-    "gulp-jshint": "*",
-    "gulp-mocha": "^6.0.0",
-    "jshint": "^2.10.2",
-    "jshint-stylish": "*",
-    "mocha": "^6.0.2",
-    "passport-local": "^1.0.0",
-    "sinon": "^7.3.1",
-    "sinon-express-mock": "^2.2.0",
-    "supertest": "^4.0.2",
-    "supertest-as-promised": "*"
-  },
-  "jshintConfig": {
-    "node": true,
-    "globalstrict": true,
-    "globals": {
-      "describe": false,
-      "it": false,
-      "before": false,
-      "beforeEach": false,
-      "after": false,
-      "afterEach": false
-    }
-  },
-  "author": "Ty Eggen",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
-  "resolutions": {
-    "levelup-defaults": "^2.0.0"
-  }
+  "bugs": {
+    "url": "https://github.com/vhs/tacos/issues"
+  },
+  "homepage": "https://github.com/vhs/tacos#readme",
+  "devDependencies": {
+    "concurrently": "^6.3.0"
+  },
+  "workspaces": [
+    "client/**",
+    "server/**"
+  ],
+  "private": true
 }

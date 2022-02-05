@@ -1,0 +1,5 @@
+{
+    "valid": true,
+    "privileges": ["tool:test"],
+    "username": "user3"
+}

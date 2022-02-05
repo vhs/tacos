@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+'use strict'
+
+const debug = require('debug')('tacos:www')
+
+debug('Starting application')
+
+const dotenvLoad = require('dotenv-load')
+
+dotenvLoad()
+
+const { app, server } = require('../app')
+
+const { config } = require('../lib/config')
+const port = config.port || process.env.TACOS_SERVER_PORT || 3000
+
+app.set('port', port)
+
+server.listen(port, function () {
+  debug('Express server listening on port ' + server.address().port)
+})
