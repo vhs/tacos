@@ -9,10 +9,10 @@ const cors = require('cors')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 const session = require('express-session')
-const LevelStore = require('express-session-level')(session)
+const LokiStore = require('connect-loki')(session)
 
 const { config } = require('./lib/config')
-const sessionDB = require('level')(path.resolve(path.join(__dirname, '/', config.datadir, '/sessiondb')))
+const lokiStoreOpts = { path: path.resolve(path.join(__dirname, '/', config.datadir, '/session-store.db')), autosave: true }
 const passport = require('./lib/passport')
 
 const middleware = require('./middleware/')
@@ -32,7 +32,7 @@ app.use(bodyParser.json())
 app.use(session({
   secret: config.sessions.secret,
   // @ts-ignore
-  store: new LevelStore(sessionDB),
+  store: new LokiStore(lokiStoreOpts),
   resave: false,
   saveUninitialized: true,
   proxy: true,
