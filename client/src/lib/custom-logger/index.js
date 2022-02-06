@@ -9,7 +9,7 @@ class CustomLogger {
     this.loggerName = loggerName
     this.logColours = logColours
 
-    this.regex = new RegExp(((process.env.REACT_APP_DEBUG !== undefined ? process.env.REACT_APP_DEBUG : '^$').replace(/\*/, '.*')))
+    this.regex = new RegExp(((process.env.REACT_APP_DEBUG !== undefined ? process.env.REACT_APP_DEBUG : '^$').replace(/\*/, '.*').replace(/,/, '|')))
   }
 
   extend (newLoggerName) {
