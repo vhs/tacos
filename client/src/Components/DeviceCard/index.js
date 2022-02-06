@@ -3,15 +3,16 @@ import PropTypes from 'prop-types'
 
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
-
-import axios from 'axios'
 import { stateMachine } from 'pretty-state-machine'
 
 import AdminElement from '../AdminElement'
 
+import CustomLogger from '../../lib/custom-logger'
+import apiService from '../../services/api'
+
 import './style.css'
 
-import CustomLogger from '../../lib/custom-logger'
+const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Components:DeviceCard')
 
@@ -45,7 +46,7 @@ class DeviceCard extends Component {
   }
 
   componentDidMount () {
-    this.intervalIds.getDevice = setInterval(this.getDevice, 1000)
+    this.intervalIds.getDevice = setInterval(() => this.getDevice(), 5000)
 
     const newUserState = stateMachine.fetch('user', {
       administrator: false,

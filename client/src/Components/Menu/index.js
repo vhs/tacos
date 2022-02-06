@@ -17,8 +17,8 @@ class Menu extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      loggedIn: false,
-      user: {}
+      loggedIn: stateMachine.get('loggedIn', false),
+      user: stateMachine.get('user', { authenticated: false })
     }
   }
 
@@ -30,10 +30,10 @@ class Menu extends Component {
   render () {
     return (
       <Navbar expand="lg">
-        <Navbar.Brand><Nav.Link to="/">TAC•OS</Nav.Link></Navbar.Brand>
+        <Navbar.Brand><Nav.Link to="/">TAC•OS</Nav.Link> ({process.env.NODE_ENV})</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
-          <Nav className="mr-auto">
+          <Nav className="mr-auto" >
             <Nav.Link as={Link} to="/">Home</Nav.Link>
             <AuthenticatedElement loggedIn={this.state.loggedIn}><Nav.Link as={Link} to="/devices">Devices</Nav.Link></AuthenticatedElement>
             <AdminElement user={this.state.user}><Nav.Link as={Link} to="/terminals">Terminals</Nav.Link></AdminElement>

@@ -1,16 +1,15 @@
-import axios from 'axios'
-
 import React, { Component } from 'react'
 
 import { stateMachine } from 'pretty-state-machine'
-// import deviceSvc from '../../services/devices'
-
 import { Row, Col } from 'react-bootstrap'
 
 import DeviceCard from '../../Components/DeviceCard'
 import Loading from '../../Components/Loading'
 
 import CustomLogger from '../../lib/custom-logger'
+import apiService from '../../services/api'
+
+const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Pages:Devices')
 
@@ -44,7 +43,7 @@ class Devices extends Component {
 
   componentDidMount () {
     this.getDevices()
-    this.intervals.getDevices = setInterval(this.getDevices.bind(this), 5000)
+    // this.intervals.getDevices = setInterval(this.getDevices.bind(this), 5000)
 
     stateMachine.attach('loggedIn', this.setState.bind(this))
     stateMachine.attach('user', this.setState.bind(this))

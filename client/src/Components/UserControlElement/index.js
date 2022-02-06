@@ -1,8 +1,10 @@
-import axios from 'axios'
-
 import React, { Component } from 'react'
-
 import { Button } from 'react-bootstrap'
+import { stateMachine } from 'pretty-state-machine'
+
+import apiService from '../../services/api'
+
+const axios = apiService.getClient()
 
 class UserControlElement extends Component {
   constructor (props) {
@@ -12,7 +14,14 @@ class UserControlElement extends Component {
 
   async doLogout () {
     if (window.confirm('Are you sure?')) {
-      const response = axios.get('/auth/logout')
+      const response = await axios.get('/auth/logout')
+
+      if (response.status === 200 && response.data.result === 'OK') {
+        stateMachine.pub({ loggedIn: false, user: {} })
+        stateMachine.pub('loggedIn', false)
+        stateMachine.pub('user', {})
+      }
+
       return response
     }
   }
@@ -20,7 +29,7 @@ class UserControlElement extends Component {
   render () {
     return (
       <>
-        Signed in as: <b><i>{this.state.user.username}</i></b> {this.state.user.administrator ? ' (Admin)' : ''}&nbsp;<Button onClick={this.doLogout}>Logout</Button>
+        Signed in as: <b><i>{this.state.user.username}</i></b> {this.state.user.administrator ? ' (Admin)' : ''}&nbsp;<Button className="btn-sm fill-out" onClick={() => this.doLogout()}>Logout</Button>
       </>
     )
   }

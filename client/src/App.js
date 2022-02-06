@@ -17,7 +17,7 @@ import Devices from './Pages/Devices'
 import Terminals from './Pages/Terminals'
 import Logging from './Pages/Logging'
 
-import apiSvc from './services/api'
+import apiService from './services/api'
 
 import CustomLogger from './lib/custom-logger'
 
@@ -30,31 +30,24 @@ class App extends Component {
     log.debug('constructor', this.props)
 
     this.state = {
-      loggedIn: false,
-      roles: [],
-      user: {}
+      loggedIn: stateMachine.get('loggedIn', false),
+      roles: stateMachine.get('roles', []),
+      user: stateMachine.get('user', { authenticated: false })
     }
 
-    this.apiSvc = apiSvc
+    this.apiService = apiService
   }
 
-  componentDidMount () {
-    // log.debug('App', 'componentDidMount', 'apiSvc.getSession()', apiSvc.getSession())
-    const session = apiSvc.getSession()
+  async componentDidMount () {
+    // log.debug('App', 'componentDidMount', 'apiService.getSession()', apiService.getSession())
+    const session = await apiService.getSession()
 
     this.setState({ ...this.state, ...session })
 
-    stateMachine.sub('state', (args) => {
-      const updateState = {}
-      for (const arg in args) {
-        if (this.state[arg] !== undefined && this.state[arg] !== args[arg]) { updateState[arg] = args[arg] }
-      }
-
-      if (Object.keys(updateState).length > 0) {
-        log.debug('App->updateState', updateState)
-        this.setState(updateState)
-      }
-    })
+    stateMachine.sub('loggedIn', this.setState.bind(this))
+    stateMachine.sub('roles', this.setState.bind(this))
+    stateMachine.sub('user', this.setState.bind(this))
+    stateMachine.sub((state) => log.debug('state', state))
   }
 
   render () {

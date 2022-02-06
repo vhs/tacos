@@ -1,15 +1,15 @@
-import axios from 'axios'
-
 import React, { Component } from 'react'
 
-import { stateMachine } from 'pretty-state-machine'
-
 import { Row, Col } from 'react-bootstrap'
+import { stateMachine } from 'pretty-state-machine'
 
 import TerminalCard from '../../Components/TerminalCard'
 import Loading from '../../Components/Loading'
 
 import CustomLogger from '../../lib/custom-logger'
+import apiService from '../../services/api'
+
+const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Pages:Terminals')
 
@@ -31,8 +31,8 @@ class Terminals extends Component {
         devices: [],
         terminals: [],
         loading: true,
-        user: { authenticated: false, administrator: false },
-        loggedIn: false
+        user: stateMachine.get('user', { authenticated: false, administrator: false }),
+        loggedIn: stateMachine.get('loggedIn', false)
       },
       ...props
     }

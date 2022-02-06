@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 import React, { Component } from 'react'
 
 import { Row, Col } from 'react-bootstrap'
@@ -7,6 +5,9 @@ import { Row, Col } from 'react-bootstrap'
 import LogLine from '../../Components/LogLine'
 
 import CustomLogger from '../../lib/custom-logger'
+import apiService from '../../services/api'
+
+const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Pages:Logging')
 
