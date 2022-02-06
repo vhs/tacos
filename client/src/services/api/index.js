@@ -9,44 +9,68 @@ const log = new CustomLogger('tacos:services:api')
 class APIService {
   constructor () {
     log.debug('start')
-    this.intervalIds = {}
+
+    this.state = {
+      user: stateMachine.get('user', { authenticated: false }),
+      loggedIn: stateMachine.get('loggedIn', false)
+    }
+
+    this.client = axios
+
     this.getSession()
     this.getRoles()
-    this.intervalIds.getSession = setInterval(this.getSession, 2000)
-    this.intervalIds.rolesChecker = setInterval(this.getRoles, 2000)
+
+    this.intervalIds = {}
+    this.intervalIds.rolesChecker = setInterval(() => this.getRoles(), 15000)
+    this.intervalIds.sessionChecker = setInterval(() => this.getSession(), 15000)
+  }
+
+  getClient () {
+    return this.client
   }
 
   async getRoles () {
-    log.debug('getRoles')
+    log.debug('getRoles', 'run')
 
-    try {
-      const result = await axios.get('/api/roles')
+    log.debug('getRoles', 'state:', this.state)
 
-      const data = result.data
-      if (data.roles !== undefined) {
-        const newState = {
-          roles: data.roles
+    if (this.state.loggedIn === true) {
+      try {
+        const result = await this.client.get('/api/roles')
+
+        const data = result.data
+        if (data.roles !== undefined) {
+          const newState = {
+            roles: data.roles
+          }
+          stateMachine.pub(newState)
+        } else {
+          stateMachine.pub({ roles: [] })
         }
-        stateMachine.pub(newState)
-      } else {
+      } catch (err) {
+        log.error('getRoles', err)
         stateMachine.pub({ roles: [] })
       }
-    } catch (err) {
-      stateMachine.pub({ roles: [] })
+    } else {
+      log.debug('getRoles', 'Not logged in')
     }
   }
 
   async getSession () {
+    log.debug('getSession', 'run')
+
     try {
-      const response = await axios.get('/api/session')
+      const response = await this.client.get('/api/session')
 
       const data = response.data
+
+      log.debug('getSession', 'data:', data)
 
       let newState = { user: { authenticated: false }, loggedIn: false }
 
       if (data.user !== undefined) {
         newState = {
-          ...newState,
+          ...this.state,
           ...{
             user: data.user,
             loggedIn: data.user.authenticated
@@ -54,11 +78,15 @@ class APIService {
         }
       }
 
+      newState = { ...this.state, ...newState }
+
+      this.state = newState
+
       stateMachine.pub(newState)
 
       return newState
     } catch (err) {
-
+      log.debug('getSession', 'err:', err)
     }
   }
 }
