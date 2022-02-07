@@ -92,9 +92,7 @@ class Terminals extends Component {
   }
 
   isReady ({ devices, terminals }) {
-    return (devices === null || terminals === null) ? false
-      : (!Array.isArray(devices) || !Array.isArray(terminals)) ? false
-        : !((devices.length === 0 || terminals.length === 0))
+    return (devices === null || terminals === null) ? false : (!Array.isArray(devices) || !Array.isArray(terminals)) ? false : !((devices.length === 0 || terminals.length === 0))
   }
 
   render () {
