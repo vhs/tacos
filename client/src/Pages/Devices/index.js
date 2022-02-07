@@ -1,16 +1,15 @@
-import axios from 'axios'
-
 import React, { Component } from 'react'
 
 import { stateMachine } from 'pretty-state-machine'
-// import deviceSvc from '../../services/devices'
-
 import { Row, Col } from 'react-bootstrap'
 
-import DeviceCard from '../../Components/DeviceCard'
-import Loading from '../../Components/Loading'
+import DeviceCard from 'Components/DeviceCard'
+import Loading from 'Components/Loading'
 
-import CustomLogger from '../../lib/custom-logger'
+import CustomLogger from 'lib/custom-logger'
+import apiService from 'services/api'
+
+const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Pages:Devices')
 
@@ -32,28 +31,34 @@ class Devices extends Component {
 
     this.state = {
       ...{
-        devices: [],
-        roles: [],
+        devices: null,
+        roles: stateMachine.get('roles', []),
         loading: true,
-        user: { authenticated: false, administrator: false },
-        loggedIn: false
+        loggedIn: stateMachine.get('loggedIn', false),
+        user: stateMachine.get('user', { authenticated: false, administrator: false })
       },
       ...props
     }
   }
 
-  componentDidMount () {
-    this.getDevices()
-    this.intervals.getDevices = setInterval(this.getDevices.bind(this), 5000)
-
+  async componentDidMount () {
     stateMachine.attach('loggedIn', this.setState.bind(this))
+    stateMachine.attach('roles', this.setState.bind(this))
     stateMachine.attach('user', this.setState.bind(this))
 
-    if ((this.state.user !== undefined) && (this.state.user.administrator !== undefined)) { this.setState({ loading: false }) }
+    await this.getDevices()
+
+    // this.intervals.getDevices = setInterval(this.getDevices.bind(this), 5000)
   }
 
   componentWillUnmount () {
     clearInterval(this.intervals.getDevices)
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.state.loading === true && (this.state.user !== undefined) && (this.state.user.administrator !== undefined) && this.state.device !== prevState.devices) {
+      this.setState({ loading: false })
+    }
   }
 
   async getDevices () {
@@ -70,7 +75,7 @@ class Devices extends Component {
           </Col>
         </Row>
         <Row>
-          {this.state.devices.length > 0 ? <DeviceCards devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any devices at this time!</span>}
+          {this.state.devices !== null && this.state.devices.length > 0 ? <DeviceCards devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any devices at this time!</span>}
         </Row>
       </Loading>
     )

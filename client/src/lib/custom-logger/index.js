@@ -4,12 +4,26 @@ const logColours = {
   error: 'color: orange;font-weight:bold',
   warn: 'color: indianred;font-weight:bold'
 }
+
 class CustomLogger {
   constructor (loggerName) {
     this.loggerName = loggerName
     this.logColours = logColours
 
-    this.regex = new RegExp(((process.env.REACT_APP_DEBUG !== undefined ? process.env.REACT_APP_DEBUG : '^$').replace(/\*/, '.*')))
+    this.fallbackRegex = new RegExp(((process.env.REACT_APP_DEBUG !== undefined ? process.env.REACT_APP_DEBUG : '^$').replace(/\*/, '.*').replace(/,/, '|')))
+    this.regex = this.fallbackRegex
+
+    if (process.env !== undefined && process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'development') {
+      setInterval(this.loadFromLocalStorage.bind(this), 1000)
+    }
+  }
+
+  loadFromLocalStorage () {
+    if (localStorage.getItem('DEBUG_OVERRIDE') !== null && localStorage.getItem('DEBUG') !== null) {
+      this.regex = new RegExp(localStorage.getItem('DEBUG_OVERRIDE').replace(/\*/, '.*').replace(/,/, '|'))
+    } else {
+      this.regex = this.fallbackRegex
+    }
   }
 
   extend (newLoggerName) {

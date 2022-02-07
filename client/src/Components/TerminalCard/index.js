@@ -4,11 +4,13 @@ import PropTypes from 'prop-types'
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
 
-import axios from 'axios'
+import apiService from 'services/api'
 
 import './style.css'
 
-import CustomLogger from '../../lib/custom-logger'
+import CustomLogger from 'lib/custom-logger'
+
+const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Components:TerminalCard')
 
@@ -40,10 +42,7 @@ class TerminalCard extends Component {
   }
 
   componentDidMount () {
-    this.intervalIds.getTerminal = setInterval(
-      this.getTerminal.bind(this),
-      1000
-    )
+    this.intervalIds.getTerminal = setInterval(this.getTerminal.bind(this), 5000)
   }
 
   componentWillUnmount () {

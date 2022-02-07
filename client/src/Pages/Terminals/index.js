@@ -1,15 +1,16 @@
-import axios from 'axios'
-
 import React, { Component } from 'react'
 
+import { Row, Col } from 'react-bootstrap'
 import { stateMachine } from 'pretty-state-machine'
 
-import { Row, Col } from 'react-bootstrap'
+import Conditional from 'Components/Conditional/Conditional'
+import LoadingElement from 'Components/LoadingElement/LoadingElement'
+import TerminalCard from 'Components/TerminalCard'
 
-import TerminalCard from '../../Components/TerminalCard'
-import Loading from '../../Components/Loading'
+import CustomLogger from 'lib/custom-logger'
+import apiService from 'services/api'
 
-import CustomLogger from '../../lib/custom-logger'
+const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Pages:Terminals')
 
@@ -25,47 +26,80 @@ const TerminalCards = ({ terminals, devices, roles, user }) => {
 
 class Terminals extends Component {
   constructor (props) {
+    log.debug('constructor')
     super(props)
     this.state = {
+      loading: true,
       ...{
-        devices: [],
-        terminals: [],
+        devices: null,
+        terminals: null,
         loading: true,
-        user: { authenticated: false, administrator: false },
-        loggedIn: false
+        user: stateMachine.get('user', { authenticated: false, administrator: false }),
+        loggedIn: stateMachine.get('loggedIn', false)
       },
       ...props
     }
   }
 
-  componentDidMount () {
-    this.getDevices()
-    this.getTerminals()
-    setInterval(this.getDevices.bind(this), 5000)
-    setInterval(this.getTerminals.bind(this), 5000)
+  async componentDidMount () {
+    log.debug('componentDidMount')
 
     stateMachine.attach('loggedIn', this.setState.bind(this))
     stateMachine.attach('user', this.setState.bind(this))
     stateMachine.attach('roles', this.setState.bind(this))
 
-    this.setState({ loading: false })
+    log.debug('componentDidMount', 'calling getDevices')
+    await this.getDevices()
+    log.debug('componentDidMount', 'calling getTerminals')
+    await this.getTerminals()
+
+    log.debug('componentDidMount', 'setting up intervals')
+    setInterval(() => this.getDevices(), 5000)
+    setInterval(() => this.getTerminals(), 5000)
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    // if (prevState.loading !== this.state.loading) {
+    log.debug('componentDidUpdate', 'loading', prevState.loading, '->', this.state.loading)
+    // }
+    log.debug('componentDidUpdate', 'devices', prevState.devices, '->', this.state.devices)
+    log.debug('componentDidUpdate', 'terminals', prevState.terminals, '->', this.state.terminals)
   }
 
   async getDevices () {
     const response = await axios.get('/api/devices/')
-    log.debug('getDevices', response.data)
-    this.setState({ devices: response.data })
+    const devices = response.data
+    log.debug('getDevices', 'devices:', devices)
+    this.setState({ devices })
+    this.setState((prevState) => this.isReady({ ...prevState, ...{ devices } }) ? { loading: false } : { loading: true })
+
+    return true
   }
 
   async getTerminals () {
-    const response = await axios.get('/api/terminals/')
-    log.debug('getTerminals', response.data)
-    this.setState({ terminals: response.data })
+    log.debug('getTerminals', 'called')
+    try {
+      const response = await axios.get('/api/terminals/')
+      const terminals = response.data
+      log.debug('getTerminals', 'terminals:', terminals)
+      this.setState({ terminals })
+      this.setState((prevState) => this.isReady({ ...prevState, ...{ terminals } }) ? { loading: false } : { loading: true })
+
+      return true
+    } catch (err) {
+      log.error('getTerminals', 'error:', err)
+    }
+  }
+
+  isReady ({ devices, terminals }) {
+    return (devices === null || terminals === null) ? false : (!Array.isArray(devices) || !Array.isArray(terminals)) ? false : !((devices.length === 0 || terminals.length === 0))
   }
 
   render () {
+    const { loading, devices, terminals, roles, user } = this.state
+
     return (
-      <Loading loading={this.state.loading}>
+      <>
         <Row>
           <Col>
             <h1>Terminals</h1>
@@ -73,10 +107,15 @@ class Terminals extends Component {
         </Row>
         <Row>
           <Col>
-            {this.state.terminals.length > 0 ? <TerminalCards terminals={this.state.terminals} devices={this.state.devices} roles={this.state.roles} user={this.state.user} /> : <span>Sorry! We can&apos;t find any terminals at this time!</span>}
+            <Conditional condition={loading === true}>
+              <LoadingElement />
+            </Conditional>
+            <Conditional condition={loading === false}>
+              {(terminals !== null && terminals.length > 0) ? <TerminalCards terminals={terminals} devices={devices} roles={roles} user={user} /> : <span>Sorry! We can&apos;t find any terminals at this time!</span>}
+            </Conditional>
           </Col>
         </Row>
-      </Loading>
+      </>
     )
   }
 }

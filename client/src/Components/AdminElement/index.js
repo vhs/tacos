@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import CustomLogger from '../../lib/custom-logger'
+import CustomLogger from 'lib/custom-logger'
 
 const log = new CustomLogger('tacos:Components:AdminElement')
 
