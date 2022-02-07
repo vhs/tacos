@@ -4,11 +4,11 @@ import PropTypes from 'prop-types'
 import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
 
-import apiService from '../../services/api'
+import apiService from 'services/api'
 
 import './style.css'
 
-import CustomLogger from '../../lib/custom-logger'
+import CustomLogger from 'lib/custom-logger'
 
 const axios = apiService.getClient()
 

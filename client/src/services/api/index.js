@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import { stateMachine } from 'pretty-state-machine'
 
-import CustomLogger from '../../lib/custom-logger'
+import CustomLogger from 'lib/custom-logger'
 
 const log = new CustomLogger('tacos:services:api')
 

@@ -7,8 +7,8 @@ import { stateMachine } from 'pretty-state-machine'
 
 import AdminElement from '../AdminElement'
 
-import CustomLogger from '../../lib/custom-logger'
-import apiService from '../../services/api'
+import CustomLogger from 'lib/custom-logger'
+import apiService from 'services/api'
 
 import './style.css'
 

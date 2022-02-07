@@ -9,17 +9,17 @@ import { stateMachine } from 'pretty-state-machine'
 // import logo from './logo.svg';
 import './App.css'
 
-import Menu from './Components/Menu'
-import Login from './Pages/Login'
-import Home from './Pages/Home'
-import Dashboard from './Pages/Dashboard'
-import Devices from './Pages/Devices'
-import Terminals from './Pages/Terminals'
-import Logging from './Pages/Logging'
+import Menu from 'Components/Menu'
+import Login from 'Pages/Login'
+import Home from 'Pages/Home'
+import Dashboard from 'Pages/Dashboard'
+import Devices from 'Pages/Devices'
+import Terminals from 'Pages/Terminals'
+import Logging from 'Pages/Logging'
 
-import apiService from './services/api'
+import apiService from 'services/api'
 
-import CustomLogger from './lib/custom-logger'
+import CustomLogger from 'lib/custom-logger'
 
 const log = new CustomLogger('tacos:app')
 

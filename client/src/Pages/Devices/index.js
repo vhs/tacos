@@ -3,11 +3,11 @@ import React, { Component } from 'react'
 import { stateMachine } from 'pretty-state-machine'
 import { Row, Col } from 'react-bootstrap'
 
-import DeviceCard from '../../Components/DeviceCard'
-import Loading from '../../Components/Loading'
+import DeviceCard from 'Components/DeviceCard'
+import Loading from 'Components/Loading'
 
-import CustomLogger from '../../lib/custom-logger'
-import apiService from '../../services/api'
+import CustomLogger from 'lib/custom-logger'
+import apiService from 'services/api'
 
 const axios = apiService.getClient()
 

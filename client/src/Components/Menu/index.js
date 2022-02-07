@@ -9,7 +9,7 @@ import { stateMachine } from 'pretty-state-machine'
 
 import './style.css'
 
-// import CustomLogger from '../../lib/custom-logger'
+// import CustomLogger from 'lib/custom-logger'
 
 // const log = new CustomLogger('tacos:components:menu')
 

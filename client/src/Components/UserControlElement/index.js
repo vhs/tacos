@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
 import { stateMachine } from 'pretty-state-machine'
 
-import apiService from '../../services/api'
+import apiService from 'services/api'
 
 const axios = apiService.getClient()
 
