@@ -1,0 +1,14 @@
+#custom-loader {
+  height: 100px;
+  width : 100%;
+}
+
+#custom-loader>* {
+  position : absolute;
+  left     : 50%;
+}
+
+#custom-loader > .visually-hidden {
+  left: 55%;
+  position: relative;
+}
