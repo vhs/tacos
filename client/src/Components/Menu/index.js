@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Navbar, Nav, Button } from 'react-bootstrap'
-import AdminElement from '../AdminElement'
-import AuthenticatedElement from '../AuthenticatedElement'
-import UserControlElement from '../UserControlElement'
+import AdminElement from 'Components/AdminElement'
+import AuthenticatedElement from 'Components/AuthenticatedElement'
+import UserControlElement from 'Components/UserControlElement'
 
 import { stateMachine } from 'pretty-state-machine'
 
