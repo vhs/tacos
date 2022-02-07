@@ -2,10 +2,22 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 class Loading extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = { loading: props.loading }
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.loading !== prevProps.loading) {
+      this.setState({ loading: this.props.loading })
+    }
+  }
+
   render () {
     return (
       <>
-        {this.props.loading ? 'Loading...' : this.props.children}
+        {this.state.loading ? 'Loading...' : this.props.children}
       </>
     )
   }
