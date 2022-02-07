@@ -13,7 +13,9 @@ class CustomLogger {
     this.fallbackRegex = new RegExp(((process.env.REACT_APP_DEBUG !== undefined ? process.env.REACT_APP_DEBUG : '^$').replace(/\*/, '.*').replace(/,/, '|')))
     this.regex = this.fallbackRegex
 
-    setInterval(this.loadFromLocalStorage.bind(this), 1000)
+    if (process.env !== undefined && process.env.NODE_ENV !== undefined && process.env.NODE_ENV === 'development') {
+      setInterval(this.loadFromLocalStorage.bind(this), 1000)
+    }
   }
 
   loadFromLocalStorage () {
