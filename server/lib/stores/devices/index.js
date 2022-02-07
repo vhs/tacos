@@ -139,8 +139,6 @@ DeviceStore.prototype.getDeviceState = function (deviceId) {
   result.id = deviceResult.id
   result.armed = deviceResult.armed
   result.role = deviceResult.role
-  result.state = {}
-  result.state.armed = deviceResult.armed
 
   return result
 }
@@ -157,8 +155,6 @@ DeviceStore.prototype.getDeviceDetails = function (deviceId) {
   result.description = deviceResult.description
   result.role = deviceResult.role
   result.armed = deviceResult.armed
-  result.state = {}
-  result.state.armed = deviceResult.armed
 
   return result
 }
