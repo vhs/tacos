@@ -5,7 +5,7 @@ import { Row, Col, Form, FormControl, Button } from 'react-bootstrap'
 import TimeAgo from 'anderm-react-timeago'
 import { stateMachine } from 'pretty-state-machine'
 
-import AdminElement from '../AdminElement'
+import AdminElement from 'Components/AdminElement'
 
 import CustomLogger from 'lib/custom-logger'
 import apiService from 'services/api'
@@ -15,6 +15,8 @@ import './style.css'
 const axios = apiService.getClient()
 
 const log = new CustomLogger('tacos:Components:DeviceCard')
+
+const timeoutWindow = 5000
 
 const RoleOptions = ({ roles }) => {
   const RolesOptionsResult = roles.map((role) => {
@@ -27,41 +29,41 @@ const RoleOptions = ({ roles }) => {
 class DeviceCard extends Component {
   constructor (props) {
     super(props)
-    log.debug('DeviceCard', 'props', props)
+
+    log.debug('DeviceCard', props.device.id, 'props', props)
+
     this.intervalIds = {}
+    this.timeoutIds = {}
+
     this.state = {
       ...{
-        device: {},
+        device: { armed: 0, role: '', description: '', lastSeen: '', id: '' },
         roles: [],
-        user: { administrator: false, authenticated: false }
+        user: stateMachine.get('user', { administrator: false, authenticated: false })
       },
       ...props
     }
-    log.debug('DeviceCard', 'state', this.state)
-    this.deviceHot = this._deviceHot.bind(this)
-    this.getDevice = this._getDevice.bind(this)
-    this.deleteDevice = this._deleteDevice.bind(this)
-    this.updateDescription = this._updateDescription.bind(this)
-    this.updateRole = this._updateRole.bind(this)
+
+    log.debug('DeviceCard', 'props', props)
   }
 
   componentDidMount () {
-    this.intervalIds.getDevice = setInterval(() => this.getDevice(), 5000)
-
-    const newUserState = stateMachine.fetch('user', {
-      administrator: false,
-      authenticated: false
-    })
-
-    log.debug('componentDidMount', 'newUserState', newUserState)
-
-    this.setState(newUserState)
+    this.refreshDevice()
   }
 
   componentWillUnmount () {
     for (const intervalId in this.intervalIds) {
       clearInterval(this.intervalIds[intervalId])
     }
+    for (const timeoutId in this.timeoutIds) {
+      clearTimeout(this.timeoutIds[timeoutId])
+    }
+  }
+
+  async refreshDevice () {
+    await this._getDevice()
+
+    this.timeoutIds.refreshDevice = setTimeout(() => this.refreshDevice(), timeoutWindow + Math.random() * timeoutWindow)
   }
 
   async _getDevice () {
@@ -74,7 +76,7 @@ class DeviceCard extends Component {
     this.setState({ device: response.data })
   }
 
-  async _deviceHot () {
+  async _toggleDeviceHot () {
     let response
 
     if (this.state.device.armed === 0) {
@@ -162,7 +164,7 @@ class DeviceCard extends Component {
                     id='DeviceId'
                     className='description-control'
                     type='input'
-                    onChange={this.updateDescription}
+                    onChange={(e) => this._updateDescription(e)}
                     value={this.state.device.description}
                   />
                 </Col>
@@ -177,7 +179,7 @@ class DeviceCard extends Component {
                       as='select'
                       custom
                       value={this.state.device.role}
-                      onChange={this.updateRole}
+                      onChange={(e) => this._updateRole(e)}
                     >
                       <RoleOptions
                         roles={this.props.roles}
@@ -192,7 +194,7 @@ class DeviceCard extends Component {
                 <b>State:</b>
               </Col>
               <Col>
-                <span className='powerstate'>
+                <span className='powerstate pull-right'>
                   {this.state.device.armed
                     ? 'Armed'
                     : 'Unarmed'}
@@ -204,7 +206,9 @@ class DeviceCard extends Component {
                 <b>Last Seen:</b>
               </Col>
               <Col>
-                <TimeAgo date={this.props.device.last_seen} />
+                <span className='pull-right'>
+                  <TimeAgo date={this.props.device.last_seen} />
+                </span>
               </Col>
             </Row>
             <Row className='spacious'>
@@ -212,7 +216,7 @@ class DeviceCard extends Component {
                 <AdminElement user={this.state.user}>
                   <Button
                     className='btn-danger'
-                    onClick={this.deleteDevice}
+                    onClick={(e) => this._deleteDevice(e)}
                   >
                     DELETE
                   </Button>
@@ -222,7 +226,7 @@ class DeviceCard extends Component {
               <Col className='pull-right'>
                 <Button
                   className='pull-right powerbutton'
-                  onClick={this.deviceHot}
+                  onClick={(e) => this._toggleDeviceHot(e)}
                 >
                   {this.state.device.armed === 0
                     ? 'ARM'
