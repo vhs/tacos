@@ -19,7 +19,7 @@
     "dotenv": "^10.0.0",
     "dotenv-load": "^2.0.0",
     "eventemitter2": "^6.4.5",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-session": "^1.17.2",
     "lokijs": "^1.5.12",
     "morgan": "^1.9.1",
