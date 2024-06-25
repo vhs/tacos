@@ -12,7 +12,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "anderm-react-timeago": "^4.4.2",
-    "axios": "^0.21.1",
+    "axios": "^0.28.0",
     "bootstrap": "^4.5.0",
     "browserslist": ">=4",
     "eslint-config-standard": "^16.0.3",
