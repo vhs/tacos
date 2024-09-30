@@ -24,6 +24,7 @@
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-standard": "^5.0.0",
     "http-proxy-middleware": "^1.0.4",
+    "normalize-css": "^2.3.1",
     "path-to-regexp": "^6.1.0",
     "postcss": ">=8",
     "postcss-normalize": "^10.0.1",
