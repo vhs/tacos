@@ -1,29 +1,27 @@
-FROM node:lts AS build
+FROM node:lts AS base
+
+RUN corepack enable
+
+FROM base AS build
 
 WORKDIR /build
 
+COPY package.json yarn.lock /build/
 
-RUN npm install -g npm
+COPY client/ /build/client/
+COPY server/ /build/server/
 
-COPY package.json .
-COPY yarn.lock .
+RUN yarn install && yarn workspace tacos-client run build
 
-COPY client/ client/
-COPY server/ server/
-
-RUN npx yarn install
-
-RUN npx yarn workspace tacos-client run build
-
-FROM node:lts
+FROM base AS prod
 
 EXPOSE 3000
-CMD ["npm","start"]
-WORKDIR /app
 
-RUN npm install -g npm
+CMD ["npm","start"]
+
+WORKDIR /app
 
 COPY --from=build /build/server/ /app/
 COPY --from=build /build/client/build/ /app/public/
 
-RUN npx yarn install
+RUN yarn install
