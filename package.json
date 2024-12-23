@@ -1,37 +1,33 @@
 {
-  "name": "tacos",
-  "version": "1.0.0",
-  "description": "TACOS is a React/NodeJS based solution for managing tool access control in a hack-/makerspace environment.",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "client": "yarn workspace tacos-client start",
-    "server": "yarn workspace tacos-server start",
-    "server-dev": "yarn workspace tacos-server run dev",
-    "prebuild": "echo Starting build...",
-    "build": "yarn workspace tacos-client run build",
-    "postbuild": "rsync -avz ./client/build/ ./server/public/",
-    "start": "concurrently --kill-others-on-fail \"yarn server\"  \"yarn client\"",
-    "dev": "concurrently --kill-others-on-fail \"yarn server-dev\"  \"yarn client\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vhs/tacos.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/vhs/tacos/issues"
-  },
-  "homepage": "https://github.com/vhs/tacos#readme",
-  "devDependencies": {
-    "concurrently": "^6.3.0"
-  },
-  "workspaces": [
-    "client/**",
-    "server/**"
-  ],
-  "private": true,
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
-  "dependencies": {}
+    "author": "",
+    "bugs": {
+        "url": "https://github.com/vhs/tacos/issues"
+    },
+    "dependencies": {},
+    "description": "TACOS is a React/NodeJS based solution for managing tool access control in a hack-/makerspace environment.",
+    "devDependencies": {
+        "concurrently": "^6.3.0"
+    },
+    "homepage": "https://github.com/vhs/tacos#readme",
+    "keywords": [],
+    "license": "ISC",
+    "name": "tacos",
+    "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vhs/tacos.git"
+    },
+    "scripts": {
+        "build": "pnpm --filter=tacos-client run build",
+        "client": "pnpm --filter=tacos-client start",
+        "dev": "concurrently --kill-others-on-fail \"pnpm run server-dev\"  \"pnpm run client\"",
+        "postbuild": "rsync -avz ./client/build/ ./server/public/",
+        "prebuild": "echo Starting build...",
+        "server": "pnpm --filter=tacos-server start",
+        "server-dev": "pnpm --filter=tacos-server run dev",
+        "start": "concurrently --kill-others-on-fail \"pnpm run server\"  \"pnpm run client\"",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "version": "1.0.0"
 }
