@@ -5,9 +5,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import { stateMachine } from 'pretty-state-machine'
 import { Container } from 'react-bootstrap'
 import { BrowserRouter, redirect, Route, Routes } from 'react-router'
+import { SWRConfig } from 'swr'
 
 import Menu from './Components/Menu/index.jsx'
 import CustomLogger from './lib/custom-logger/index.js'
+import { fetcher } from './lib/fetcher.js'
 import Dashboard from './Pages/Dashboard/index.jsx'
 import Devices from './Pages/Devices/index.jsx'
 import Home from './Pages/Home/index.jsx'
@@ -49,73 +51,81 @@ class App extends Component {
 
     render() {
         return (
-            <BrowserRouter>
-                <Container>
-                    <Menu />
-                    <Routes>
-                        <Route
-                            index
-                            loader={() => {
-                                if (this.state.loggedIn) redirect('/dashboard')
-                            }}
-                            element={<Home />}
-                        />
-                        <Route
-                            path='/dashboard'
-                            exact
-                            loader={() => {
-                                if (!this.state.loggedIn) redirect('/login')
-                            }}
-                            element={<Dashboard />}
-                        />
-                        <Route
-                            path='/devices'
-                            loader={() => {
-                                if (!this.state.loggedIn) redirect('/login')
-                            }}
-                            element={
-                                <Devices
-                                    user={this.state.user}
-                                    roles={this.state.roles}
-                                />
-                            }
-                        />
-                        <Route
-                            path='/terminals'
-                            loader={() => {
-                                if (!this.state.administrator)
-                                    redirect('/dashboard')
-                            }}
-                            element={
-                                <Terminals
-                                    user={this.state.user}
-                                    roles={this.state.roles}
-                                />
-                            }
-                        />
-                        <Route
-                            path='/logging'
-                            loader={() => {
-                                if (!this.state.administrator)
-                                    redirect('/dashboard')
-                            }}
-                            element={
-                                <Logging
-                                    user={this.state.user}
-                                    roles={this.state.roles}
-                                />
-                            }
-                        />
-                        <Route
-                            path='/login'
-                            loader={() => {
-                                if (this.state.loggedIn) redirect('/dashboard')
-                            }}
-                            element={<Login />}
-                        />
-                    </Routes>
-                </Container>
-            </BrowserRouter>
+            <SWRConfig
+                value={{
+                    fetcher
+                }}
+            >
+                <BrowserRouter>
+                    <Container>
+                        <Menu />
+                        <Routes>
+                            <Route
+                                index
+                                loader={() => {
+                                    if (this.state.loggedIn)
+                                        redirect('/dashboard')
+                                }}
+                                element={<Home />}
+                            />
+                            <Route
+                                path='/dashboard'
+                                exact
+                                loader={() => {
+                                    if (!this.state.loggedIn) redirect('/login')
+                                }}
+                                element={<Dashboard />}
+                            />
+                            <Route
+                                path='/devices'
+                                loader={() => {
+                                    if (!this.state.loggedIn) redirect('/login')
+                                }}
+                                element={
+                                    <Devices
+                                        user={this.state.user}
+                                        roles={this.state.roles}
+                                    />
+                                }
+                            />
+                            <Route
+                                path='/terminals'
+                                loader={() => {
+                                    if (!this.state.administrator)
+                                        redirect('/dashboard')
+                                }}
+                                element={
+                                    <Terminals
+                                        user={this.state.user}
+                                        roles={this.state.roles}
+                                    />
+                                }
+                            />
+                            <Route
+                                path='/logging'
+                                loader={() => {
+                                    if (!this.state.administrator)
+                                        redirect('/dashboard')
+                                }}
+                                element={
+                                    <Logging
+                                        user={this.state.user}
+                                        roles={this.state.roles}
+                                    />
+                                }
+                            />
+                            <Route
+                                path='/login'
+                                loader={() => {
+                                    if (this.state.loggedIn)
+                                        redirect('/dashboard')
+                                }}
+                                element={<Login />}
+                            />
+                        </Routes>
+                    </Container>
+                </BrowserRouter>
+            </SWRConfig>
         )
     }
 }
