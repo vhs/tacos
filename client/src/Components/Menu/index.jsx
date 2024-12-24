@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import { stateMachine } from 'pretty-state-machine'
 import { Navbar, Nav, Button } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import AdminElement from '../AdminElement/index.jsx'
 import AuthenticatedElement from '../AuthenticatedElement/index.jsx'
@@ -32,12 +32,18 @@ class Menu extends Component {
         return (
             <Navbar expand='lg'>
                 <Navbar.Brand>
-                    <Nav.Link to='/'>TAC•OS</Nav.Link> ({process.env.NODE_ENV})
+                    <Nav.Link as={Link} to='/'>
+                        TAC•OS
+                    </Nav.Link>{' '}
+                    ({process.env.NODE_ENV})
                 </Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className='justify-content-end'>
                     <Nav className='mr-auto'>
-                        <Nav.Link as={Link} to='/'>
+                        <Nav.Link
+                            as={Link}
+                            to={this.state.loggedIn ? '/dashboard' : '/'}
+                        >
                             Home
                         </Nav.Link>
                         <AuthenticatedElement loggedIn={this.state.loggedIn}>
