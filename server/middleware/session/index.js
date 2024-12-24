@@ -1,8 +1,11 @@
 const debug = require('debug')('tacos:middleware:terminals')
+
 const { getLine } = require('../../lib/utils')
+
 debug(getLine(), 'Loading')
 
 const express = require('express')
+
 const router = express.Router()
 
 const { getSession, dumpSession } = require('./lib')

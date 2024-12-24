@@ -1,48 +1,59 @@
 'use strict'
 
+const http = require('http')
 const path = require('path')
 
-const debug = require('debug')('tacos:app')
-
-const express = require('express')
-const cors = require('cors')
-const logger = require('morgan')
 const bodyParser = require('body-parser')
+const loki = require('connect-loki')
+const cors = require('cors')
+const debug = require('debug')('tacos:app')
+const express = require('express')
 const session = require('express-session')
-const LokiStore = require('connect-loki')(session)
+const logger = require('morgan')
 
 const { config } = require('./lib/config')
-const lokiStoreOpts = { path: path.resolve(path.join(__dirname, '/', config.datadir, '/session-store.db')), autosave: true }
 const passport = require('./lib/passport')
-
 const middleware = require('./middleware/')
 
+const LokiStore = loki(session)
+
+const lokiStoreOpts = {
+    path: path.resolve(
+        path.join(__dirname, '/', config.datadir, '/session-store.db')
+    ),
+    autosave: true
+}
+
 const app = express()
-const server = require('http').createServer(app)
+const server = http.createServer(app)
 
 debug('Setting up app')
 
 app.use(logger('dev'))
 
 app.use(cors())
-app.use(bodyParser.urlencoded({
-  extended: true
-}))
+app.use(
+    bodyParser.urlencoded({
+        extended: true
+    })
+)
 app.use(bodyParser.json())
-app.use(session({
-  secret: config.sessions.secret,
-  // @ts-ignore
-  store: new LokiStore(lokiStoreOpts),
-  resave: false,
-  saveUninitialized: true,
-  proxy: true,
-  cookie: {
-    secure: false,
-    maxAge: 1000 * 3600 * 24
-  },
-  name: 'tacos',
-  rolling: true
-}))
+app.use(
+    session({
+        secret: config.sessions.secret,
+        // @ts-ignore
+        store: new LokiStore(lokiStoreOpts),
+        resave: false,
+        saveUninitialized: true,
+        proxy: true,
+        cookie: {
+            secure: false,
+            maxAge: 1000 * 3600 * 24
+        },
+        name: 'tacos',
+        rolling: true
+    })
+)
 
 passport.init(app)
 

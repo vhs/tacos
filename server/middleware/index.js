@@ -1,19 +1,22 @@
 const debug = require('debug')('app:middleware')
+
 const { getLine } = require('../lib/utils')
+
 debug(getLine(), 'Loading')
 
+const _post = require('./_post')
 const _pre = require('./_pre')
 const _root = require('./_root')
-const _post = require('./_post')
 const api = require('./api')
 const auth = require('./auth')
 const devices = require('./devices')
 const logging = require('./logging')
 const session = require('./session')
 const terminals = require('./terminals')
-const test = (process.env.TACOS_TEST !== undefined ? require('./test') : null)
+const test = process.env.TACOS_TEST !== undefined ? require('./test') : null
 
 const express = require('express')
+
 const router = express.Router()
 
 router.use(_pre.router)
