@@ -1,7 +1,9 @@
 'use strict'
 
 const { config } = require('../../lib/config')
+
 const debug = require('debug')('tacos:backend:test')
+
 const getLine = require('../../lib/utils').getLine
 
 debug(getLine(), 'Loading test backend')

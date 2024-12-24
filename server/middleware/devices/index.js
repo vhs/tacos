@@ -1,12 +1,28 @@
 const debug = require('debug')('tacos:routes:devices')
+
 const { convertResultToJSON, getLine } = require('../../lib/utils')
+
 debug(getLine(), 'Loading')
 
 const express = require('express')
+
 const router = express.Router()
 const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
-const { setResultArray, requireToolAccess, getDevices, getDeviceState, getDeviceDetails, deleteDevice, updateDeviceRole, updateDeviceDescription, updateDeviceHasSecret, updateDeviceSecret, armDevice, unarmDevice } = require('./lib')
+const {
+    setResultArray,
+    requireToolAccess,
+    getDevices,
+    getDeviceState,
+    getDeviceDetails,
+    deleteDevice,
+    updateDeviceRole,
+    updateDeviceDescription,
+    updateDeviceHasSecret,
+    updateDeviceSecret,
+    armDevice,
+    unarmDevice
+} = require('./lib')
 
 // Set result array
 router.use('/', setResultArray)
@@ -15,7 +31,10 @@ router.use('/', setResultArray)
 router.get('/', getDevices)
 
 // Query state
-router.get('/state/:id', getDeviceState, (req, res, next) => { res.set('Connection', 'close'); next() })
+router.get('/state/:id', getDeviceState, (req, res, next) => {
+    res.set('Connection', 'close')
+    next()
+})
 
 // Query state
 router.get('/details/:id', getDeviceDetails)
@@ -24,16 +43,36 @@ router.get('/details/:id', getDeviceDetails)
 router.post('/delete/:id', requireAuthenticated, requireAdmin, deleteDevice)
 
 // Update device role
-router.post('/update/role/:id', requireAuthenticated, requireAdmin, updateDeviceRole)
+router.post(
+    '/update/role/:id',
+    requireAuthenticated,
+    requireAdmin,
+    updateDeviceRole
+)
 
 // Update device description
-router.post('/update/description/:id', requireAuthenticated, requireAdmin, updateDeviceDescription)
+router.post(
+    '/update/description/:id',
+    requireAuthenticated,
+    requireAdmin,
+    updateDeviceDescription
+)
 
 // Update device hassecret
-router.post('/update/hassecret/:id', requireAuthenticated, requireAdmin, updateDeviceHasSecret)
+router.post(
+    '/update/hassecret/:id',
+    requireAuthenticated,
+    requireAdmin,
+    updateDeviceHasSecret
+)
 
 // Update device secret
-router.post('/update/secret/:id', requireAuthenticated, requireAdmin, updateDeviceSecret)
+router.post(
+    '/update/secret/:id',
+    requireAuthenticated,
+    requireAdmin,
+    updateDeviceSecret
+)
 
 // Activate device
 router.post('/arm/:id', requireAuthenticated, requireToolAccess, armDevice)
