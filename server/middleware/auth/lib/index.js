@@ -7,12 +7,16 @@ debug(getLine(), 'Loading with', backend)
 
 const doLogout = (req, res, next) => {
     debug('doLogout')
-    req.logout()
-    res.send({ result: 'OK', message: 'Logged out' })
+    req.logout(function (err) {
+        if (err) {
+            return next(err)
+        }
+        res.send({ result: 'OK', message: 'Logged out' })
+    })
 }
 
 const requireAdmin = (req, res, next) => {
-    if (req.user && req.user.authenticated && req.user.administrator) {
+    if (req.user?.authenticated && req.user?.administrator) {
         return next()
     }
     res.status(403).send({
@@ -23,7 +27,7 @@ const requireAdmin = (req, res, next) => {
 }
 
 const requireAuthenticated = (req, res, next) => {
-    if (req.user && req.user.authenticated) {
+    if (req.user?.authenticated) {
         return next()
     }
     res.status(403).send({

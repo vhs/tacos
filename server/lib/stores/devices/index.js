@@ -81,7 +81,7 @@ DeviceStore.prototype.registerDevice = function (deviceId) {
             armed: 0
         }
 
-        deviceResult = this.devices.insert(deviceResult)
+        this.devices.insert(deviceResult)
 
         deviceResult = this.devices.findOne({ id: deviceId })
     }
@@ -185,17 +185,13 @@ DeviceStore.prototype.deleteDevice = function (deviceId) {
         .remove()
         .data()
 
-    if (deviceResult.length === 0) return true
-
-    return false
+    return deviceResult.length === 0
 }
 
 DeviceStore.prototype.checkDeviceExists = function (deviceId) {
     const deviceResult = this.devices.findOne({ id: deviceId })
 
-    if (deviceResult !== null) return true
-
-    return false
+    return deviceResult !== null
 }
 
 DeviceStore.prototype.checkDeviceAccess = function (deviceId, user) {
@@ -203,9 +199,7 @@ DeviceStore.prototype.checkDeviceAccess = function (deviceId, user) {
 
     if (user.administrator === true) return true
 
-    if (user.privileges.indexOf(deviceResult.role) >= 0) return true
-
-    return false
+    return user.privileges.indexOf(deviceResult.role) >= 0
 }
 
 let deviceStore = null

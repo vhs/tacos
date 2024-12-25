@@ -1,14 +1,12 @@
 const debug = require('debug')('tacos:middleware:logging')
+const express = require('express')
 
 const { convertResultToJSON, getLine } = require('../../lib/utils')
+const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
 debug(getLine(), 'Loading')
 
-const express = require('express')
-
 const router = express.Router()
-
-const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
 const { setDefaultResultArray, getAllLogs, getLogDetails } = require('./lib')
 
@@ -24,7 +22,7 @@ router.get('/', requireAuthenticated, requireAdmin, getAllLogs)
 // Get terminal details (web console)
 router.get('/details/:id', requireAuthenticated, requireAdmin, getLogDetails)
 
-router.use('/', (req, res, next) => {
+router.use('/', (_req, res, next) => {
     res.set('Connection', 'close')
     next()
 })

@@ -25,7 +25,7 @@ function checkBackendService(user) {
         })
 }
 
-async function auth(accessToken, refreshToken, profile, done) {
+async function auth(_accessToken, _refreshToken, profile, done) {
     debug(getLine(), 'auth', 'profile:', profile)
     const user = {
         id: profile.id,

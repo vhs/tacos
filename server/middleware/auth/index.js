@@ -1,16 +1,14 @@
 const debug = require('debug')('tacos:routes:auth')
+const express = require('express')
 
+const { passport } = require('../../lib/passport')
 const { getLine } = require('../../lib/utils')
+
+const lib = require('./lib')
 
 debug(getLine(), 'Loading')
 
-const express = require('express')
-
 const router = express.Router()
-
-const { passport } = require('../../lib/passport')
-
-const lib = require('./lib')
 
 // Slack
 router.get(
@@ -19,7 +17,7 @@ router.get(
         failureRedirect: '/login',
         successRedirect: '/dashboard'
     }),
-    (req, res) => {
+    (_req, res) => {
         res.redirect('/dashboard')
     }
 )
@@ -30,7 +28,7 @@ router.get('/slack', passport.authenticate('Slack'))
 router.get(
     '/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
-    (req, res) => {
+    (_req, res) => {
         res.redirect('/dashboard')
     }
 )
@@ -52,7 +50,7 @@ router.get(
         failureRedirect: '/login',
         successRedirect: '/dashboard'
     }),
-    (req, res) => {
+    (_req, res) => {
         res.redirect('/dashboard')
     }
 )

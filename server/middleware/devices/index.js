@@ -1,13 +1,12 @@
 const debug = require('debug')('tacos:routes:devices')
+const express = require('express')
 
 const { convertResultToJSON, getLine } = require('../../lib/utils')
+const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
 debug(getLine(), 'Loading')
 
-const express = require('express')
-
 const router = express.Router()
-const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
 const {
     setResultArray,
@@ -31,7 +30,7 @@ router.use('/', setResultArray)
 router.get('/', getDevices)
 
 // Query state
-router.get('/state/:id', getDeviceState, (req, res, next) => {
+router.get('/state/:id', getDeviceState, (_req, res, next) => {
     res.set('Connection', 'close')
     next()
 })

@@ -1,21 +1,21 @@
 const path = require('path')
 
-const express = require('express')
 const debug = require('debug')('app:middleware:_post')
+const express = require('express')
 
 const router = express.Router()
 
-router.get('/*', (req, res) => {
+router.get('/*', (_req, res) => {
     res.sendFile(path.resolve(path.join(__dirname, '../../public/index.html')))
 })
 
 // catch 404 and forward to error handler
-router.use((req, res, next) => {
+router.use((_req, _res, next) => {
     const err = new Error('Not Found')
     next(Object.assign(err, { statusCode: 404 }))
 })
 
-router.use((req, res, next) => {
+router.use((_req, res, next) => {
     if (Object.keys(res.locals.result).length > 0) {
         return res.json(res.locals.result)
     }
@@ -33,7 +33,7 @@ router.use((req, res, next) => {
 //   })
 // })
 
-router.use((err, req, res, next) => {
+router.use((err, _req, res, _next) => {
     // jshint ignore:line
     const response = {
         msg: err.message,

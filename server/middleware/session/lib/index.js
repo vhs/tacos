@@ -1,8 +1,8 @@
-const getSession = function (req, res, next) {
+const getSession = function (req, res, _next) {
     res.send({ account: req.account, user: req.user })
 }
 
-const dumpSession = function (req, res, next) {
+const dumpSession = function (req, res, _next) {
     res.send({
         account: req.account,
         user: req.user,

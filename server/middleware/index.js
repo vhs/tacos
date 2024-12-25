@@ -1,4 +1,5 @@
 const debug = require('debug')('app:middleware')
+const express = require('express')
 
 const { getLine } = require('../lib/utils')
 
@@ -14,8 +15,6 @@ const logging = require('./logging')
 const session = require('./session')
 const terminals = require('./terminals')
 const test = process.env.TACOS_TEST !== undefined ? require('./test') : null
-
-const express = require('express')
 
 const router = express.Router()
 

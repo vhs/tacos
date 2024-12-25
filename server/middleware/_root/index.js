@@ -1,13 +1,12 @@
 const debug = require('debug')('app:middleware:_root')
+const express = require('express')
 
+const { backend } = require('../../lib/backend')
 const { getLine } = require('../../lib/utils')
 
 debug(getLine(), 'Loading')
 
-const express = require('express')
-
 const router = express.Router()
-const { backend } = require('../../lib/backend')
 
 router.use('/', function (req, res, next) {
     res.locals.user = req.user

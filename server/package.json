@@ -1,7 +1,6 @@
 {
     "author": "Ty Eggen",
     "dependencies": {
-        "axios": "^0.28.0",
         "body-parser": "^1.19.0",
         "connect-loki": "^1.2.0",
         "cookie-parser": "^1.4.4",
