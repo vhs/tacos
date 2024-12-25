@@ -19,6 +19,9 @@
         "type": "git",
         "url": "git+https://github.com/vhs/tacos.git"
     },
+    "resolutions": {
+        "levelup-defaults": "^2.0.0"
+    },
     "scripts": {
         "build": "pnpm --filter=tacos-client run build",
         "client": "pnpm --filter=tacos-client start",
