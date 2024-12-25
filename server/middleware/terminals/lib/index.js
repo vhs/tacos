@@ -12,7 +12,7 @@ const { getLine } = require('../../../lib/utils')
 
 const Logger = loggingStore.getLogger('tacos:middleware:terminals:lib')
 
-const getAllTerminals = function (req, res, next) {
+const getAllTerminals = function (_req, res, _next) {
     debug(getLine(), 'getAllTerminals')
 
     res.locals.terminals = terminalStore.getAllTerminals()
@@ -21,7 +21,7 @@ const getAllTerminals = function (req, res, next) {
 }
 
 // Default get result
-const handleDefaultRequest = function (req, res, next) {
+const handleDefaultRequest = function (req, res, _next) {
     debug(getLine(), 'handleDefaultRequest')
 
     res.locals.user = req.user
@@ -222,7 +222,7 @@ const authenticateRFIDCard = function (req, res, next) {
 
     debug(getLine(), 'authenticateRFIDCard', 'cardRequest', cardRequest)
 
-    backend.checkCard(cardRequest).then(function (done) {
+    backend.checkCard(cardRequest).then(function (_done) {
         if (!cardRequest.valid) {
             console.log(
                 Date.now() + ': RFID ACCESS DENIED for ' + cardRequest.id

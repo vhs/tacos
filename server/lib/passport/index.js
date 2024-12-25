@@ -1,16 +1,14 @@
 'use strict'
 
 const debug = require('debug')('tacos:lib:passport')
-
-const { getLine } = require('../utils')
-
 const passport = require('passport')
-const SlackStrategy = require('passport-slack-oauth2').Strategy
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const GitHubStrategy = require('passport-github').Strategy
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
+const SlackStrategy = require('passport-slack-oauth2').Strategy
 
 const { backend } = require('../backend')
 const { config } = require('../config')
+const { getLine } = require('../utils')
 
 const { auth, serializeUser, deserializeUser } = require('./lib')
 

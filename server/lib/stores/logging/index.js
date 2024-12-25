@@ -57,7 +57,7 @@ LoggingStore.prototype.saveLog = function (event) {
     this.logs.insert(event)
 }
 
-LoggingStore.prototype.getAllLogs = function (filter) {
+LoggingStore.prototype.getAllLogs = function (_filter) {
     const criteria = { ts: { $gt: 0 } }
     return this.logs.find(criteria)
 }

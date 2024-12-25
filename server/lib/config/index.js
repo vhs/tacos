@@ -1,10 +1,10 @@
+const path = require('path')
+
 const debug = require('debug')('tacos:lib:config')
 
 const { getLine } = require('../utils')
 
 debug(getLine(), 'Loading configuration')
-
-const path = require('path')
 
 const config = require(
     path.resolve(

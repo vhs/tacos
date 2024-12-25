@@ -1,10 +1,9 @@
 const debug = require('debug')('tacos:middleware:terminals')
+const express = require('express')
 
 const { getLine } = require('../../lib/utils')
 
 debug(getLine(), 'Loading')
-
-const express = require('express')
 
 const router = express.Router()
 

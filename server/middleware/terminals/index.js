@@ -1,7 +1,7 @@
 'use strict'
 
-const express = require('express')
 const debug = require('debug')('tacos:middleware:terminals')
+const express = require('express')
 
 const router = express.Router()
 
@@ -81,7 +81,7 @@ router.post(
     updateTerminalTarget
 )
 
-router.use('/', (req, res, next) => {
+router.use('/', (_req, res, next) => {
     res.set('Connection', 'close')
     next()
 })

@@ -2,12 +2,11 @@
 
 const path = require('path')
 
+const CryptoJS = require('crypto-js')
 const debug = require('debug')('tacos:lib:stores:terminals')
 const Loki = require('lokijs')
 
 const { getLine } = require('../../utils')
-
-const CryptoJS = require('crypto-js')
 
 const TerminalStore = function (dataDir) {
     this.terminalDB = new Loki(path.resolve(dataDir, 'terminalStore.json'))
@@ -165,24 +164,16 @@ TerminalStore.prototype.checkTerminalEnabled = function (terminalId) {
 
     debug(getLine(), 'checkTerminalEnabled', 'terminalResult', terminalResult)
 
-    if (
+    return (
         terminalResult &&
         (terminalResult.enabled === true || terminalResult.enabled === 1)
-    ) {
-        return true
-    }
-
-    return false
+    )
 }
 
 TerminalStore.prototype.checkTerminalHasTarget = function (terminalId) {
     const terminalResult = this.terminals.findOne({ id: terminalId })
 
-    if (terminalResult && terminalResult.target !== '') {
-        return true
-    }
-
-    return false
+    return terminalResult && terminalResult.target !== ''
 }
 
 TerminalStore.prototype.getTerminalTarget = function (terminalId) {
@@ -229,35 +220,23 @@ TerminalStore.prototype.deleteTerminal = function (terminalId) {
         .remove()
         .data()
 
-    if (terminalResult.length === 0) {
-        return true
-    }
-
-    return false
+    return terminalResult.length === 0
 }
 
 TerminalStore.prototype.checkTerminalExists = function (terminalId) {
     const terminalResult = this.terminals.findOne({ id: terminalId })
 
-    if (terminalResult !== null) {
-        return true
-    }
-
-    return false
+    return terminalResult !== null
 }
 
 TerminalStore.prototype.checkTerminalSecured = function (terminalId) {
     debug(getLine(), 'checkTerminalSecured')
     const terminalResult = this.terminals.findOne({ id: terminalId })
 
-    if (
+    return (
         terminalResult !== null &&
         (terminalResult.secure === 1 || terminalResult.secret !== '')
-    ) {
-        return true
-    }
-
-    return false
+    )
 }
 
 TerminalStore.prototype.setTerminalSecure = function (terminalId) {
@@ -273,11 +252,7 @@ TerminalStore.prototype.checkTerminalAccess = function (terminalId, user) {
 
     const terminalResult = this.terminals.findOne({ id: terminalId })
 
-    if (user.privileges.indexOf(terminalResult.role) >= 0) {
-        return true
-    }
-
-    return false
+    return user.privileges.indexOf(terminalResult.role) >= 0
 }
 
 TerminalStore.prototype.verifyHMAC = function (terminalId, packet) {

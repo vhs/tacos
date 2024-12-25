@@ -1,14 +1,13 @@
 const debug = require('debug')('tacos:middleware:devices:lib')
 
+const { deviceStore, loggingStore } = require('../../../lib/stores')
 const { getLine } = require('../../../lib/utils')
 
 debug(getLine(), 'Loading')
 
-const { deviceStore, loggingStore } = require('../../../lib/stores')
-
 const Logger = loggingStore.getLogger('tacos:middleware:devices:lib')
 
-const setResultArray = function (req, res, next) {
+const setResultArray = function (_req, res, next) {
     res.locals.result = {}
 
     next()

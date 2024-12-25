@@ -1,7 +1,6 @@
 'use strict'
 
 const debug = require('debug')('tacos:backend:nomos')
-const axios = require('axios')
 
 const { config } = require('../../lib/config')
 const { getLine } = require('../../lib/utils')
@@ -32,25 +31,19 @@ const loadRoles = function () {
 
     const options = {
         method: 'POST',
-        url: config[config.backend].userRolesUrl,
         headers: {
-            'X-Api-Key': config[config.backend].credentials.key
+            'X-Api-Key': config[config.backend].credentials.key,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
-        json: true,
-        data: params
+        body: JSON.stringify(params)
     }
 
     // @ts-ignore
-    return axios(options)
-        .then((rolesResult) => {
-            const rolesData = rolesResult.data
-            debug(
-                getLine(),
-                'got data:',
-                rolesData.status,
-                rolesData.statusText
-            )
-            debug(getLine(), 'data:', rolesData.data)
+    return fetch(config[config.backend].userRolesUrl, options)
+        .then((response) => response.json())
+        .then((rolesData) => {
+            debug(getLine(), 'data:', rolesData)
 
             if (typeof rolesData === 'object' && rolesData.length > 0) {
                 rolesCache = rolesData
@@ -96,30 +89,25 @@ const checkUser = async function (user) {
 
     const options = {
         method: 'POST',
-        url: config[config.backend].userAuthUrl,
         headers: {
-            'X-Api-Key': config[config.backend].credentials.key
+            'X-Api-Key': config[config.backend].credentials.key,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
-        json: true,
-        data: params
+        body: JSON.stringify(params)
     }
 
     let authenticated = false
 
     try {
         // @ts-ignore
-        const userResult = await axios(options)
-
-        const userData = userResult.data
+        const userData = await (
+            await fetch(config[config.backend].userAuthUrl, options)
+        ).json()
 
         debug(getLine(), 'checkUser', 'userData', JSON.stringify(userData))
 
-        if (
-            userResult &&
-            userData &&
-            userData.valid === true &&
-            userData.privileges
-        ) {
+        if (userData && userData.valid === true && userData.privileges) {
             // Save username
             user.username = userData.username
 
@@ -128,7 +116,7 @@ const checkUser = async function (user) {
             user.privileges = []
 
             // Get default privileges
-            user.privileges = userResult.data.privileges.reduce(
+            user.privileges = userData.privileges.reduce(
                 (privileges, privilege) => {
                     privileges.push(privilege.code)
                     return privileges
@@ -169,25 +157,24 @@ const checkCard = function (cardRequest) {
 
     const options = {
         method: 'POST',
-        url: config[config.backend].cardAuthUrl,
         headers: {
             'X-Api-Key': config[config.backend].credentials.key,
-            'Content-Type': 'application/x-www-form-urlencoded'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         },
-        data: params
+        body: JSON.stringify(params)
     }
 
     debug(getLine(), 'checkCard', 'options', options)
 
     // @ts-ignore
-    return axios(options)
-        .then((requestResult) => {
-            const cardResult = requestResult.data
-
+    return fetch(config[config.backend].cardAuthUrl, options)
+        .then((response) => response.json())
+        .then((cardResult) => {
             debug(getLine(), 'got CheckRFID result:', cardResult.valid)
             let valid = false
 
-            if (cardResult && cardResult.valid) {
+            if (cardResult?.valid) {
                 // Save valid
                 valid = cardRequest.valid = cardResult.valid
 
