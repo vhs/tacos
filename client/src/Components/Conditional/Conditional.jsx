@@ -1,22 +1,16 @@
-import React, { Component } from 'react'
-
 import PropTypes from 'prop-types'
 
-class Conditional extends Component {
-    static get propTypes() {
-        return {
-            children: PropTypes.any,
-            condition: PropTypes.bool.isRequired
-        }
+const Conditional = ({ children, condition }) => {
+    if (condition === false) {
+        return null
     }
 
-    render() {
-        if (this.props.condition === false) {
-            return null
-        }
-
-        return <>{this.props.children}</>
-    }
+    return <>{children}</>
 }
 
 export default Conditional
+
+Conditional.propTypes = {
+    children: PropTypes.any,
+    condition: PropTypes.bool.isRequired
+}
