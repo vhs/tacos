@@ -15,3 +15,10 @@ code {
 .centered {
     text-align: center;
 }
+
+.navbar-nav {
+    font-size: larger;
+}
+.nav-link.active {
+    font-weight: bold;
+}

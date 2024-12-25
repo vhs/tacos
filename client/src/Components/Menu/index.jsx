@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
-
-import { stateMachine } from 'pretty-state-machine'
-import { Navbar, Nav, Button } from 'react-bootstrap'
-import { Link } from 'react-router'
+import { clsx } from 'clsx'
+import { Button, Nav, Navbar } from 'react-bootstrap'
+import { Link, useLocation } from 'react-router'
 
 import AdminElement from '../AdminElement/index.jsx'
 import AuthenticatedElement from '../AuthenticatedElement/index.jsx'
+import { useAuthenticationHook } from '../AuthenticationProvider/AuthenticationHook.jsx'
 import UserControlElement from '../UserControlElement/index.jsx'
 
 import './style.css'
@@ -14,67 +13,79 @@ import './style.css'
 
 // const log = new CustomLogger('tacos:components:menu')
 
-class Menu extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            loggedIn: stateMachine.get('loggedIn', false),
-            user: stateMachine.get('user', { authenticated: false })
-        }
-    }
+const Menu = () => {
+    const { user, loggedIn } = useAuthenticationHook()
 
-    componentDidMount() {
-        stateMachine.sub('loggedIn', this.setState.bind(this))
-        stateMachine.sub('user', this.setState.bind(this))
-    }
+    const location = useLocation()
 
-    render() {
-        return (
-            <Navbar expand='lg'>
-                <Navbar.Brand>
-                    <Nav.Link as={Link} to='/'>
-                        TAC•OS
-                    </Nav.Link>{' '}
-                    ({process.env.NODE_ENV})
-                </Navbar.Brand>
-                <Navbar.Toggle />
-                <Navbar.Collapse className='justify-content-end'>
-                    <Nav className='mr-auto'>
+    return (
+        <Navbar expand='lg'>
+            <Navbar.Brand>
+                <Nav.Link as={Link} to='/'>
+                    TAC•OS
+                </Nav.Link>{' '}
+                ({process.env.NODE_ENV})
+            </Navbar.Brand>
+            <Navbar.Toggle />
+            <Navbar.Collapse className='justify-content-end'>
+                <Nav className='mr-auto'>
+                    <Nav.Link
+                        as={Link}
+                        to={loggedIn ? '/dashboard' : '/'}
+                        className={clsx([
+                            location.pathname === '/dashboard' ? 'active' : ''
+                        ])}
+                    >
+                        Home
+                    </Nav.Link>
+                    <AuthenticatedElement loggedIn={loggedIn}>
                         <Nav.Link
                             as={Link}
-                            to={this.state.loggedIn ? '/dashboard' : '/'}
+                            to='/devices'
+                            className={clsx([
+                                location.pathname === '/devices' ? 'active' : ''
+                            ])}
                         >
-                            Home
+                            Devices
                         </Nav.Link>
-                        <AuthenticatedElement loggedIn={this.state.loggedIn}>
-                            <Nav.Link as={Link} to='/devices'>
-                                Devices
-                            </Nav.Link>
-                        </AuthenticatedElement>
-                        <AdminElement user={this.state.user}>
-                            <Nav.Link as={Link} to='/terminals'>
-                                Terminals
-                            </Nav.Link>
-                        </AdminElement>
-                        <AdminElement user={this.state.user}>
-                            <Nav.Link as={Link} to='/logging'>
-                                Logs
-                            </Nav.Link>
-                        </AdminElement>
-                    </Nav>
-                    <Navbar.Text>
-                        {this.state.loggedIn === true ? (
-                            <UserControlElement user={this.state.user} />
-                        ) : (
-                            <Button id='LoginButton' href='/login'>
-                                Login
-                            </Button>
-                        )}
-                    </Navbar.Text>
-                </Navbar.Collapse>
-            </Navbar>
-        )
-    }
+                    </AuthenticatedElement>
+                    <AdminElement user={user}>
+                        <Nav.Link
+                            as={Link}
+                            to='/terminals'
+                            className={clsx([
+                                location.pathname === '/terminals'
+                                    ? 'active'
+                                    : ''
+                            ])}
+                        >
+                            Terminals
+                        </Nav.Link>
+                    </AdminElement>
+                    <AdminElement user={user}>
+                        <Nav.Link
+                            as={Link}
+                            to='/logging'
+                            className={clsx([
+                                location.pathname === '/logging' ? 'active' : ''
+                            ])}
+                        >
+                            Logs
+                        </Nav.Link>
+                    </AdminElement>
+                </Nav>
+                <Navbar.Text>
+                    {loggedIn === true ? (
+                        <UserControlElement user={user} />
+                    ) : (
+                        <Button id='LoginButton' href='/login'>
+                            Login
+                        </Button>
+                    )}
+                </Navbar.Text>
+            </Navbar.Collapse>
+        </Navbar>
+    )
 }
 
 export default Menu

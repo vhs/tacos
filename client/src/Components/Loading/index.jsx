@@ -1,23 +1,11 @@
-import React, { Component } from 'react'
-
 import PropTypes from 'prop-types'
 
-class Loading extends Component {
-    constructor(props) {
-        super(props)
+import LoadingElement from '../LoadingElement/LoadingElement.jsx'
 
-        this.state = { loading: props.loading }
-    }
+const Loading = ({ children, loading }) => {
+    loading ??= false
 
-    componentDidUpdate(prevProps) {
-        if (this.props.loading !== prevProps.loading) {
-            this.setState({ loading: this.props.loading })
-        }
-    }
-
-    render() {
-        return <>{this.state.loading ? 'Loading...' : this.props.children}</>
-    }
+    return loading ? <LoadingElement /> : children
 }
 
 export default Loading
@@ -25,8 +13,4 @@ export default Loading
 Loading.propTypes = {
     loading: PropTypes.bool,
     children: PropTypes.any
-}
-
-Loading.defaultProps = {
-    loading: false
 }

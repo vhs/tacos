@@ -1,33 +1,15 @@
-import React, { Component } from 'react'
-
-import { stateMachine } from 'pretty-state-machine'
 import PropTypes from 'prop-types'
 
-class AuthenticatedRoute extends Component {
-    constructor(props) {
-        super(props)
+import { useAuthenticationHook } from '../AuthenticationProvider/AuthenticationHook.jsx'
 
-        this.state = {
-            loggedIn: stateMachine.get('loggedIn', false)
-        }
-    }
+const AuthenticatedRoute = ({ children }) => {
+    const { loggedIn } = useAuthenticationHook()
 
-    componentDidMount() {
-        stateMachine.attach('loggedIn', this.setState.bind(this))
-    }
-
-    render() {
-        return <>{this.state.loggedIn ? this.props.children : null}</>
-    }
+    return loggedIn ? children : null
 }
 
 export default AuthenticatedRoute
 
 AuthenticatedRoute.propTypes = {
-    loggedIn: PropTypes.bool,
     children: PropTypes.any.isRequired
-}
-
-AuthenticatedRoute.defaultProps = {
-    loggedIn: false
 }

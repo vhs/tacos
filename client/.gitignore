@@ -26,3 +26,5 @@ yarn-error.log*
 
 certs/
 certs/*
+
+build/
