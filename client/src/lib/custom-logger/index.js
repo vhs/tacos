@@ -15,7 +15,7 @@ class CustomLogger {
                 ? localStorage.REACT_APP_DEBUG
                 : '^$'
             )
-                .replace(/\*/, '.*')
+                .replace(/\*/g, '.*')
                 .replace(/,/, '|')
         )
         this.regex = this.fallbackRegex
@@ -36,7 +36,7 @@ class CustomLogger {
             this.regex = new RegExp(
                 localStorage
                     .getItem('DEBUG_OVERRIDE')
-                    .replace(/\*/, '.*')
+                    .replace(/\*/g, '.*')
                     .replace(/,/, '|')
             )
         } else {

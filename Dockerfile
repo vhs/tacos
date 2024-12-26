@@ -52,6 +52,7 @@ COPY --from=prod /app/ /app/
 
 EXPOSE 7000
 
+ENV NODE_ENV=production
 ENV PORT=7000
 
 CMD [ "pnpm", "start" ]
