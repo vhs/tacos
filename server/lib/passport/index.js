@@ -22,7 +22,8 @@ passport.use(
             clientID: config.authentication.slack.clientID,
             clientSecret: config.authentication.slack.clientSecret,
             callbackURL: config.callbackHost + '/auth/slack/callback',
-            scope: ['identity.basic']
+            scope: ['identity.basic'],
+            team: config.authentication.slack.team
         },
         auth
     )
