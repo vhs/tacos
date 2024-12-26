@@ -35,6 +35,15 @@
         "eslint": "9.17.0",
         "prettier": "3.4.2"
     },
+    "files": [
+        "app.js",
+        "backends",
+        "bin",
+        "lib",
+        "middleware",
+        "public",
+        "package.json"
+    ],
     "license": "ISC",
     "name": "tacos-server",
     "scripts": {
