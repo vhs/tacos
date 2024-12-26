@@ -1,5 +1,7 @@
 import { Col, Row } from 'react-bootstrap'
+import { Navigate } from 'react-router'
 
+import { useAuthentication } from '../../Components/AuthenticationProvider/AuthenticationHook.jsx'
 import LogLine from '../../Components/LogLine/index.jsx'
 import { useLogging } from '../../hooks/useLogging.jsx'
 import CustomLogger from '../../lib/custom-logger'
@@ -8,6 +10,13 @@ const log = new CustomLogger('tacos:Pages:Logging')
 
 const Logging = (props) => {
     const { hasLogs, logs } = useLogging()
+
+    const { isAdministrator, isAuthenticated, isSessionLoading } =
+        useAuthentication()
+
+    if (isSessionLoading) return null
+
+    if (!isAuthenticated && !isAdministrator) return <Navigate to='/' />
 
     return (
         <>

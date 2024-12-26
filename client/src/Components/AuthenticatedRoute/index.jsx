@@ -1,15 +1,21 @@
 import PropTypes from 'prop-types'
+import { Navigate } from 'react-router'
 
 import { useAuthentication } from '../AuthenticationProvider/AuthenticationHook.jsx'
 
-const AuthenticatedRoute = ({ children }) => {
-    const { isAuthenticated } = useAuthentication()
+const AuthenticatedRoute = ({ children, fallback }) => {
+    const { isAuthenticated, isSessionLoading } = useAuthentication()
 
-    return isAuthenticated ? children : null
+    if (isSessionLoading) return null
+
+    if (!isAuthenticated) return <Navigate to={fallback ?? '/login'} />
+
+    return children
 }
 
 export default AuthenticatedRoute
 
 AuthenticatedRoute.propTypes = {
-    children: PropTypes.any.isRequired
+    children: PropTypes.any.isRequired,
+    fallback: PropTypes.any.isRequired
 }

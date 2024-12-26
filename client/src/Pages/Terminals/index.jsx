@@ -1,5 +1,7 @@
 import { Col, Row } from 'react-bootstrap'
+import { Navigate } from 'react-router'
 
+import { useAuthentication } from '../../Components/AuthenticationProvider/AuthenticationHook.jsx'
 import Conditional from '../../Components/Conditional/Conditional.jsx'
 import LoadingElement from '../../Components/LoadingElement/LoadingElement.jsx'
 import TerminalCard from '../../Components/TerminalCard/index.jsx'
@@ -14,6 +16,13 @@ const Terminals = (props) => {
 
     const { isDevicesLoading } = useDevices()
     const { terminals, hasTerminals, isTerminalsLoading } = useTerminals()
+
+    const { isAdministrator, isAuthenticated, isSessionLoading } =
+        useAuthentication()
+
+    if (isSessionLoading) return null
+
+    if (!isAuthenticated && !isAdministrator) return <Navigate to='/' />
 
     const loading = isDevicesLoading || isTerminalsLoading
 

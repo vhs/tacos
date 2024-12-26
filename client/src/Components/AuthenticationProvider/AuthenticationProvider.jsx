@@ -16,7 +16,7 @@ export const AuthenticationProvider = ({ children }) => {
         return {
             user: data?.user,
             isAuthenticated: data?.user?.authenticated ?? false,
-            isAdmin: data?.user?.administrator ?? false,
+            isAdministrator: data?.user?.administrator ?? false,
             isSessionLoading: isLoading,
             mutateSession: mutate
         }

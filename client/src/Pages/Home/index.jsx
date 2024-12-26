@@ -1,6 +1,15 @@
 import { Col, Row } from 'react-bootstrap'
+import { Navigate } from 'react-router'
 
-const Menu = (props) => {
+import { useAuthentication } from '../../Components/AuthenticationProvider/AuthenticationHook.jsx'
+
+const Menu = () => {
+    const { isAuthenticated, isSessionLoading } = useAuthentication()
+
+    if (isSessionLoading) return null
+
+    if (isAuthenticated) return <Navigate to='/dashboard' />
+
     return (
         <Row>
             <Col>

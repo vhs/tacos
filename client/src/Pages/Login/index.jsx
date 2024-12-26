@@ -3,10 +3,18 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons/faGoogle'
 import { faSlackHash } from '@fortawesome/free-brands-svg-icons/faSlackHash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Button, Col, Row } from 'react-bootstrap'
-
+import { Navigate } from 'react-router'
 import './style.css'
 
+import { useAuthentication } from '../../Components/AuthenticationProvider/AuthenticationHook.jsx'
+
 const Login = (props) => {
+    const { isAuthenticated, isSessionLoading } = useAuthentication()
+
+    if (isSessionLoading) return null
+
+    if (isAuthenticated) return <Navigate to='/' />
+
     return (
         <>
             <Row className='spacious'>

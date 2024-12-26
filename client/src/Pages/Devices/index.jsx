@@ -1,4 +1,5 @@
 import { Col, Row } from 'react-bootstrap'
+import { Navigate } from 'react-router'
 
 import { useAuthentication } from '../../Components/AuthenticationProvider/AuthenticationHook.jsx'
 import DeviceCard from '../../Components/DeviceCard/index.jsx'
@@ -13,7 +14,11 @@ const Devices = () => {
     const { devices, hasDevices, isDevicesLoading } = useDevices()
     const { isRolesLoading } = useRoles()
 
-    const { user } = useAuthentication()
+    const { user, isAuthenticated, isSessionLoading } = useAuthentication()
+
+    if (isSessionLoading) return null
+
+    if (!isAuthenticated) return <Navigate to='/' />
 
     const loading = user == null || isDevicesLoading || isRolesLoading
 

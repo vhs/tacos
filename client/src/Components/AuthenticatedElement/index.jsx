@@ -1,11 +1,14 @@
 import PropTypes from 'prop-types'
 
 import { useAuthentication } from '../AuthenticationProvider/AuthenticationHook.jsx'
+import LoadingElement from '../LoadingElement/LoadingElement.jsx'
 
 const AuthenticatedElement = ({ children }) => {
-    const { isAuthenticated } = useAuthentication()
+    const { isAuthenticated, isSessionLoading } = useAuthentication()
 
-    return <>{isAuthenticated ? children : null}</>
+    if (isSessionLoading) return <LoadingElement />
+
+    return isAuthenticated ? children : null
 }
 
 export default AuthenticatedElement
