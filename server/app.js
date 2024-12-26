@@ -1,6 +1,8 @@
 'use strict'
 
+const fs = require('fs')
 const http = require('http')
+const https = require('https')
 const path = require('path')
 
 const bodyParser = require('body-parser')
@@ -25,7 +27,23 @@ const lokiStoreOpts = {
 }
 
 const app = express()
-const server = http.createServer(app)
+
+if (process.env.HTTPS != null) console.log('Loading HTTPS server')
+
+const server =
+    process.env.HTTPS != null
+        ? https.createServer(
+              {
+                  key: fs.readFileSync(
+                      path.join(process.cwd(), 'certs/localhost.key')
+                  ),
+                  cert: fs.readFileSync(
+                      path.join(process.cwd(), 'certs/localhost.crt')
+                  )
+              },
+              app
+          )
+        : new http.Server(app)
 
 debug('Setting up app')
 
