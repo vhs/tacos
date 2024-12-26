@@ -1,27 +1,54 @@
-FROM node:lts AS base
+FROM node:lts-slim AS base
 
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-FROM base AS build
+FROM scratch AS source
 
 WORKDIR /build
 
-COPY package.json yarn.lock /build/
+COPY . .
 
-COPY client/ /build/client/
-COPY server/ /build/server/
+FROM base AS build-base
 
-RUN yarn install && yarn workspace tacos-client run build
+RUN apt-get update && apt-get install -y --no-install-recommends rsync && apt-get clean
+
+FROM build-base AS build
+
+WORKDIR /build
+
+COPY --from=source /build/pnpm-lock.yaml /build/
+
+RUN pnpm fetch
+
+COPY --from=source /build/client/ /build/client/
+COPY --from=source /build/server/ /build/server/
+COPY --from=source /build/package.json /build/
+COPY --from=source /build/pnpm-workspace.yaml /build/
+
+RUN pnpm run build
 
 FROM base AS prod
 
-EXPOSE 3000
+WORKDIR /build
 
-CMD ["npm","start"]
+COPY --from=source /build/pnpm-lock.yaml /build/
+
+RUN pnpm fetch --prod
+
+COPY --from=build /build/server/public/ /build/server/public/
+
+RUN mkdir /app && pnpm deploy --filter=tacos-server --prod /app
+
+FROM base
 
 WORKDIR /app
 
-COPY --from=build /build/server/ /app/
-COPY --from=build /build/client/build/ /app/public/
+COPY --from=prod /app/ /app/
 
-RUN yarn install
+EXPOSE 7000
+
+ENV PORT=7000
+
+CMD [ "pnpm", "start" ]
