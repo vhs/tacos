@@ -6,7 +6,8 @@ const debug = require('debug')('tacos:lib:stores:logging')
 const EE2 = require('eventemitter2')
 const Loki = require('lokijs')
 
-const { getLine } = require('../../utils')
+const { config } = require('../../config/')
+const { coerceMilliseconds, getLine } = require('../../utils')
 
 const { Logger } = require('./lib')
 
@@ -38,10 +39,13 @@ const LoggingStore = function (dataDir, options) {
     })
 
     if (options.persistence === true) {
-        setInterval(() => {
-            debug(getLine(), 'Autosaving')
-            this.loggingDB.saveDatabase()
-        }, options.save_interval * 1000)
+        setInterval(
+            () => {
+                debug(getLine(), 'Autosaving')
+                this.loggingDB.saveDatabase()
+            },
+            coerceMilliseconds(config.stores.save_interval ?? 10000)
+        )
     }
 }
 

@@ -6,6 +6,7 @@ const debug = require('debug')('tacos:lib:stores:devices')
 const Loki = require('lokijs')
 
 const { config } = require('../../config/')
+const { coerceMilliseconds } = require('../../utils')
 
 const DeviceStore = function (dataDir) {
     this.deviceDB = new Loki(path.resolve(dataDir, 'devicesStore.json'))
@@ -23,10 +24,13 @@ const DeviceStore = function (dataDir) {
         }
     })
 
-    setInterval(() => {
-        debug('Autosaving')
-        this.deviceDB.saveDatabase()
-    }, 10000)
+    setInterval(
+        () => {
+            debug('Autosaving')
+            this.deviceDB.saveDatabase()
+        },
+        coerceMilliseconds(config.stores.save_interval ?? 10000)
+    )
 
     setInterval(() => {
         debug('Autodisarming')

@@ -15,4 +15,10 @@ const convertResultToJSON = function (_req, res, next) {
     next(err)
 }
 
-module.exports = { getLine, convertResultToJSON }
+const coerceMilliseconds = (val) => {
+    if (Number.isNaN(val)) throw new Error('Cannot coerce invalid value')
+
+    return val > 3600 ? val : val * 1000
+}
+
+module.exports = { coerceMilliseconds, convertResultToJSON, getLine }

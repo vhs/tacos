@@ -6,7 +6,8 @@ const CryptoJS = require('crypto-js')
 const debug = require('debug')('tacos:lib:stores:terminals')
 const Loki = require('lokijs')
 
-const { getLine } = require('../../utils')
+const { config } = require('../../config/')
+const { coerceMilliseconds, getLine } = require('../../utils')
 
 const TerminalStore = function (dataDir) {
     this.terminalDB = new Loki(path.resolve(dataDir, 'terminalStore.json'))
@@ -24,10 +25,13 @@ const TerminalStore = function (dataDir) {
         }
     })
 
-    setInterval(() => {
-        debug(getLine(), 'Autosaving')
-        this.terminalDB.saveDatabase()
-    }, 10000)
+    setInterval(
+        () => {
+            debug(getLine(), 'Autosaving')
+            this.terminalDB.saveDatabase()
+        },
+        coerceMilliseconds(config.stores.save_interval ?? 10000)
+    )
 }
 
 TerminalStore.prototype.getAllTerminals = function () {
