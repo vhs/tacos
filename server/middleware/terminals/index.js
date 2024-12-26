@@ -5,6 +5,7 @@ const express = require('express')
 
 const router = express.Router()
 
+const { defaultLimiter } = require('../../lib/middleware/rate-limit')
 const { convertResultToJSON, getLine } = require('../../lib/utils')
 const { requireAuthenticated, requireAdmin } = require('../auth/lib')
 
@@ -48,6 +49,7 @@ router.post('/ping/:id', verifyTerminal, verifyHMAC, processTerminalPing)
 // Authenticated terminal for an rfid
 router.post(
     '/authenticate/rfid/:id',
+    defaultLimiter,
     verifyTerminal,
     verifyTerminalEnabled,
     verifyHMAC,

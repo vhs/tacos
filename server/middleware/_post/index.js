@@ -3,9 +3,11 @@ const path = require('path')
 const debug = require('debug')('app:middleware:_post')
 const express = require('express')
 
+const { withRateLimit } = require('../../lib/middleware/rate-limit')
+
 const router = express.Router()
 
-router.get('/*', (_req, res) => {
+router.get('/*', withRateLimit(25, 1), (_req, res) => {
     res.sendFile(path.resolve(path.join(__dirname, '../../public/index.html')))
 })
 

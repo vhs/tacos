@@ -1,6 +1,7 @@
 const debug = require('debug')('tacos:routes:auth')
 const express = require('express')
 
+const { defaultLimiter } = require('../../lib/middleware/rate-limit')
 const { passport } = require('../../lib/passport')
 const { getLine } = require('../../lib/utils')
 
@@ -9,6 +10,9 @@ const lib = require('./lib')
 debug(getLine(), 'Loading')
 
 const router = express.Router()
+
+// Rate limit
+router.all('/', defaultLimiter)
 
 // Slack
 router.get(

@@ -43,13 +43,13 @@ const loadRoles = function () {
     return fetch(config[config.backend].userRolesUrl, options)
         .then((response) => response.json())
         .then((rolesData) => {
-            debug(getLine(), 'data:', rolesData)
+            debug(getLine(), 'data size:', rolesData.length)
 
             if (typeof rolesData === 'object' && rolesData.length > 0) {
                 rolesCache = rolesData
             }
 
-            debug(getLine(), 'Roles:', rolesCache)
+            debug(getLine(), 'Roles size:', rolesCache.length)
 
             rolesLastLoaded = Date.now()
 

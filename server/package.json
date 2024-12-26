@@ -11,6 +11,7 @@
         "dotenv-load": "^2.0.0",
         "eventemitter2": "^6.4.5",
         "express": "^4.20.0",
+        "express-rate-limit": "^7.5.0",
         "express-session": "^1.17.2",
         "lokijs": "^1.5.12",
         "morgan": "^1.9.1",
@@ -28,7 +29,9 @@
     "devDependencies": {
         "@tyisi/config-eslint": "^4.0.0",
         "@tyisi/config-prettier": "^1.0.1",
+        "@types/body-parser": "^1.19.5",
         "@types/express": "^5.0.0",
+        "@types/morgan": "^1.9.9",
         "eslint": "9.17.0",
         "prettier": "3.4.2"
     },
@@ -40,5 +43,6 @@
         "start": "node bin/www",
         "test": "node_modules/.bin/gulp test"
     },
+    "type": "commonjs",
     "version": "0.0.1"
 }

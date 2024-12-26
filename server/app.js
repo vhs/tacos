@@ -29,8 +29,10 @@ const server = http.createServer(app)
 
 debug('Setting up app')
 
-app.use(logger('dev'))
+if (config.proxy_addresses != null)
+    app.set('trust proxy', config.proxy_addresses)
 
+app.use(logger('dev'))
 app.use(cors())
 app.use(
     bodyParser.urlencoded({
@@ -39,16 +41,17 @@ app.use(
 )
 app.use(bodyParser.json())
 app.use(
+    // @ts-ignore
     session({
         secret: config.sessions.secret,
-        // @ts-ignore
         store: new LokiStore(lokiStoreOpts),
         resave: false,
         saveUninitialized: true,
         proxy: true,
         cookie: {
-            secure: false,
-            maxAge: 1000 * 3600 * 24
+            secure: process.env.NODE_ENV === 'production',
+            maxAge: 1000 * 3600 * 24,
+            sameSite: true
         },
         name: 'tacos',
         rolling: true
