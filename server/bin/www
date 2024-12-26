@@ -12,7 +12,8 @@ dotenvLoad()
 const { app, server } = require('../app')
 
 const { config } = require('../lib/config')
-const port = config.port || process.env.TACOS_SERVER_PORT || 3000
+const port =
+    config.port || process.env.TACOS_SERVER_PORT || process.env.PORT || 7000
 
 app.set('port', port)
 
