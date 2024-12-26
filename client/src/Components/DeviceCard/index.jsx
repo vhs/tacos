@@ -11,7 +11,7 @@ import { useRoles } from '../../hooks/useRoles.jsx'
 import CustomLogger from '../../lib/custom-logger'
 import { fetcher } from '../../lib/fetcher.js'
 import AdminElement from '../AdminElement/index.jsx'
-import { useAuthenticationHook } from '../AuthenticationProvider/AuthenticationHook.jsx'
+import { useAuthentication } from '../AuthenticationProvider/AuthenticationHook.jsx'
 import './style.css'
 import Loading from '../Loading/index.jsx'
 
@@ -21,7 +21,7 @@ const timeoutWindow = 5000
 
 const DeviceCard = ({ id }) => {
     const { roles, isRolesLoading } = useRoles()
-    const { user, isSessionLoading } = useAuthenticationHook()
+    const { user, isSessionLoading } = useAuthentication()
     const { mutateDevices } = useDevices()
 
     const [deviceId, setDeviceId] = useState(id)

@@ -1,6 +1,6 @@
 import { Col, Row } from 'react-bootstrap'
 
-import { useAuthenticationHook } from '../../Components/AuthenticationProvider/AuthenticationHook.jsx'
+import { useAuthentication } from '../../Components/AuthenticationProvider/AuthenticationHook.jsx'
 import DeviceCard from '../../Components/DeviceCard/index.jsx'
 import Loading from '../../Components/Loading/index.jsx'
 import { useDevices } from '../../hooks/useDevices.jsx'
@@ -13,7 +13,7 @@ const Devices = () => {
     const { devices, hasDevices, isDevicesLoading } = useDevices()
     const { isRolesLoading } = useRoles()
 
-    const { user } = useAuthenticationHook()
+    const { user } = useAuthentication()
 
     const loading = user == null || isDevicesLoading || isRolesLoading
 

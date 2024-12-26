@@ -1,9 +1,9 @@
 import { Button } from 'react-bootstrap'
 
-import { useAuthenticationHook } from '../AuthenticationProvider/AuthenticationHook.jsx'
+import { useAuthentication } from '../AuthenticationProvider/AuthenticationHook.jsx'
 
 const UserControlElement = (props) => {
-    const { user, mutateSession } = useAuthenticationHook()
+    const { user, mutateSession } = useAuthentication()
 
     const doLogout = async () => {
         if (window.confirm('Are you sure?')) {

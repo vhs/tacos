@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 
-import { useAuthenticationHook } from '../AuthenticationProvider/AuthenticationHook.jsx'
+import { useAuthentication } from '../AuthenticationProvider/AuthenticationHook.jsx'
 
 const AuthenticatedRoute = ({ children }) => {
-    const { loggedIn } = useAuthenticationHook()
+    const { isAuthenticated } = useAuthentication()
 
-    return loggedIn ? children : null
+    return isAuthenticated ? children : null
 }
 
 export default AuthenticatedRoute

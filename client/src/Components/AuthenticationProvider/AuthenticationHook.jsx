@@ -2,7 +2,7 @@ import { useContext } from 'react'
 
 import { AuthenticationContext } from './AuthenticationContext.jsx'
 
-export const useAuthenticationHook = () => {
+export const useAuthentication = () => {
     const authenticationContext = useContext(AuthenticationContext)
 
     if (authenticationContext == null)

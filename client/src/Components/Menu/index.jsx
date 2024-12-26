@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router'
 
 import AdminElement from '../AdminElement/index.jsx'
 import AuthenticatedElement from '../AuthenticatedElement/index.jsx'
-import { useAuthenticationHook } from '../AuthenticationProvider/AuthenticationHook.jsx'
+import { useAuthentication } from '../AuthenticationProvider/AuthenticationHook.jsx'
 import UserControlElement from '../UserControlElement/index.jsx'
 
 import './style.css'
@@ -14,7 +14,7 @@ import './style.css'
 // const log = new CustomLogger('tacos:components:menu')
 
 const Menu = () => {
-    const { user, loggedIn } = useAuthenticationHook()
+    const { user, isAuthenticated } = useAuthentication()
 
     const location = useLocation()
 
@@ -31,14 +31,14 @@ const Menu = () => {
                 <Nav className='mr-auto'>
                     <Nav.Link
                         as={Link}
-                        to={loggedIn ? '/dashboard' : '/'}
+                        to={isAuthenticated ? '/dashboard' : '/'}
                         className={clsx([
                             location.pathname === '/dashboard' ? 'active' : ''
                         ])}
                     >
                         Home
                     </Nav.Link>
-                    <AuthenticatedElement loggedIn={loggedIn}>
+                    <AuthenticatedElement>
                         <Nav.Link
                             as={Link}
                             to='/devices'
@@ -49,7 +49,7 @@ const Menu = () => {
                             Devices
                         </Nav.Link>
                     </AuthenticatedElement>
-                    <AdminElement user={user}>
+                    <AdminElement>
                         <Nav.Link
                             as={Link}
                             to='/terminals'
@@ -62,7 +62,7 @@ const Menu = () => {
                             Terminals
                         </Nav.Link>
                     </AdminElement>
-                    <AdminElement user={user}>
+                    <AdminElement>
                         <Nav.Link
                             as={Link}
                             to='/logging'
@@ -75,7 +75,7 @@ const Menu = () => {
                     </AdminElement>
                 </Nav>
                 <Navbar.Text>
-                    {loggedIn === true ? (
+                    {isAuthenticated ? (
                         <UserControlElement user={user} />
                     ) : (
                         <Button id='LoginButton' href='/login'>

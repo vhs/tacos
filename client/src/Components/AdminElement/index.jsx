@@ -3,14 +3,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import CustomLogger from '../../lib/custom-logger'
-import { useAuthenticationHook } from '../AuthenticationProvider/AuthenticationHook.jsx'
+import { useAuthentication } from '../AuthenticationProvider/AuthenticationHook.jsx'
 
 const log = new CustomLogger('tacos:Components:AdminElement')
 
-const AdminElement = (props) => {
-    const { isAdmin } = useAuthenticationHook()
+const AdminElement = ({ children }) => {
+    const { isAdmin } = useAuthentication()
 
-    return <>{isAdmin ? props.children : null}</>
+    return <>{isAdmin ? children : null}</>
 }
 
 export default AdminElement

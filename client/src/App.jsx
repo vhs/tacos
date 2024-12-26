@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap'
 import { BrowserRouter, redirect, Route, Routes } from 'react-router'
 import { ToastContainer } from 'react-toastify'
 
-import { useAuthenticationHook } from './Components/AuthenticationProvider/AuthenticationHook.jsx'
+import { useAuthentication } from './Components/AuthenticationProvider/AuthenticationHook.jsx'
 import Loading from './Components/Loading/index.jsx'
 import Menu from './Components/Menu/index.jsx'
 import CustomLogger from './lib/custom-logger/index.js'
@@ -20,8 +20,8 @@ import './App.css'
 const log = new CustomLogger('tacos:app')
 
 const App = (props) => {
-    const { administrator, loggedIn, isSessionLoading } =
-        useAuthenticationHook()
+    const { administrator, isAuthenticated, isSessionLoading } =
+        useAuthentication()
 
     if (isSessionLoading) return <Loading />
 
@@ -33,7 +33,7 @@ const App = (props) => {
                     <Route
                         index
                         loader={() => {
-                            if (loggedIn) redirect('/dashboard')
+                            if (isAuthenticated) redirect('/dashboard')
                         }}
                         element={<Home />}
                     />
@@ -41,14 +41,14 @@ const App = (props) => {
                         path='/dashboard'
                         exact
                         loader={() => {
-                            if (!loggedIn) redirect('/login')
+                            if (!isAuthenticated) redirect('/login')
                         }}
                         element={<Dashboard />}
                     />
                     <Route
                         path='/devices'
                         loader={() => {
-                            if (!loggedIn) redirect('/login')
+                            if (!isAuthenticated) redirect('/login')
                         }}
                         element={<Devices />}
                     />
@@ -69,7 +69,7 @@ const App = (props) => {
                     <Route
                         path='/login'
                         loader={() => {
-                            if (loggedIn) redirect('/dashboard')
+                            if (isAuthenticated) redirect('/dashboard')
                         }}
                         element={<Login />}
                     />
