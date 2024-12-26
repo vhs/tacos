@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends rsync && apt-ge
 
 FROM build-base AS build
 
+ENV NODE_ENV=production
+
 WORKDIR /build
 
 COPY --from=source /build/pnpm-lock.yaml /build/
