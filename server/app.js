@@ -69,7 +69,7 @@ app.use(
         cookie: {
             secure: process.env.NODE_ENV === 'production',
             maxAge: 1000 * 3600 * 24,
-            sameSite: true
+            sameSite: 'lax'
         },
         name: 'tacos',
         rolling: true
