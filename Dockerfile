@@ -27,7 +27,7 @@ COPY --from=source /build/server/ /build/server/
 COPY --from=source /build/package.json /build/
 COPY --from=source /build/pnpm-workspace.yaml /build/
 
-RUN pnpm run build
+RUN pnpm install -r --offline && pnpm run build
 
 FROM base AS prod
 
@@ -37,9 +37,10 @@ COPY --from=source /build/pnpm-lock.yaml /build/
 
 RUN pnpm fetch --prod
 
+COPY --from=source /build/server/ /build/server/
 COPY --from=build /build/server/public/ /build/server/public/
 
-RUN mkdir /app && pnpm deploy --filter=tacos-server --prod /app
+RUN pnpm --filter=tacos-server deploy --prod /app
 
 FROM base
 
