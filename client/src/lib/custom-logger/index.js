@@ -29,16 +29,21 @@ class CustomLogger {
     }
 
     loadFromLocalStorage() {
-        if (
-            localStorage.getItem('DEBUG_OVERRIDE') !== null &&
-            localStorage.getItem('DEBUG') !== null
-        ) {
-            this.regex = new RegExp(
-                localStorage
-                    .getItem('DEBUG_OVERRIDE')
-                    .replace(/\*/g, '.*')
-                    .replace(/,/, '|')
-            )
+        const overrides = [
+            localStorage.getItem('DEBUG_OVERRIDE'),
+            localStorage.getItem('DEBUG'),
+            localStorage.getItem('REACT_APP_DEBUG')
+        ].filter((e) => e != null)
+
+        if (overrides.length > 0) {
+            overrides.any((e) => {
+                this.regex = new RegExp(
+                    localStorage
+                        .getItem('DEBUG_OVERRIDE')
+                        .replace(/\*/g, '.*')
+                        .replace(/,/, '|')
+                )
+            })
         } else {
             this.regex = this.fallbackRegex
         }
