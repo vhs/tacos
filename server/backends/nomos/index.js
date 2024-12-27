@@ -141,9 +141,12 @@ const checkUser = async function (user) {
         return authenticated
     } catch (err) {
         debug(getLine(), 'checkUser', 'caught error')
+
         // Log this for now and proceed to the next promise
         console.error(err)
+
         user.valid = false
+
         return authenticated
     }
 }
