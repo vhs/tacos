@@ -2,7 +2,8 @@ FROM node:lts-slim AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+
+RUN corepack enable && apt-get update && apt-get install -y --no-install-recommends openssl && apt-get clean
 
 FROM scratch AS source
 
