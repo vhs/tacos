@@ -45,6 +45,7 @@
         "lib/",
         "middleware/",
         "migrations/",
+        "prisma/",
         "public/",
         "tools/",
         "package.json"
@@ -70,9 +71,13 @@
         "migrations": {
             "command": "./tools/run-migrations.sh"
         },
+        "prisma:deploy": {
+            "command": "pnpm dlx prisma migrate deploy"
+        },
         "start": {
             "dependencies": [
-                "migrations"
+                "migrations",
+                "prisma:deploy"
             ],
             "command": "supervisor -t bin/www",
             "service": true

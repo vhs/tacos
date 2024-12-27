@@ -45,15 +45,19 @@ COPY --from=build /build/server/public/ /build/server/public/
 
 RUN pnpm --filter=tacos-server deploy --prod /app
 
-FROM base
-
 WORKDIR /app
 
-COPY --from=prod /app/ /app/
+RUN pnpm dlx prisma generate
 
-EXPOSE 7000
+FROM base
 
 ENV NODE_ENV=production
 ENV PORT=7000
+
+EXPOSE 7000
+USER node
+WORKDIR /app
+
+COPY --from=prod /app/ /app/
 
 CMD [ "pnpm", "start" ]
