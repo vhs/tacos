@@ -51,12 +51,12 @@ const TerminalCard = ({ id }) => {
 
         log.debug('_updateDescription', 'description', description)
 
-        const terminal = { ...terminal, ...{ description } }
-
-        log.debug('_updateDescription', 'terminal', terminal)
-
         await fetch(`/api/terminals/update/description/${terminalId}`, {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 description
             })
@@ -72,12 +72,12 @@ const TerminalCard = ({ id }) => {
 
         log.debug('_updateTarget', 'secret', secret)
 
-        const terminal = { ...terminal, ...{ secret } }
-
-        log.debug('_updateTarget', 'terminal', terminal)
-
         await fetch(`/api/terminals/update/secret/${terminalId}`, {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 secret
             })
@@ -93,14 +93,14 @@ const TerminalCard = ({ id }) => {
 
         log.debug('_updateTarget', 'target', target)
 
-        const terminal = { ...terminal, ...{ target } }
-
-        log.debug('_updateTarget', 'terminal', terminal)
-
         await fetch(`/api/terminals/update/target/${terminalId}`, {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
-                target
+                target: target !== '---' ? target : null
             })
         })
 
@@ -114,14 +114,14 @@ const TerminalCard = ({ id }) => {
 
         log.debug('_updateEnabled', 'enabled', enabled)
 
-        const terminal = { ...terminal, ...{ enabled } }
-
-        log.debug('_updateEnabled', 'terminal', terminal)
-
         const response = await fetch(
             `/api/terminals/update/enabled/${terminalId}`,
             {
                 method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({
                     enabled
                 })
@@ -134,6 +134,8 @@ const TerminalCard = ({ id }) => {
 
         return true
     }
+
+    log.debug('TerminalCard', { terminal })
 
     if (isLoading) return <LoadingElement />
 
@@ -183,19 +185,20 @@ const TerminalCard = ({ id }) => {
                         </Col>
                         <Col>
                             <Form.Group controlId='SelectTarget'>
-                                <Form.Control
-                                    as='select'
-                                    custom
-                                    value={terminal.target || '---'}
+                                <Form.Select
+                                    value={terminal.target ?? '---'}
                                     onChange={updateTarget}
                                 >
-                                    <option>---</option>
+                                    <option value={null}>---</option>
                                     {devices.map((device) => (
-                                        <option key={device.id}>
+                                        <option
+                                            key={device.id}
+                                            value={device.id}
+                                        >
                                             {device.description}
                                         </option>
                                     ))}
-                                </Form.Control>
+                                </Form.Select>
                             </Form.Group>
                         </Col>
                     </Row>

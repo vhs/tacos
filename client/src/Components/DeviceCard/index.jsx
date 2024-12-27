@@ -39,16 +39,16 @@ const DeviceCard = ({ id }) => {
     })
 
     const toggleDeviceHot = async () => {
-        const url = `/api/devices/${device.armed === 0 ? 'arm' : 'unarm'}/${device.id}`
+        const url = `/api/devices/${Boolean(device.armed) === false ? 'arm' : 'unarm'}/${device.id}`
 
         toast.promise(fetch(url, { method: 'POST' }), {
-            pending: `${device.armed === 0 ? 'Arming' : 'Unarming'} ${device.description}`,
+            pending: `${Boolean(device.armed) === false ? 'Arming' : 'Unarming'} ${device.description}`,
             success: {
                 render: () =>
-                    `${device.armed === 0 ? 'Armed' : 'Unarmed'} ${device.description}`,
+                    `${Boolean(device.armed) === false ? 'Armed' : 'Unarmed'} ${device.description}`,
                 autoClose: 20000
             },
-            error: `Failed to ${device.armed === 0 ? 'arm' : 'unarm'} ${device.description}`
+            error: `Failed to ${Boolean(device.armed) === false ? 'arm' : 'unarm'} ${device.description}`
         })
 
         mutate()
@@ -73,6 +73,10 @@ const DeviceCard = ({ id }) => {
 
         await fetch(`/api/devices/update/description/${deviceId}`, {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 description
             })
@@ -92,6 +96,10 @@ const DeviceCard = ({ id }) => {
 
         await fetch(`/api/devices/update/role/${deviceId}`, {
             method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 role
             })
@@ -150,7 +158,10 @@ const DeviceCard = ({ id }) => {
                                         onChange={updateRole}
                                     >
                                         {roles.map((role) => (
-                                            <option key={role.code}>
+                                            <option
+                                                key={role.code}
+                                                value={role.code}
+                                            >
                                                 {role.code}
                                             </option>
                                         ))}
@@ -196,7 +207,9 @@ const DeviceCard = ({ id }) => {
                                 className='pull-right powerbutton'
                                 onClick={toggleDeviceHot}
                             >
-                                {device.armed === 0 ? 'ARM' : 'DISARM'}
+                                {Boolean(device.armed) === false
+                                    ? 'ARM'
+                                    : 'DISARM'}
                             </Button>
                         </Col>
                     </Row>
