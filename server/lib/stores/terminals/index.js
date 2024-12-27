@@ -1,193 +1,190 @@
 'use strict'
 
-const path = require('path')
-
 const CryptoJS = require('crypto-js')
 const debug = require('debug')('tacos:lib:stores:terminals')
-const Loki = require('lokijs')
 
-const { config } = require('../../config/')
-const { coerceMilliseconds, getLine } = require('../../utils')
+const { prisma } = require('../../db/prisma')
+const { getLine } = require('../../utils')
 
-const TerminalStore = function (dataDir) {
-    this.terminalDB = new Loki(path.resolve(dataDir, 'terminalStore.json'))
-    this.terminalDB.loadDatabase({}, () => {
-        debug(getLine(), 'Loading database...')
-        debug(getLine(), 'Loading terminals collection...')
-        this.terminals = this.terminalDB.getCollection('terminals')
-        if (this.terminals === null) {
-            debug(getLine(), 'Collection not found!')
-            debug(getLine(), 'Adding collection!')
-            this.terminals = this.terminalDB.addCollection('terminals', {
-                indices: ['id'],
-                autoupdate: true
-            })
-        }
+const TerminalStore = function () {
+    debug(getLine(), 'Loading database...')
+
+    this.terminals = prisma.terminals
+}
+
+TerminalStore.prototype.getAllTerminals = async function () {
+    const allTerminals = await this.terminals.findMany({
+        where: { id: { not: '' } }
     })
 
-    setInterval(
-        () => {
-            debug(getLine(), 'Autosaving')
-            this.terminalDB.saveDatabase()
-        },
-        coerceMilliseconds(config.stores.save_interval ?? 10000)
-    )
+    debug.extend('getAllTerminals')(getLine(), { allTerminals })
+
+    return allTerminals
 }
 
-TerminalStore.prototype.getAllTerminals = function () {
-    return this.terminals.find({ id: { $ne: '' } })
-}
-
-TerminalStore.prototype.getAvailableTerminals = function (user) {
+TerminalStore.prototype.getAvailableTerminals = async function (user) {
     const terminalsList = {}
 
-    this.getAllTerminals().forEach(function (terminal) {
-        if (this.checkTerminalAccess(terminal.id, user)) {
+    const allTerminals = await this.getAllTerminals()
+
+    for (const terminal of allTerminals) {
+        if (await this.checkTerminalAccess(terminal.id, user))
             terminalsList[terminal.id] = terminal
-        }
-    })
+    }
 
     return terminalsList
 }
 
-TerminalStore.prototype.registerTerminal = function (terminalId) {
+TerminalStore.prototype.registerTerminal = async function (terminalId) {
     debug(getLine(), 'registerTerminal', 'Trying...', terminalId)
 
-    let terminalResult = this.terminals.findOne({ id: terminalId })
-
-    if (terminalResult === null) {
-        terminalResult = {
+    const terminalResult = await this.terminals.upsert({
+        where: { id: terminalId },
+        create: {
             id: terminalId,
             description: terminalId,
             target: '',
             enabled: 0,
             secure: 0,
             secret: ''
+        },
+        update: {
+            last_seen: Date.now()
         }
-
-        terminalResult = this.terminals.insert(terminalResult)
-    }
-
-    terminalResult.last_seen = Date.now()
-
-    this.terminals.update(terminalResult)
+    })
 
     return terminalResult
 }
 
-TerminalStore.prototype.enableTerminal = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.enableTerminal = async function (terminalId) {
+    let terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
     if (terminalResult === null) {
         return { error: 'No such terminal' }
     }
 
-    terminalResult.enabled = 1
+    terminalResult = await this.terminals.update({
+        where: { id: terminalId },
+        data: { enabled: 1 }
+    })
 
     const result = {}
     result.id = terminalResult.id
     result.enabled = terminalResult.enabled
 
-    return this.getTerminalDetails(terminalId)
+    return await this.getTerminalDetails(terminalId)
 }
 
-TerminalStore.prototype.disableTerminal = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.disableTerminal = async function (terminalId) {
+    await this.terminals.update({
+        where: { id: terminalId },
+        data: { enabled: 0 }
+    })
 
-    if (terminalResult === null) {
-        return { error: 'No such terminal' }
-    }
-
-    terminalResult.enabled = 0
-
-    return this.getTerminalDetails(terminalId)
+    return await this.getTerminalDetails(terminalId)
 }
 
-TerminalStore.prototype.updateTerminalDescription = function (
+TerminalStore.prototype.updateTerminalDescription = async function (
     terminalId,
     description
 ) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+    await this.terminals.update({
+        where: { id: terminalId },
+        data: { description }
+    })
 
-    terminalResult.description = description
-
-    return this.getTerminalDetails(terminalId)
+    return await this.getTerminalDetails(terminalId)
 }
 
-TerminalStore.prototype.updateTerminalEnabled = function (terminalId, toggle) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
-
+TerminalStore.prototype.updateTerminalEnabled = async function (
+    terminalId,
+    toggle
+) {
     debug(
         getLine(),
         'TerminalStore.prototype.updateTerminalEnabled',
         typeof toggle
     )
 
-    if (toggle === 1 || toggle === 'on') {
-        terminalResult.enabled = 1
-    } else {
-        terminalResult.enabled = 0
-    }
+    await this.terminals.update({
+        where: { id: terminalId },
+        data: { enabled: toggle === 1 || toggle === 'on' ? 1 : 0 }
+    })
 
-    return this.getTerminalDetails(terminalId)
+    return await this.getTerminalDetails(terminalId)
 }
 
-TerminalStore.prototype.updateTerminalSecret = function (terminalId, secret) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.updateTerminalSecret = async function (
+    terminalId,
+    secret
+) {
+    await this.terminals.update({
+        where: { id: terminalId },
+        data: { secret }
+    })
 
-    terminalResult.secret = secret
-
-    return this.getTerminalDetails(terminalId)
+    return await this.getTerminalDetails(terminalId)
 }
 
-TerminalStore.prototype.updateTerminalTarget = function (terminalId, target) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.updateTerminalTarget = async function (
+    terminalId,
+    target
+) {
+    debug(getLine(), `updateTerminalTarget[${terminalId}]`, `target: ${target}`)
+    await this.terminals.update({
+        where: { id: terminalId },
+        data: { target }
+    })
 
-    terminalResult.target = target
-
-    return this.getTerminalDetails(terminalId)
+    return await this.getTerminalDetails(terminalId)
 }
 
-TerminalStore.prototype.updateTerminalHasSecret = function (
+TerminalStore.prototype.updateTerminalHasSecret = async function (
     terminalId,
     hasSecret
 ) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+    await this.terminals.findUnique({
+        where: { id: terminalId },
+        data: { hasSecret }
+    })
 
-    terminalResult.hasSecret = hasSecret
-
-    return this.getTerminalDetails(terminalId)
+    return await this.getTerminalDetails(terminalId)
 }
 
-TerminalStore.prototype.getTerminalList = function () {
-    return this.getAllTerminals()
+TerminalStore.prototype.getTerminalList = async function () {
+    return await this.getAllTerminals()
 }
 
-TerminalStore.prototype.checkTerminalEnabled = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.checkTerminalEnabled = async function (terminalId) {
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
     debug(getLine(), 'checkTerminalEnabled', 'terminalResult', terminalResult)
 
-    return (
-        terminalResult &&
-        (terminalResult.enabled === true || terminalResult.enabled === 1)
-    )
+    return terminalResult && Boolean(terminalResult.enabled) === true
 }
 
-TerminalStore.prototype.checkTerminalHasTarget = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.checkTerminalHasTarget = async function (terminalId) {
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
     return terminalResult && terminalResult.target !== ''
 }
 
-TerminalStore.prototype.getTerminalTarget = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.getTerminalTarget = async function (terminalId) {
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
     return terminalResult.target
 }
 
-TerminalStore.prototype.getTerminalState = function (terminalId) {
-    const terminalResult = this.registerTerminal(terminalId)
+TerminalStore.prototype.getTerminalState = async function (terminalId) {
+    const terminalResult = await this.registerTerminal(terminalId)
 
     const result = {}
     result.result = 'OK'
@@ -197,8 +194,10 @@ TerminalStore.prototype.getTerminalState = function (terminalId) {
     return result
 }
 
-TerminalStore.prototype.getTerminalDetails = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.getTerminalDetails = async function (terminalId) {
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
     if (terminalResult === null) {
         return { error: 'No such terminal' }
@@ -217,8 +216,8 @@ TerminalStore.prototype.getTerminalDetails = function (terminalId) {
     return result
 }
 
-TerminalStore.prototype.deleteTerminal = function (terminalId) {
-    const terminalResult = this.terminals
+TerminalStore.prototype.deleteTerminal = async function (terminalId) {
+    const terminalResult = await this.terminals
         .chain()
         .find({ id: { $eq: terminalId } })
         .remove()
@@ -227,40 +226,49 @@ TerminalStore.prototype.deleteTerminal = function (terminalId) {
     return terminalResult.length === 0
 }
 
-TerminalStore.prototype.checkTerminalExists = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.checkTerminalExists = async function (terminalId) {
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
     return terminalResult !== null
 }
 
-TerminalStore.prototype.checkTerminalSecured = function (terminalId) {
+TerminalStore.prototype.checkTerminalSecured = async function (terminalId) {
     debug(getLine(), 'checkTerminalSecured')
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
-    return (
-        terminalResult !== null &&
-        (terminalResult.secure === 1 || terminalResult.secret !== '')
-    )
+    return Boolean(terminalResult?.secure) === true
 }
 
-TerminalStore.prototype.setTerminalSecure = function (terminalId) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
-
-    terminalResult.secure = 1
+TerminalStore.prototype.setTerminalSecure = async function (terminalId) {
+    await this.terminals.update({
+        where: { id: terminalId },
+        data: { secure: 1 }
+    })
 }
 
-TerminalStore.prototype.checkTerminalAccess = function (terminalId, user) {
+TerminalStore.prototype.checkTerminalAccess = async function (
+    terminalId,
+    user
+) {
     if (user.administrator) {
         return true
     }
 
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
-    return user.privileges.indexOf(terminalResult.role) >= 0
+    return user.privileges.includes(terminalResult.role)
 }
 
-TerminalStore.prototype.verifyHMAC = function (terminalId, packet) {
-    const terminalResult = this.terminals.findOne({ id: terminalId })
+TerminalStore.prototype.verifyHMAC = async function (terminalId, packet) {
+    const terminalResult = await this.terminals.findUnique({
+        where: { id: terminalId }
+    })
 
     if (!terminalResult) {
         return false
@@ -295,7 +303,12 @@ TerminalStore.prototype.verifyHMAC = function (terminalId, packet) {
         debug(getLine(), 'verifyHMAC: incorrect hash')
         debug(getLine(), 'verifyHMAC', 'Got:', hash)
         debug(getLine(), 'verifyHMAC', 'Expected:', checkedHash)
-        terminalResult.secure = 0
+
+        await this.terminals.update({
+            where: { id: terminalId },
+            data: { secure: 0 }
+        })
+
         return false
     } else if (
         packet.data.ts < Math.round(Date.now() / 1000) - 30 ||
@@ -306,19 +319,12 @@ TerminalStore.prototype.verifyHMAC = function (terminalId, packet) {
         return false
     }
 
-    terminalResult.secure = 1
+    await this.terminals.update({
+        where: { id: terminalId },
+        data: { secure: 1 }
+    })
 
     return true
 }
 
-let terminalStore = null
-
-const getInstance = function (dataDir) {
-    if (terminalStore === null) {
-        terminalStore = new TerminalStore(dataDir)
-    }
-
-    return terminalStore
-}
-
-module.exports = getInstance
+module.exports = new TerminalStore()

@@ -5,7 +5,6 @@ const http = require('http')
 const https = require('https')
 const path = require('path')
 
-const bodyParser = require('body-parser')
 const loki = require('connect-loki')
 const cors = require('cors')
 const debug = require('debug')('tacos:app')
@@ -52,12 +51,7 @@ if (config.proxy_addresses != null)
 
 app.use(logger('dev'))
 app.use(cors())
-app.use(
-    bodyParser.urlencoded({
-        extended: true
-    })
-)
-app.use(bodyParser.json())
+
 app.use(
     // @ts-ignore
     session({
@@ -73,6 +67,12 @@ app.use(
         },
         name: 'tacos',
         rolling: true
+    })
+)
+app.use(express.json())
+app.use(
+    express.urlencoded({
+        extended: true
     })
 )
 

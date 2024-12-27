@@ -44,7 +44,7 @@ const requireToolAccess = function (req, res, next) {
     })
 }
 
-function getDevices(req, res, next) {
+const getDevices = async (req, res, next) => {
     if (req.user === undefined) {
         res.locals.result.result = 'ERROR'
         res.locals.result.message = 'error: missing user information'
@@ -55,15 +55,15 @@ function getDevices(req, res, next) {
         req.user.administrator !== undefined &&
         req.user.administrator === true
     ) {
-        res.locals.result = deviceStore.getAllDevices()
+        res.locals.result = await deviceStore.getAllDevices()
     } else {
-        res.locals.result = deviceStore.getAvailableDevices(req.user)
+        res.locals.result = await deviceStore.getAvailableDevices(req.user)
     }
 
     next('route')
 }
 
-const getDeviceState = function (req, res, next) {
+const getDeviceState = async function (req, res, next) {
     if (!req.params.id) {
         res.locals.result.message = 'error: missing device id'
         next()
@@ -71,12 +71,12 @@ const getDeviceState = function (req, res, next) {
 
     const deviceId = req.params.id
 
-    res.locals.result = deviceStore.getDeviceState(deviceId)
+    res.locals.result = await deviceStore.getDeviceState(deviceId)
 
     next()
 }
 
-const getDeviceDetails = function (req, res, next) {
+const getDeviceDetails = async function (req, res, next) {
     if (!req.params.id) {
         res.locals.result.message = 'error: missing device id'
         next()
@@ -84,7 +84,7 @@ const getDeviceDetails = function (req, res, next) {
 
     const deviceId = req.params.id
 
-    res.locals.result = deviceStore.getDeviceDetails(deviceId)
+    res.locals.result = await deviceStore.getDeviceDetails(deviceId)
 
     next()
 }
@@ -116,7 +116,7 @@ const deleteDevice = function (req, res, next) {
     next()
 }
 
-const updateDeviceRole = function (req, res, next) {
+const updateDeviceRole = async function (req, res, next) {
     Logger.info({
         action: 'updateDeviceRole',
         user: req.user.username,
@@ -136,12 +136,12 @@ const updateDeviceRole = function (req, res, next) {
     const deviceId = req.params.id
     const role = req.body.role
 
-    res.locals.result = deviceStore.updateDeviceRole(deviceId, role)
+    res.locals.result = await deviceStore.updateDeviceRole(deviceId, role)
 
     next()
 }
 
-const updateDeviceDescription = function (req, res, next) {
+const updateDeviceDescription = async function (req, res, next) {
     Logger.info({
         action: 'updateDeviceDescription',
         user: req.user.username,
@@ -166,7 +166,7 @@ const updateDeviceDescription = function (req, res, next) {
 
     debug('updateDeviceDescription', 'description:', description)
 
-    res.locals.result = deviceStore.updateDeviceDescription(
+    res.locals.result = await deviceStore.updateDeviceDescription(
         deviceId,
         description
     )
@@ -174,7 +174,7 @@ const updateDeviceDescription = function (req, res, next) {
     next()
 }
 
-const updateDeviceHasSecret = function (req, res, next) {
+const updateDeviceHasSecret = async function (req, res, next) {
     Logger.info({
         action: 'updateDeviceHasSecret',
         user: req.user.username,
@@ -194,12 +194,15 @@ const updateDeviceHasSecret = function (req, res, next) {
     const deviceId = req.params.id
     const hasSecret = req.body.hasSecret
 
-    res.locals.result = deviceStore.updateDeviceHasSecret(deviceId, hasSecret)
+    res.locals.result = await deviceStore.updateDeviceHasSecret(
+        deviceId,
+        hasSecret
+    )
 
     next()
 }
 
-const updateDeviceSecret = function (req, res, next) {
+const updateDeviceSecret = async function (req, res, next) {
     Logger.info({
         action: 'updateDeviceHasSecret',
         user: req.user.username,
@@ -219,12 +222,12 @@ const updateDeviceSecret = function (req, res, next) {
     const deviceId = req.params.id
     const secret = req.body.secret
 
-    res.locals.result = deviceStore.updateDeviceSecret(deviceId, secret)
+    res.locals.result = await deviceStore.updateDeviceSecret(deviceId, secret)
 
     next()
 }
 
-const armDevice = function (req, res, next) {
+const armDevice = async function (req, res, next) {
     Logger.info({
         action: 'armDevice',
         user: req.user.username,
@@ -239,12 +242,12 @@ const armDevice = function (req, res, next) {
 
     const deviceId = req.params.id
 
-    res.locals.result = deviceStore.armDevice(deviceId)
+    res.locals.result = await deviceStore.armDevice(deviceId)
 
     next()
 }
 
-const unarmDevice = function (req, res, next) {
+const unarmDevice = async function (req, res, next) {
     Logger.info({
         action: 'unarmDevice',
         user: req.user.username,
@@ -260,7 +263,7 @@ const unarmDevice = function (req, res, next) {
 
     const deviceId = req.params.id
 
-    res.locals.result = deviceStore.unarmDevice(deviceId)
+    res.locals.result = await deviceStore.unarmDevice(deviceId)
 
     next()
 }

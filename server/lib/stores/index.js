@@ -1,14 +1,5 @@
-const path = require('path')
-
-const { config } = require('../config')
-
-const dataDir = path.resolve(
-    __dirname,
-    '../../' + (process.env.TACOS_DATA_DIR || config.datadir || 'data')
-)
-
-const deviceStore = require('./devices')(dataDir)
-const loggingStore = require('./logging')(dataDir)
-const terminalStore = require('./terminals')(dataDir)
+const deviceStore = require('./devices')
+const loggingStore = require('./logging')
+const terminalStore = require('./terminals')
 
 module.exports = { deviceStore, loggingStore, terminalStore }

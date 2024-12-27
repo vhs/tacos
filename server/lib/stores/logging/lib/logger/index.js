@@ -1,8 +1,11 @@
+const Debug = require('debug')
+
 const { LogEntry } = require('../logentry')
 
 const Logger = function (emitter, instance) {
     this.emitter = emitter
     this.instance = instance
+    this.debug = Debug(instance)
 }
 
 Logger.prototype._log = function (level, data) {
@@ -20,8 +23,11 @@ Logger.prototype._log = function (level, data) {
         Array.isArray(data[0]) === false
             ? data[0]
             : data
+
     // @ts-ignore
     const logEntry = new LogEntry({ instance, level, data, message })
+
+    this.debug(logEntry)
 
     this.emitter.emit(this.instance, logEntry)
 }

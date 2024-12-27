@@ -2,7 +2,6 @@
     "author": "Ty Eggen",
     "dependencies": {
         "@prisma/client": "6.1.0",
-        "body-parser": "^1.19.0",
         "connect-loki": "^1.2.0",
         "cookie-parser": "^1.4.4",
         "cors": "^2.8.5",
@@ -34,6 +33,7 @@
         "@types/body-parser": "^1.19.5",
         "@types/express": "^5.0.0",
         "@types/morgan": "^1.9.9",
+        "@types/node": "^22.10.2",
         "eslint": "9.17.0",
         "prettier": "3.4.2",
         "prisma": "^6.1.0"
@@ -59,18 +59,24 @@
     "version": "0.0.1",
     "wireit": {
         "coverage": {
-            "command": "node_modules/.bin/istanbul cover _mocha"
+            "command": "istanbul cover _mocha"
         },
         "dev": {
-            "command": "node_modules/.bin/supervisor -w .,middleware,lib,backends,bin/www,config/config.json bin/www",
+            "command": "supervisor -w .,middleware,lib,backends,bin/www,config/config.json -n error bin/www",
             "service": true
         },
+        "migrations": {
+            "command": "./tools/run-migrations.sh"
+        },
         "start": {
-            "command": "node bin/www",
+            "dependencies": [
+                "migrations"
+            ],
+            "command": "supervisor -t bin/www",
             "service": true
         },
         "test": {
-            "command": "node_modules/.bin/gulp test"
+            "command": "gulp test"
         }
     }
 }

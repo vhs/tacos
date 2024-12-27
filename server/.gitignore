@@ -27,3 +27,4 @@ test/
 tests.json
 tmp/
 public/*
+.env*

@@ -1,33 +1,16 @@
 'use strict'
 
-const path = require('path')
-
 const debug = require('debug')('tacos:lib:stores:logging')
 const EE2 = require('eventemitter2')
-const Loki = require('lokijs')
 
-const { config } = require('../../config/')
-const { coerceMilliseconds, getLine } = require('../../utils')
+const { prisma } = require('../../db/prisma')
 
 const { Logger } = require('./lib')
 
-const LoggingStore = function (dataDir, options) {
-    options = options || { persistence: true, save_interval: 15 }
+const LoggingStore = function () {
+    debug('starting logging store')
 
-    this.loggingDB = new Loki(path.resolve(dataDir, 'loggingStore.json'))
-    this.loggingDB.loadDatabase({}, () => {
-        debug(getLine(), 'Loading database...')
-        debug(getLine(), 'Loading logs collection...')
-        this.logs = this.loggingDB.getCollection('logs')
-        if (this.logs === null) {
-            debug(getLine(), 'Collection not found!')
-            debug(getLine(), 'Adding collection!')
-            this.logs = this.loggingDB.addCollection('logs', {
-                indices: ['ts', 'level', 'component'],
-                autoupdate: true
-            })
-        }
-    })
+    this.logging = prisma.logging
 
     this.loggerCache = {}
 
@@ -37,16 +20,6 @@ const LoggingStore = function (dataDir, options) {
     this.emitter.on('**', (event) => {
         this.saveLog(event)
     })
-
-    if (options.persistence === true) {
-        setInterval(
-            () => {
-                debug(getLine(), 'Autosaving')
-                this.loggingDB.saveDatabase()
-            },
-            coerceMilliseconds(config.stores.save_interval ?? 10000)
-        )
-    }
 }
 
 LoggingStore.prototype.getLogger = function (instance) {
@@ -57,23 +30,14 @@ LoggingStore.prototype.getLogger = function (instance) {
     return this.loggerCache[instance]
 }
 
-LoggingStore.prototype.saveLog = function (event) {
-    this.logs.insert(event)
+LoggingStore.prototype.saveLog = async function (event) {
+    await this.logging.create({
+        data: { ...event, data: JSON.stringify(event.data) }
+    })
 }
 
-LoggingStore.prototype.getAllLogs = function (_filter) {
-    const criteria = { ts: { $gt: 0 } }
-    return this.logs.find(criteria)
+LoggingStore.prototype.getAllLogs = async function (_filter) {
+    return await this.logging.findMany({ orderBy: { ts: 'desc' } })
 }
 
-let loggingStore = null
-
-const getInstance = function (dataDir) {
-    if (loggingStore === null) {
-        loggingStore = new LoggingStore(dataDir)
-    }
-
-    return loggingStore
-}
-
-module.exports = getInstance
+module.exports = new LoggingStore()

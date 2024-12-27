@@ -5,12 +5,12 @@ const { getLine } = require('../../../lib/utils')
 
 debug(getLine(), 'Loading')
 
-function devicesStatuses(req, res, next) {
+async function devicesStatuses(req, res, next) {
     if (req.user) {
         if (req.user.administrator) {
-            res.locals.devices = deviceStore.getAllDevices()
+            res.locals.devices = await deviceStore.getAllDevices()
         } else {
-            res.locals.devices = deviceStore.getAvailableDevices(req.user)
+            res.locals.devices = await deviceStore.getAvailableDevices(req.user)
         }
     }
     next()

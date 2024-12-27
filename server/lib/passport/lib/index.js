@@ -7,22 +7,24 @@ const { getLine } = require('../../utils')
 
 debug(getLine(), 'Loading with backend:', backend.name)
 
-function checkBackendService(user) {
+async function checkBackendService(user) {
     debug(getLine(), 'checkBackendService', user)
 
-    return backend
-        .checkUser(user)
-        .then(function (valid) {
-            debug(getLine(), 'valid:', valid)
-            user.authenticated = valid
-            debug(getLine(), 'user:', user)
-            return valid
-        })
-        .catch(function (e) {
-            debug(getLine(), 'caught error:')
-            debug(getLine(), e)
-            return false
-        })
+    try {
+        const valid = await backend.checkUser(user)
+
+        debug(getLine(), 'valid:', valid)
+
+        user.authenticated = valid
+
+        debug(getLine(), 'user:', user)
+
+        return valid
+    } catch (e) {
+        debug(getLine(), 'caught error:')
+        debug(getLine(), e)
+        return false
+    }
 }
 
 async function auth(_accessToken, _refreshToken, profile, done) {
@@ -32,6 +34,7 @@ async function auth(_accessToken, _refreshToken, profile, done) {
         provider: profile.provider,
         name: profile.displayName
     }
+
     await checkBackendService(user).finally(function (res) {
         debug(getLine(), 'auth', 'res:', res)
         debug(getLine(), 'auth', 'user:', user)

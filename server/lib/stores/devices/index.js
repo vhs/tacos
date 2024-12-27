@@ -1,36 +1,14 @@
 'use strict'
 
-const path = require('path')
-
 const debug = require('debug')('tacos:lib:stores:devices')
-const Loki = require('lokijs')
 
 const { config } = require('../../config/')
-const { coerceMilliseconds } = require('../../utils')
+const { prisma } = require('../../db/prisma')
 
-const DeviceStore = function (dataDir) {
-    this.deviceDB = new Loki(path.resolve(dataDir, 'devicesStore.json'))
-    this.deviceDB.loadDatabase({}, () => {
-        debug('Loading database...')
-        debug('Loading devices collection...')
-        this.devices = this.deviceDB.getCollection('devices')
-        if (this.devices == null) {
-            debug('Collection not found!')
-            debug('Adding collection!')
-            this.devices = this.deviceDB.addCollection('devices', {
-                indices: ['id'],
-                autoupdate: true
-            })
-        }
-    })
+const DeviceStore = function () {
+    this.devices = prisma.devices
 
-    setInterval(
-        () => {
-            debug('Autosaving')
-            this.deviceDB.saveDatabase()
-        },
-        coerceMilliseconds(config.stores.save_interval ?? 10000)
-    )
+    if (this.devices == null) throw new Error('Missing devices')
 
     setInterval(() => {
         debug('Autodisarming')
@@ -38,112 +16,129 @@ const DeviceStore = function (dataDir) {
     }, 5000)
 }
 
-DeviceStore.prototype.automaticDisarm = function () {
-    const devices = this.devices.find({
-        id: { $ne: '' },
-        // @ts-ignore
-        activation_expiry: { $lt: Date.now() }
+DeviceStore.prototype.automaticDisarm = async function () {
+    const disarmmedDevices = await this.devices.updateMany({
+        where: {
+            AND: [
+                {
+                    armed: {
+                        equals: 1
+                    }
+                },
+                {
+                    activation_expiry: {
+                        lt: Date.now()
+                    }
+                }
+            ]
+        },
+        data: {
+            armed: 0
+        }
     })
 
-    for (const idx in devices) {
-        const deviceResult = this.devices.findOne({ id: devices[idx].id })
-
-        if (
-            deviceResult.activation_expiry < Date.now() &&
-            deviceResult.armed === 1
-        ) {
-            debug('automaticDisarm', 'device', deviceResult.id)
-            deviceResult.armed = 0
-        }
-    }
+    debug('automaticDisarm', disarmmedDevices)
 }
 
-DeviceStore.prototype.getAllDevices = function () {
-    return this.devices.find({ id: { $ne: '' } })
+DeviceStore.prototype.getAllDevices = async function () {
+    return await this.devices.findMany({ where: { id: { not: '' } } })
 }
 
-DeviceStore.prototype.getAvailableDevices = function (user) {
+DeviceStore.prototype.getAvailableDevices = async function (user) {
     const devicesList = []
 
-    this.getAllDevices().forEach((device) => {
-        if (this.checkDeviceAccess(device.id, user) === true) {
+    const allDevices = await this.getAllDevices()
+
+    for (const device of allDevices) {
+        if ((await this.checkDeviceAccess(device.id, user)) === true) {
             devicesList.push(device)
         }
-    })
+    }
 
     return devicesList
 }
 
-DeviceStore.prototype.registerDevice = function (deviceId) {
-    let deviceResult = this.devices.findOne({ id: deviceId })
+DeviceStore.prototype.registerDevice = async function (deviceId) {
+    const deviceKey = { id: deviceId }
+    const deviceLastSeen = { last_seen: Date.now() }
 
-    if (deviceResult === null) {
-        deviceResult = {
-            id: deviceId,
+    const deviceResult = await this.devices.upsert({
+        where: deviceKey,
+        create: {
+            ...deviceKey,
             description: deviceId,
             role: config.default_role,
-            armed: 0
-        }
-
-        this.devices.insert(deviceResult)
-
-        deviceResult = this.devices.findOne({ id: deviceId })
-    }
-
-    deviceResult.last_seen = Date.now()
-
-    this.devices.update(deviceResult)
+            armed: 0,
+            ...deviceLastSeen
+        },
+        update: deviceLastSeen
+    })
 
     return deviceResult
 }
 
-DeviceStore.prototype.updateDeviceDescription = function (
+DeviceStore.prototype.updateDeviceDescription = async function (
     deviceId,
     description
 ) {
-    const deviceResult = this.devices.findOne({ id: deviceId })
-
-    deviceResult.description = description
-
-    return this.getDeviceDetails(deviceId)
-}
-
-DeviceStore.prototype.updateDeviceRole = function (deviceId, role) {
-    const deviceResult = this.devices.findOne({ id: deviceId })
-
-    deviceResult.role = role
+    await this.devices.update({
+        where: { id: deviceId },
+        data: { description }
+    })
 
     return this.getDeviceDetails(deviceId)
 }
 
-DeviceStore.prototype.armDevice = function (deviceId) {
-    const deviceResult = this.devices.findOne({ id: deviceId })
+DeviceStore.prototype.updateDeviceRole = async function (deviceId, role) {
+    await this.devices.update({
+        where: { id: deviceId },
+        data: { role }
+    })
+
+    return this.getDeviceDetails(deviceId)
+}
+
+DeviceStore.prototype.armDevice = async function (deviceId) {
+    const deviceResult = await this.devices.findUnique({
+        where: { id: deviceId }
+    })
 
     if (deviceResult === null) return { error: 'No such device' }
 
-    deviceResult.armed = 1
-    deviceResult.activation_expiry =
-        Date.now() + parseInt(config.activation_timeout)
+    await this.devices.update({
+        where: { id: deviceId },
+        data: {
+            armed: 1,
+            activation_expiry: Date.now() + Number(config.activation_timeout)
+        }
+    })
 
     return this.getDeviceDetails(deviceId)
 }
 
-DeviceStore.prototype.unarmDevice = function (deviceId) {
-    const deviceResult = this.devices.findOne({ id: deviceId })
+DeviceStore.prototype.unarmDevice = async function (deviceId) {
+    const deviceResult = await this.devices.findUnique({
+        where: { id: deviceId }
+    })
 
     if (deviceResult === null) return { error: 'No such device' }
 
-    deviceResult.armed = 0
+    await this.devices.update({
+        where: { id: deviceId },
+        data: {
+            armed: 0
+        }
+    })
 
     return this.getDeviceDetails(deviceId)
 }
 
-DeviceStore.prototype.getDeviceList = function () {
-    return this.getAllDevices()
+DeviceStore.prototype.getDeviceList = async function () {
+    return await this.getAllDevices()
 }
 
-DeviceStore.prototype.getDeviceState = function (deviceId) {
-    const deviceResult = this.registerDevice(deviceId)
+DeviceStore.prototype.getDeviceState = async function (deviceId) {
+    const deviceResult = await this.registerDevice(deviceId)
 
     const result = {}
     result.success = true
@@ -154,8 +149,10 @@ DeviceStore.prototype.getDeviceState = function (deviceId) {
     return result
 }
 
-DeviceStore.prototype.getDeviceDetails = function (deviceId) {
-    const deviceResult = this.devices.findOne({ id: deviceId })
+DeviceStore.prototype.getDeviceDetails = async function (deviceId) {
+    const deviceResult = await this.devices.findUnique({
+        where: { id: deviceId }
+    })
 
     if (deviceResult === null) return { error: 'No such device' }
 
@@ -170,8 +167,8 @@ DeviceStore.prototype.getDeviceDetails = function (deviceId) {
     return result
 }
 
-DeviceStore.prototype.getDeviceRole = function (deviceId) {
-    const deviceResult = this.registerDevice(deviceId)
+DeviceStore.prototype.getDeviceRole = async function (deviceId) {
+    const deviceResult = await this.registerDevice(deviceId)
 
     const result = {}
     result.success = true
@@ -182,36 +179,39 @@ DeviceStore.prototype.getDeviceRole = function (deviceId) {
     return result
 }
 
-DeviceStore.prototype.deleteDevice = function (deviceId) {
-    const deviceResult = this.devices
-        .chain()
-        .find({ id: { $eq: deviceId } })
-        .remove()
-        .data()
+DeviceStore.prototype.deleteDevice = async function (deviceId) {
+    try {
+        await this.devices.delete({ where: { id: deviceId } })
+        return true
+    } catch (err) {
+        console.error(err)
 
-    return deviceResult.length === 0
+        return false
+    }
 }
 
-DeviceStore.prototype.checkDeviceExists = function (deviceId) {
-    const deviceResult = this.devices.findOne({ id: deviceId })
+DeviceStore.prototype.checkDeviceExists = async function (deviceId) {
+    const deviceResult = await this.devices.findUnique({
+        where: { id: deviceId }
+    })
 
     return deviceResult !== null
 }
 
-DeviceStore.prototype.checkDeviceAccess = function (deviceId, user) {
-    const deviceResult = this.devices.findOne({ id: deviceId })
+/**
+ *
+ * @param {*} deviceId
+ * @param {*} user
+ * @returns
+ */
+DeviceStore.prototype.checkDeviceAccess = async function (deviceId, user) {
+    const deviceResult = await this.devices.findUnique({
+        where: { id: deviceId }
+    })
 
     if (user.administrator === true) return true
 
-    return user.privileges.indexOf(deviceResult.role) >= 0
+    return user.privileges.includes(deviceResult.role)
 }
 
-let deviceStore = null
-
-const getInstance = function (dataDir) {
-    if (deviceStore === null) deviceStore = new DeviceStore(dataDir)
-
-    return deviceStore
-}
-
-module.exports = getInstance
+module.exports = new DeviceStore()

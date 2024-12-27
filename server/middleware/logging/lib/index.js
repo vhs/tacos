@@ -21,10 +21,11 @@ const setDefaultResultArray = function (req, res, next) {
     next()
 }
 
-const getAllLogs = function (_req, res, next) {
-    res.locals.result.data = loggingStore.getAllLogs()
+const getAllLogs = async function (_req, res, next) {
+    res.locals.result.data = await loggingStore.getAllLogs()
 
-    debug('getAllLogs', res.locals.result)
+    res.locals.result.result = 'OK'
+
     next()
 }
 

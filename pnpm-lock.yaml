@@ -47,7 +47,7 @@ importers:
         version: 14.5.2(@testing-library/dom@7.31.2)
       '@tyisi/config-eslint':
         specifier: ^4.0.0
-        version: 4.0.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@1.21.7))(typescript@5.7.2))(eslint@9.17.0(jiti@1.21.7))(prettier@3.4.2)(typescript@5.7.2)
+        version: 4.0.0(eslint@9.17.0(jiti@1.21.7))(prettier@3.4.2)(typescript@5.7.2)
       '@tyisi/config-prettier':
         specifier: ^1.0.1
         version: 1.0.1(prettier@3.4.2)
@@ -120,9 +120,6 @@ importers:
       '@prisma/client':
         specifier: 6.1.0
         version: 6.1.0(prisma@6.1.0)
-      body-parser:
-        specifier: ^1.19.0
-        version: 1.20.3
       connect-loki:
         specifier: ^1.2.0
         version: 1.2.0
@@ -195,7 +192,7 @@ importers:
     devDependencies:
       '@tyisi/config-eslint':
         specifier: ^4.0.0
-        version: 4.0.0(eslint@9.17.0(jiti@1.21.7))(prettier@3.4.2)(typescript@5.7.2)
+        version: 4.0.0(@typescript-eslint/parser@8.18.2(eslint@9.17.0(jiti@1.21.7))(typescript@5.7.2))(eslint@9.17.0(jiti@1.21.7))(prettier@3.4.2)(typescript@5.7.2)
       '@tyisi/config-prettier':
         specifier: ^1.0.1
         version: 1.0.1(prettier@3.4.2)
@@ -208,6 +205,9 @@ importers:
       '@types/morgan':
         specifier: ^1.9.9
         version: 1.9.9
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.10.2
       eslint:
         specifier: 9.17.0
         version: 9.17.0(jiti@1.21.7)

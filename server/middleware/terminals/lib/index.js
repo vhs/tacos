@@ -8,25 +8,25 @@ const {
     loggingStore,
     terminalStore
 } = require('../../../lib/stores/')
-const { getLine } = require('../../../lib/utils')
+const { getLine, wrappedJsonStringify } = require('../../../lib/utils')
 
 const Logger = loggingStore.getLogger('tacos:middleware:terminals:lib')
 
-const getAllTerminals = function (_req, res, _next) {
+const getAllTerminals = async function (_req, res, _next) {
     debug(getLine(), 'getAllTerminals')
 
-    res.locals.terminals = terminalStore.getAllTerminals()
-    res.send(terminalStore.getAllTerminals())
+    res.locals.terminals = await terminalStore.getAllTerminals()
+    res.send(wrappedJsonStringify(res.locals.terminals))
     // next()
 }
 
 // Default get result
-const handleDefaultRequest = function (req, res, _next) {
+const handleDefaultRequest = async function (req, res, _next) {
     debug(getLine(), 'handleDefaultRequest')
 
     res.locals.user = req.user
     req.session.touch()
-    res.locals.terminals = terminalStore.getAllTerminals()
+    res.locals.terminals = await terminalStore.getAllTerminals()
     debug(getLine(), 'res.locals.terminals', res.locals.terminals)
     res.send(res.local.terminals)
 }
@@ -61,7 +61,7 @@ const processTerminalPing = function (req, res, next) {
 }
 
 // Query state
-const getTerminalState = function (req, res, next) {
+const getTerminalState = async function (req, res, next) {
     debug(getLine(), 'getTerminalState')
 
     if (!req.params.id) {
@@ -75,14 +75,14 @@ const getTerminalState = function (req, res, next) {
 
     const terminalId = req.params.id
 
-    res.locals.result = terminalStore.getTerminalState(terminalId)
+    res.locals.result = await terminalStore.getTerminalState(terminalId)
     res.locals.result.timestamp = Math.floor(Date.now() / 1000)
 
     next()
 }
 
 // Query state
-const getTerminalDetails = function (req, res, next) {
+const getTerminalDetails = async function (req, res, next) {
     debug(getLine(), 'getTerminalDetails')
 
     if (!req.params.id) {
@@ -92,12 +92,12 @@ const getTerminalDetails = function (req, res, next) {
 
     const terminalId = req.params.id
 
-    res.locals.result = terminalStore.getTerminalDetails(terminalId)
+    res.locals.result = await terminalStore.getTerminalDetails(terminalId)
 
     next()
 }
 
-const verifyTerminal = function (req, res, next) {
+const verifyTerminal = async function (req, res, next) {
     debug(getLine(), 'verifyTerminal')
 
     debug(getLine(), 'verifyTerminal: [' + req.params.id + ']')
@@ -107,7 +107,7 @@ const verifyTerminal = function (req, res, next) {
         res.locals.result.message = 'error: missing terminal id'
         res.status(403)
         next('route')
-    } else if (!terminalStore.checkTerminalExists(req.params.id)) {
+    } else if (!(await terminalStore.checkTerminalExists(req.params.id))) {
         res.locals.result.message = 'error: no such terminal '
         res.status(403)
         next('route')
@@ -116,14 +116,14 @@ const verifyTerminal = function (req, res, next) {
     }
 }
 
-const verifyTerminalEnabled = function (req, res, next) {
+const verifyTerminalEnabled = async function (req, res, next) {
     debug(getLine(), 'verifyTerminalEnabled')
 
-    if (!terminalStore.checkTerminalEnabled(req.params.id)) {
+    if (!(await terminalStore.checkTerminalEnabled(req.params.id))) {
         res.locals.result.message = 'error: terminal is not enabled'
         debug(getLine(), 'verifyTerminalEnabled', res.locals.result.message)
         res.status(403).send(JSON.stringify(res.locals.result))
-    } else if (!terminalStore.checkTerminalHasTarget(req.params.id)) {
+    } else if (!(await terminalStore.checkTerminalHasTarget(req.params.id))) {
         res.locals.result.message = "error: terminal doesn't have a target"
         debug(getLine(), 'verifyTerminalEnabled', res.locals.result.message)
         res.status(403).send(JSON.stringify(res.locals.result))
@@ -132,12 +132,12 @@ const verifyTerminalEnabled = function (req, res, next) {
     }
 }
 
-const verifyHMAC = function (req, res, next) {
+const verifyHMAC = async function (req, res, next) {
     debug(getLine(), 'verifyHMAC')
 
     const terminalId = req.params.id
 
-    if (!terminalStore.checkTerminalSecured(terminalId)) {
+    if (!(await terminalStore.checkTerminalSecured(terminalId))) {
         res.locals.result.message = 'error: missing secret'
         Logger.info({
             action: 'verifyHMAC',
@@ -178,7 +178,7 @@ const verifyHMAC = function (req, res, next) {
         // Packet looks good and terminal has secret, check HMAC
         const packet = req.body
 
-        if (!terminalStore.verifyHMAC(terminalId, packet)) {
+        if (!(await terminalStore.verifyHMAC(terminalId, packet))) {
             res.locals.result.message = 'error: HMAC verification failed'
             Logger.info({
                 action: 'authenticateRFIDCard',
@@ -193,7 +193,7 @@ const verifyHMAC = function (req, res, next) {
     }
 }
 
-const authenticateRFIDCard = function (req, res, next) {
+const authenticateRFIDCard = async function (req, res, next) {
     debug(getLine(), 'authenticateRFIDCard')
 
     // Check input
@@ -211,9 +211,9 @@ const authenticateRFIDCard = function (req, res, next) {
     debug(getLine(), 'authenticateRFIDCard', 'req.body', req.body)
 
     // Get target
-    const terminalTarget = terminalStore.getTerminalTarget(terminalId)
+    const terminalTarget = await terminalStore.getTerminalTarget(terminalId)
     // Get target role
-    const deviceRole = deviceStore.getDeviceRole(terminalTarget)
+    const deviceRole = await deviceStore.getDeviceRole(terminalTarget)
     debug(getLine(), 'authenticateRFIDCard', 'deviceRole', deviceRole)
 
     // Check user privilege for role
@@ -222,7 +222,7 @@ const authenticateRFIDCard = function (req, res, next) {
 
     debug(getLine(), 'authenticateRFIDCard', 'cardRequest', cardRequest)
 
-    backend.checkCard(cardRequest).then(function (_done) {
+    backend.checkCard(cardRequest).then(async function (_done) {
         if (!cardRequest.valid) {
             console.log(
                 Date.now() + ': RFID ACCESS DENIED for ' + cardRequest.id
@@ -258,7 +258,7 @@ const authenticateRFIDCard = function (req, res, next) {
                 )
 
                 // Arm device
-                const armResult = deviceStore.armDevice(terminalTarget)
+                const armResult = await deviceStore.armDevice(terminalTarget)
                 if (!armResult) {
                     res.locals.result.message = 'Failed to arm device'
                     Logger.info({
@@ -326,7 +326,7 @@ const authenticateRFIDCard = function (req, res, next) {
 }
 
 // Enable terminal
-const updateTerminalDescription = function (req, res, next) {
+const updateTerminalDescription = async function (req, res, next) {
     Logger.info({
         action: 'updateTerminalDescription',
         user: req.user.username,
@@ -353,7 +353,7 @@ const updateTerminalDescription = function (req, res, next) {
 
         const description = req.body.description
 
-        res.locals.result = terminalStore.updateTerminalDescription(
+        res.locals.result = await terminalStore.updateTerminalDescription(
             terminalId,
             description
         )
@@ -363,7 +363,7 @@ const updateTerminalDescription = function (req, res, next) {
 }
 
 // Enable terminal
-const updateTerminalEnabled = function (req, res, next) {
+const updateTerminalEnabled = async function (req, res, next) {
     Logger.info({
         action: 'updateTerminalEnabled',
         user: req.user.username,
@@ -388,7 +388,7 @@ const updateTerminalEnabled = function (req, res, next) {
     } else {
         const terminalId = req.params.id
 
-        res.locals.result = terminalStore.updateTerminalEnabled(
+        res.locals.result = await terminalStore.updateTerminalEnabled(
             terminalId,
             req.body.enabled
         )
@@ -400,7 +400,7 @@ const updateTerminalEnabled = function (req, res, next) {
 }
 
 // Delete terminal
-const deleteTerminal = function (req, res, next) {
+const deleteTerminal = async function (req, res, next) {
     Logger.info({
         action: 'deleteTerminal',
         user: req.user.username,
@@ -420,7 +420,7 @@ const deleteTerminal = function (req, res, next) {
 
     res.locals.result = {}
 
-    if (terminalStore.deleteTerminal(terminalId)) {
+    if (await terminalStore.deleteTerminal(terminalId)) {
         res.locals.result = {
             result: 'ok'
         }
@@ -430,7 +430,7 @@ const deleteTerminal = function (req, res, next) {
 }
 
 // Update terminal secret
-const updateTerminalSecret = function (req, res, next) {
+const updateTerminalSecret = async function (req, res, next) {
     Logger.info({
         action: 'updateTerminalSecret',
         user: req.user.username,
@@ -452,37 +452,42 @@ const updateTerminalSecret = function (req, res, next) {
     const terminalId = req.params.id
     const secret = req.body.secret
 
-    res.locals.result = terminalStore.updateTerminalSecret(terminalId, secret)
+    res.locals.result = await terminalStore.updateTerminalSecret(
+        terminalId,
+        secret
+    )
 
     next()
 }
 
 // Update terminal role
-const updateTerminalTarget = function (req, res, next) {
-    Logger.info({
-        action: 'updateTerminalTarget',
-        user: req.user.username,
-        device: req.params.id,
-        message:
-            'user ' +
-            req.user.username +
-            ' update terminal' +
-            req.params.id +
-            ' target: ' +
-            req.body.target
-    })
-
-    debug(getLine(), 'updateTerminalTarget')
-
-    if (!req.params.id) {
-        res.locals.result.message = 'error: missing role id'
-        next()
-    }
-
+const updateTerminalTarget = async function (req, res, next) {
     const terminalId = req.params.id
     const target = req.body.target
 
-    res.locals.result = terminalStore.updateTerminalTarget(terminalId, target)
+    Logger.info({
+        action: 'updateTerminalTarget',
+        user: req.user.username,
+        terminal: terminalId,
+        message: `user ${req.user.username} update terminal ${terminalId} target: ${target}`
+    })
+
+    debug(getLine(), 'updateTerminalTarget', req.body)
+
+    if (!terminalId) {
+        res.locals.result.message = 'error: missing terminal id'
+        next()
+    }
+
+    if (target !== null && typeof target !== 'string') {
+        res.locals.result.message = 'error: invalid target id'
+        next()
+    }
+
+    res.locals.result = await terminalStore.updateTerminalTarget(
+        terminalId,
+        target
+    )
 
     next()
 }

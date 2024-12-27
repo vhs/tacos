@@ -6,8 +6,12 @@ const getLine = function () {
 
 const convertResultToJSON = function (_req, res, next) {
     if (typeof res.locals.result === 'object') {
-        return res.json(res.locals.result)
+        return res
+            .status(200)
+            .setHeader('Content-Type', 'application/json')
+            .send(wrappedJsonStringify(res.locals.result))
     }
+
     const err = new Error('Not Found')
 
     Object.assign(err, { statusCode: 404 })
@@ -21,4 +25,15 @@ const coerceMilliseconds = (val) => {
     return val > 3600 ? val : val * 1000
 }
 
-module.exports = { coerceMilliseconds, convertResultToJSON, getLine }
+const wrappedJsonStringify = (param) => {
+    return JSON.stringify(param, (_key, value) =>
+        typeof value === 'bigint' ? Number(value) : value
+    )
+}
+
+module.exports = {
+    coerceMilliseconds,
+    convertResultToJSON,
+    getLine,
+    wrappedJsonStringify
+}

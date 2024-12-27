@@ -4,6 +4,7 @@ const debug = require('debug')('app:middleware:_post')
 const express = require('express')
 
 const { withRateLimit } = require('../../lib/middleware/rate-limit')
+const { wrappedJsonStringify } = require('../../lib/utils')
 
 const router = express.Router()
 
@@ -19,7 +20,7 @@ router.use((_req, _res, next) => {
 
 router.use((_req, res, next) => {
     if (Object.keys(res.locals.result).length > 0) {
-        return res.json(res.locals.result)
+        return res.send(wrappedJsonStringify(res.locals.result))
     }
     const err = new Error('Not Found')
     next(Object.assign(err, { statusCode: 404 }))

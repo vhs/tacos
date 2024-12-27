@@ -1,0 +1,47 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
+}
+
+model Devices {
+    id                String      @id
+    description       String?
+    role              String?
+    last_seen         BigInt?
+    armed             Int         @default(0)
+    activation_expiry BigInt?
+    Terminal          Terminals[]
+
+    @@index([last_seen])
+    @@map("devices")
+}
+
+model Terminals {
+    id          String   @id
+    description String?
+    device      Devices? @relation(fields: [target], references: [id])
+    target      String?
+    enabled     Int      @default(0)
+    secure      Int      @default(0)
+    secret      String?
+    last_seen   BigInt?
+
+    @@index([target])
+    @@map("terminals")
+}
+
+model Logging {
+    ts       BigInt  @id
+    level    String
+    instance String
+    message  String
+    data     String?
+
+    @@index([level])
+    @@index([instance])
+    @@map("logging")
+}
