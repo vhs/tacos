@@ -49,7 +49,11 @@ WORKDIR /app
 
 RUN pnpm dlx prisma generate
 
-FROM base
+FROM base AS live-base
+
+RUN apt-get update && apt-get install -y --no-install-recommends dumb-init && apt-get clean
+
+FROM live-base
 
 ENV NODE_ENV=production
 ENV PORT=7000
@@ -60,4 +64,4 @@ WORKDIR /app
 
 COPY --from=prod /app/ /app/
 
-CMD [ "pnpm", "start" ]
+CMD ["dumb-init", "pnpm", "start"]
