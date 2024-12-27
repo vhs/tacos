@@ -24,7 +24,8 @@
         "passport-slack-oauth2": "^1.1.1",
         "pug": "^3.0.3",
         "socket.io": "^4.6.2",
-        "supervisor": "^0.12.0"
+        "supervisor": "^0.12.0",
+        "wireit": "^0.14.9"
     },
     "description": "Tool Access Control & Operations System",
     "devDependencies": {
@@ -49,11 +50,27 @@
     "license": "ISC",
     "name": "tacos-server",
     "scripts": {
-        "coverage": "node_modules/.bin/istanbul cover _mocha",
-        "dev": "node_modules/.bin/supervisor -w .,middleware,lib,backends,bin/www,config/config.json bin/www",
-        "start": "node bin/www",
-        "test": "node_modules/.bin/gulp test"
+        "coverage": "wireit",
+        "dev": "wireit",
+        "start": "wireit",
+        "test": "wireit"
     },
     "type": "commonjs",
-    "version": "0.0.1"
+    "version": "0.0.1",
+    "wireit": {
+        "coverage": {
+            "command": "node_modules/.bin/istanbul cover _mocha"
+        },
+        "dev": {
+            "command": "node_modules/.bin/supervisor -w .,middleware,lib,backends,bin/www,config/config.json bin/www",
+            "service": true
+        },
+        "start": {
+            "command": "node bin/www",
+            "service": true
+        },
+        "test": {
+            "command": "node_modules/.bin/gulp test"
+        }
+    }
 }

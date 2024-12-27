@@ -3,7 +3,9 @@
     "bugs": {
         "url": "https://github.com/vhs/tacos/issues"
     },
-    "dependencies": {},
+    "dependencies": {
+        "wireit": "^0.14.9"
+    },
     "description": "TACOS is a React/NodeJS based solution for managing tool access control in a hack-/makerspace environment.",
     "devDependencies": {
         "concurrently": "^6.3.0"
@@ -23,15 +25,29 @@
         "levelup-defaults": "^2.0.0"
     },
     "scripts": {
-        "build": "pnpm --filter=tacos-client run build",
-        "client": "pnpm --filter=tacos-client start",
-        "dev": "concurrently --kill-others-on-fail \"pnpm run server-dev\"  \"pnpm run client\"",
-        "postbuild": "rsync -avz ./client/build/ ./server/public/",
-        "prebuild": "echo Starting build...",
-        "server": "pnpm --filter=tacos-server start",
-        "server-dev": "pnpm --filter=tacos-server run dev",
-        "start": "concurrently --kill-others-on-fail \"pnpm run server\"  \"pnpm run client\"",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build": "wireit",
+        "dev": "wireit",
+        "start": "wireit"
     },
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "wireit": {
+        "build": {
+            "dependencies": [
+                "./client:build",
+                "./client:sync-build"
+            ]
+        },
+        "dev": {
+            "dependencies": [
+                "./client:dev",
+                "./server:dev"
+            ]
+        },
+        "start": {
+            "dependencies": [
+                "./client:start",
+                "./server:start"
+            ]
+        }
+    }
 }
