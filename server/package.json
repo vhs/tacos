@@ -1,6 +1,7 @@
 {
     "author": "Ty Eggen",
     "dependencies": {
+        "@prisma/client": "6.1.0",
         "body-parser": "^1.19.0",
         "connect-loki": "^1.2.0",
         "cookie-parser": "^1.4.4",
@@ -33,7 +34,8 @@
         "@types/express": "^5.0.0",
         "@types/morgan": "^1.9.9",
         "eslint": "9.17.0",
-        "prettier": "3.4.2"
+        "prettier": "3.4.2",
+        "prisma": "^6.1.0"
     },
     "files": [
         "app.js",
