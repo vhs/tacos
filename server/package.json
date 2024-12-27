@@ -40,11 +40,13 @@
     },
     "files": [
         "app.js",
-        "backends",
-        "bin",
-        "lib",
-        "middleware",
-        "public",
+        "backends/",
+        "bin/",
+        "lib/",
+        "middleware/",
+        "migrations/",
+        "public/",
+        "tools/",
         "package.json"
     ],
     "license": "ISC",
