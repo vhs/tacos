@@ -17,7 +17,7 @@ const DeviceStore = function () {
 }
 
 DeviceStore.prototype.automaticDisarm = async function () {
-    const disarmmedDevices = await this.devices.updateMany({
+    const armedDevices = await this.devices.findMany({
         where: {
             AND: [
                 {
@@ -31,13 +31,22 @@ DeviceStore.prototype.automaticDisarm = async function () {
                     }
                 }
             ]
-        },
-        data: {
-            armed: 0
         }
     })
 
-    debug('automaticDisarm', disarmmedDevices)
+    if (armedDevices.length > 0) {
+        armedDevices.forEach((armedDevice) => {
+            void this.devices.update({
+                where: { id: armedDevice.id },
+                data: { armed: 0 }
+            })
+        })
+
+        debug(
+            'automaticDisarm',
+            JSON.stringify(armedDevices.map((ad) => ad.id))
+        )
+    }
 }
 
 DeviceStore.prototype.getAllDevices = async function () {
