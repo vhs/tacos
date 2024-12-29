@@ -11,9 +11,9 @@ const { prisma } = require(path.join(process.cwd(), 'lib/db/prisma'))
 function migrateDevices() {
     const deviceDB = new Loki(path.resolve(config.datadir, 'devicesStore.json'))
 
+    debug('Loading devices database...')
     deviceDB.loadDatabase({}, async (err) => {
         if (err) throw new Error('Failed to load deviceDB')
-        debug('Loading devices database...')
         debug('Loading devices collection...')
         const devicesCollection = deviceDB.getCollection('devices')
 
@@ -42,9 +42,9 @@ function migrateLogging() {
         path.resolve(config.datadir, 'loggingStore.json')
     )
 
+    debug('Loading logging database...')
     loggingDB.loadDatabase({}, async (err) => {
         if (err) throw new Error('Failed to load loggingDB')
-        debug('Loading logging database...')
         debug('Loading logging collection...')
         const loggingCollection = loggingDB.getCollection('logs')
 
@@ -73,9 +73,9 @@ function migrateTerminals() {
         path.resolve(config.datadir, 'terminalStore.json')
     )
 
+    debug('Loading terminals database...')
     terminalsDB.loadDatabase({}, async (err) => {
         if (err) throw new Error('Failed to load terminalsDB')
-        debug('Loading terminals database...')
         debug('Loading terminals collection...')
         const terminalsCollection = terminalsDB.getCollection('terminals')
 
@@ -110,5 +110,7 @@ function migrateTerminals() {
 }
 
 migrateDevices()
+
 migrateLogging()
+
 migrateTerminals()
