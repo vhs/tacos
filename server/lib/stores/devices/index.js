@@ -4,16 +4,14 @@ const debug = require('debug')('tacos:lib:stores:devices')
 
 const { config } = require('../../config/')
 const { prisma } = require('../../db/prisma')
+const { coerceMilliseconds } = require('../../utils')
 
 const DeviceStore = function () {
     this.devices = prisma.devices
 
     if (this.devices == null) throw new Error('Missing devices')
 
-    setInterval(() => {
-        debug('Autodisarming')
-        this.automaticDisarm()
-    }, 5000)
+    this.automaticDisarm()
 }
 
 DeviceStore.prototype.automaticDisarm = async function () {
@@ -118,9 +116,18 @@ DeviceStore.prototype.armDevice = async function (deviceId) {
         where: { id: deviceId },
         data: {
             armed: 1,
-            activation_expiry: Date.now() + Number(config.activation_timeout)
+            activation_expiry:
+                Date.now() +
+                coerceMilliseconds(Number(config.activation_timeout))
         }
     })
+
+    setTimeout(
+        () => {
+            void this.unarmDevice(deviceId)
+        },
+        coerceMilliseconds(Number(config.activation_timeout))
+    )
 
     return this.getDeviceDetails(deviceId)
 }
