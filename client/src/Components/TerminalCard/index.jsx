@@ -140,7 +140,7 @@ const TerminalCard = ({ id }) => {
     if (isLoading) return <LoadingElement />
 
     return (
-        <Col xs='12' sm='12' md='6' lg='6' xl={4} className='TerminalCard'>
+        <Col xs='12' className='TerminalCard'>
             <Row className='spacious'>
                 <Col>
                     <Row className='tool-title'>
