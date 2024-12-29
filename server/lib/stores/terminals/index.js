@@ -217,13 +217,14 @@ TerminalStore.prototype.getTerminalDetails = async function (terminalId) {
 }
 
 TerminalStore.prototype.deleteTerminal = async function (terminalId) {
-    const terminalResult = await this.terminals
-        .chain()
-        .find({ id: { $eq: terminalId } })
-        .remove()
-        .data()
+    try {
+        await this.terminals.delete({ where: { id: terminalId } })
+        return true
+    } catch (err) {
+        console.error(err)
 
-    return terminalResult.length === 0
+        return false
+    }
 }
 
 TerminalStore.prototype.checkTerminalExists = async function (terminalId) {
