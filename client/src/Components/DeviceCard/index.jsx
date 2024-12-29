@@ -115,7 +115,7 @@ const DeviceCard = ({ id }) => {
         return <Loading />
 
     return (
-        <Col xs={12} sm={12} md={6} lg={4} className='DeviceCard'>
+        <Col xs={12} sm={12} md={6} lg={6} xl={4} className='DeviceCard'>
             <Row className='spacious'>
                 <Col>
                     <Row className='tool-title'>
