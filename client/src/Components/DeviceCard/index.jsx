@@ -39,16 +39,17 @@ const DeviceCard = ({ id }) => {
     })
 
     const toggleDeviceHot = async () => {
-        const url = `/api/devices/${Boolean(device.armed) === false ? 'arm' : 'unarm'}/${device.id}`
+        const arming = Boolean(device.armed) === false
+        const url = `/api/devices/${arming ? 'arm' : 'unarm'}/${device.id}`
 
         toast.promise(fetch(url, { method: 'POST' }), {
-            pending: `${Boolean(device.armed) === false ? 'Arming' : 'Unarming'} ${device.description}`,
+            pending: `${arming ? 'Arming' : 'Unarming'} ${device.description}`,
             success: {
                 render: () =>
-                    `${Boolean(device.armed) === false ? 'Armed' : 'Unarmed'} ${device.description}`,
-                autoClose: 20000
+                    `${arming ? 'Armed' : 'Unarmed'} ${device.description}`,
+                autoClose: arming ? 20000 : 5000
             },
-            error: `Failed to ${Boolean(device.armed) === false ? 'arm' : 'unarm'} ${device.description}`
+            error: `Failed to ${arming ? 'arm' : 'unarm'} ${device.description}`
         })
 
         mutate()
