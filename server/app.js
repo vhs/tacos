@@ -5,25 +5,29 @@ const http = require('http')
 const https = require('https')
 const path = require('path')
 
-const loki = require('connect-loki')
+const { RedisStore } = require('connect-redis')
 const cors = require('cors')
 const debug = require('debug')('tacos:app')
 const express = require('express')
 const session = require('express-session')
 const logger = require('morgan')
+const { createClient } = require('redis')
 
 const { config } = require('./lib/config')
 const passport = require('./lib/passport')
 const middleware = require('./middleware/')
 
-const LokiStore = loki(session)
+// Initialize client.
+const redisClient = createClient({
+    url: `redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`
+})
+redisClient.connect()
 
-const lokiStoreOpts = {
-    path: path.resolve(
-        path.join(__dirname, '/', config.datadir, '/session-store.db')
-    ),
-    autosave: true
-}
+// Initialize store.
+const redisStore = new RedisStore({
+    client: redisClient,
+    prefix: 'tacos:session:'
+})
 
 const app = express()
 
@@ -56,7 +60,7 @@ app.use(
     // @ts-ignore
     session({
         secret: config.sessions.secret,
-        store: new LokiStore(lokiStoreOpts),
+        store: redisStore,
         resave: false,
         saveUninitialized: true,
         proxy: true,
