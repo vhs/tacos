@@ -19,8 +19,14 @@ mkdir -p "${DONEDIR}"
 
 find migrations/ -type f -print0 | xargs -0 -n1 basename | while read -r MIGRATION_FILE; do
     if [ ! -f "${DONEDIR}/${MIGRATION_FILE}" ]; then
+        echo "Running migration: ${MIGRATION_FILE}"
+
         if "./migrations/${MIGRATION_FILE}"; then
             cp "./migrations/${MIGRATION_FILE}" "./${DONEDIR}/${MIGRATION_FILE}"
+        else
+            echo "ERROR while running migration: ${MIGRATION_FILE}"
+            echo "Bailing..."
+            exit 253
         fi
     fi
 done
