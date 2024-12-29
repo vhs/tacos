@@ -120,7 +120,9 @@ const DeviceCard = ({ id }) => {
                 <Col>
                     <Row className='tool-title'>
                         <Col>
-                            <h3>{device.id}</h3>
+                            <div>
+                                <h3>{device.id}</h3>
+                            </div>
                         </Col>
                     </Row>
                     <Row className='spacious'>
