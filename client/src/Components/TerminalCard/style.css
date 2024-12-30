@@ -2,10 +2,9 @@
     border: solid 1px grey;
     border-radius: 5px;
     padding: 5px;
-    margin: 5px auto;
+    margin: 10px auto;
 }
 
 .tool-title > .col > div {
     border-bottom: solid 2px black;
-    /* width: 100%; */
 }
