@@ -61,7 +61,16 @@
             "service": true
         },
         "build": {
-            "command": "vite build"
+            "command": "vite build",
+            "files": [
+                "public/**/*",
+                "src/**/*",
+                "index.html",
+                "vite.config.js"
+            ],
+            "output": [
+                "build/**/*"
+            ]
         },
         "serve": {
             "command": "vite preview",
@@ -75,7 +84,10 @@
             "dependencies": [
                 "build"
             ],
-            "command": "rsync -avz ./build/ ../server/public/"
+            "command": "rsync -avz ./build/ ../server/public/",
+            "files": [
+                "build/**/*"
+            ]
         }
     }
 }
