@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import TimeAgo from 'anderm-react-timeago'
 import PropTypes from 'prop-types'
-import { Button, Col, Form, FormControl, Row } from 'react-bootstrap'
+import { Button, Col, Container, Form, FormControl, Row } from 'react-bootstrap'
 import useSWR from 'swr'
 
 import { useDevices } from '../../hooks/useDevices.jsx'
@@ -140,116 +140,120 @@ const TerminalCard = ({ id }) => {
     if (isLoading) return <LoadingElement />
 
     return (
-        <Col xs='12' className='TerminalCard'>
-            <Row className='spacious'>
-                <Col>
-                    <Row className='tool-title'>
-                        <Col>
-                            <div>
-                                <h3>{terminalId}</h3>
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <b> Description:</b>
-                        </Col>
-                        <Col>
-                            <FormControl
-                                id='TerminalId'
-                                className='description-control'
-                                type='input'
-                                onChange={updateDescription}
-                                value={terminal.description}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <b>Enabled:</b>
-                        </Col>
-                        <Col>
-                            <Form.Check
-                                type='checkbox'
-                                checked={terminal.enabled === 1}
-                                label={
-                                    terminal.enabled === 1
-                                        ? 'Enabled'
-                                        : 'Disabled'
-                                }
-                                onChange={updateEnabled}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <b>Target:</b>
-                        </Col>
-                        <Col>
-                            <Form.Group controlId='SelectTarget'>
-                                <Form.Select
-                                    value={terminal.target ?? '---'}
-                                    onChange={updateTarget}
+        <Col xs='12'>
+            <Container className='TerminalCard'>
+                <Row className='spacious'>
+                    <Col>
+                        <Row className='tool-title'>
+                            <Col>
+                                <div>
+                                    <h3>{terminalId}</h3>
+                                </div>
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <b> Description:</b>
+                            </Col>
+                            <Col>
+                                <FormControl
+                                    id='TerminalId'
+                                    className='description-control'
+                                    type='input'
+                                    onChange={updateDescription}
+                                    value={terminal.description}
+                                />
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <b>Enabled:</b>
+                            </Col>
+                            <Col>
+                                <Form.Check
+                                    type='checkbox'
+                                    checked={terminal.enabled === 1}
+                                    label={
+                                        terminal.enabled === 1
+                                            ? 'Enabled'
+                                            : 'Disabled'
+                                    }
+                                    onChange={updateEnabled}
+                                />
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <b>Target:</b>
+                            </Col>
+                            <Col>
+                                <Form.Group controlId='SelectTarget'>
+                                    <Form.Select
+                                        value={terminal.target ?? '---'}
+                                        onChange={updateTarget}
+                                    >
+                                        <option value={null}>---</option>
+                                        {devices.map((device) => (
+                                            <option
+                                                key={device.id}
+                                                value={device.id}
+                                            >
+                                                {device.description}
+                                            </option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <b>Secure:</b>
+                            </Col>
+                            <Col>
+                                <span className='securestate'>
+                                    {terminal.secure
+                                        ? 'Secured'
+                                        : 'Not secured'}
+                                </span>
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <b> Secret:</b>
+                            </Col>
+                            <Col>
+                                <FormControl
+                                    id='TerminalSecret'
+                                    className='description-control'
+                                    type='password'
+                                    onChange={updateSecret}
+                                    value={terminal.secret}
+                                />
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <b>Last Seen:</b>
+                            </Col>
+                            <Col>
+                                <TimeAgo date={terminal.last_seen} />
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <Button
+                                    className='btn-danger'
+                                    onClick={deleteTerminal}
                                 >
-                                    <option value={null}>---</option>
-                                    {devices.map((device) => (
-                                        <option
-                                            key={device.id}
-                                            value={device.id}
-                                        >
-                                            {device.description}
-                                        </option>
-                                    ))}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <b>Secure:</b>
-                        </Col>
-                        <Col>
-                            <span className='securestate'>
-                                {terminal.secure ? 'Secured' : 'Not secured'}
-                            </span>
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <b> Secret:</b>
-                        </Col>
-                        <Col>
-                            <FormControl
-                                id='TerminalSecret'
-                                className='description-control'
-                                type='password'
-                                onChange={updateSecret}
-                                value={terminal.secret}
-                            />
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <b>Last Seen:</b>
-                        </Col>
-                        <Col>
-                            <TimeAgo date={terminal.last_seen} />
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <Button
-                                className='btn-danger'
-                                onClick={deleteTerminal}
-                            >
-                                DELETE
-                            </Button>
-                        </Col>
-                        <Col>&nbsp;</Col>
-                        <Col className='pull-right'></Col>
-                    </Row>
-                </Col>
-            </Row>
+                                    DELETE
+                                </Button>
+                            </Col>
+                            <Col>&nbsp;</Col>
+                            <Col className='pull-right'></Col>
+                        </Row>
+                    </Col>
+                </Row>
+            </Container>
         </Col>
     )
 }

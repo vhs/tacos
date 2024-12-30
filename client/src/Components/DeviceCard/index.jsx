@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import TimeAgo from 'anderm-react-timeago'
 import PropTypes from 'prop-types'
-import { Button, Col, Form, FormControl, Row } from 'react-bootstrap'
+import { Button, Col, Container, Form, FormControl, Row } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
 
@@ -115,109 +115,111 @@ const DeviceCard = ({ id }) => {
         return <Loading />
 
     return (
-        <Col xs={12} sm={12} md={6} lg={6} xl={4} className='DeviceCard'>
-            <Row className='spacious'>
-                <Col>
-                    <Row className='tool-title'>
-                        <Col>
-                            <div>
-                                <h3>{device.id}</h3>
-                            </div>
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col xs='12' sm='12' md='4' lg='4'>
-                            <b>Description:</b>
-                        </Col>
-                        <Col xs='12' sm='12' md='8' lg='8'>
-                            {device.description}
-                        </Col>
-                    </Row>
-                    <AdminElement user={user}>
-                        <Row className='spacious'>
-                            <Col xs='12' sm='12' md='4' lg='4'>
-                                <b> Description:</b>
-                            </Col>
+        <Col xs={12} sm={12} md={6} lg={6} xl={4}>
+            <Container className='DeviceCard'>
+                <Row className='spacious'>
+                    <Col>
+                        <Row className='tool-title'>
                             <Col>
-                                <FormControl
-                                    id='DeviceId'
-                                    className='description-control'
-                                    type='input'
-                                    onChange={updateDescription}
-                                    value={device.description}
-                                />
+                                <div>
+                                    <h3>{device.id}</h3>
+                                </div>
                             </Col>
                         </Row>
                         <Row className='spacious'>
                             <Col xs='12' sm='12' md='4' lg='4'>
-                                <b>Role:</b>
+                                <b>Description:</b>
+                            </Col>
+                            <Col xs='12' sm='12' md='8' lg='8'>
+                                {device.description}
+                            </Col>
+                        </Row>
+                        <AdminElement user={user}>
+                            <Row className='spacious'>
+                                <Col xs='12' sm='12' md='4' lg='4'>
+                                    <b> Description:</b>
+                                </Col>
+                                <Col>
+                                    <FormControl
+                                        id='DeviceId'
+                                        className='description-control'
+                                        type='input'
+                                        onChange={updateDescription}
+                                        value={device.description}
+                                    />
+                                </Col>
+                            </Row>
+                            <Row className='spacious'>
+                                <Col xs='12' sm='12' md='4' lg='4'>
+                                    <b>Role:</b>
+                                </Col>
+                                <Col>
+                                    <Form.Group controlId='SelectRole'>
+                                        <Form.Control
+                                            as='select'
+                                            custom
+                                            value={device.role}
+                                            onChange={updateRole}
+                                        >
+                                            {roles.map((role) => (
+                                                <option
+                                                    key={role.code}
+                                                    value={role.code}
+                                                >
+                                                    {role.code}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </AdminElement>
+                        <Row className='spacious'>
+                            <Col xs='12' sm='12' md='4' lg='4'>
+                                <b>State:</b>
                             </Col>
                             <Col>
-                                <Form.Group controlId='SelectRole'>
-                                    <Form.Control
-                                        as='select'
-                                        custom
-                                        value={device.role}
-                                        onChange={updateRole}
+                                <span className='powerstate pull-right'>
+                                    {device.armed ? 'Armed' : 'Unarmed'}
+                                </span>
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col xs='12' sm='12' md='4' lg='4'>
+                                <b>Last Seen:</b>
+                            </Col>
+                            <Col>
+                                <span className='pull-right'>
+                                    <TimeAgo date={device.last_seen} />
+                                </span>
+                            </Col>
+                        </Row>
+                        <Row className='spacious'>
+                            <Col>
+                                <AdminElement user={user}>
+                                    <Button
+                                        className='btn-danger'
+                                        onClick={deleteDevice}
                                     >
-                                        {roles.map((role) => (
-                                            <option
-                                                key={role.code}
-                                                value={role.code}
-                                            >
-                                                {role.code}
-                                            </option>
-                                        ))}
-                                    </Form.Control>
-                                </Form.Group>
+                                        DELETE
+                                    </Button>
+                                </AdminElement>
+                            </Col>
+                            <Col></Col>
+                            <Col className='pull-right'>
+                                <Button
+                                    className='pull-right powerbutton'
+                                    onClick={toggleDeviceHot}
+                                >
+                                    {Boolean(device.armed) === false
+                                        ? 'ARM'
+                                        : 'DISARM'}
+                                </Button>
                             </Col>
                         </Row>
-                    </AdminElement>
-                    <Row className='spacious'>
-                        <Col xs='12' sm='12' md='4' lg='4'>
-                            <b>State:</b>
-                        </Col>
-                        <Col>
-                            <span className='powerstate pull-right'>
-                                {device.armed ? 'Armed' : 'Unarmed'}
-                            </span>
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col xs='12' sm='12' md='4' lg='4'>
-                            <b>Last Seen:</b>
-                        </Col>
-                        <Col>
-                            <span className='pull-right'>
-                                <TimeAgo date={device.last_seen} />
-                            </span>
-                        </Col>
-                    </Row>
-                    <Row className='spacious'>
-                        <Col>
-                            <AdminElement user={user}>
-                                <Button
-                                    className='btn-danger'
-                                    onClick={deleteDevice}
-                                >
-                                    DELETE
-                                </Button>
-                            </AdminElement>
-                        </Col>
-                        <Col></Col>
-                        <Col className='pull-right'>
-                            <Button
-                                className='pull-right powerbutton'
-                                onClick={toggleDeviceHot}
-                            >
-                                {Boolean(device.armed) === false
-                                    ? 'ARM'
-                                    : 'DISARM'}
-                            </Button>
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
+                    </Col>
+                </Row>
+            </Container>
         </Col>
     )
 }

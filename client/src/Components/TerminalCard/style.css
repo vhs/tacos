@@ -1,10 +1,11 @@
 .TerminalCard {
     border: solid 1px grey;
     border-radius: 5px;
+    padding: 5px;
     margin: 5px auto;
 }
 
 .tool-title > .col > div {
     border-bottom: solid 2px black;
-    width: 100%;
+    /* width: 100%; */
 }
